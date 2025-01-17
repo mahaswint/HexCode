@@ -1,4 +1,3 @@
-const Project = require('../models/projectModel'); // Assuming the path to the model is correct
 
 exports.addProject = async (req, res) => {
     try {
