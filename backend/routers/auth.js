@@ -1,53 +1,27 @@
 const router = require("express").Router();
 const passport = require("passport");
+const authController = require("../controllers/authController")
 
 // Google OAuth callback route
 router.get(
   "/google/callback",
   passport.authenticate("google", {
-    successRedirect: process.env.CLIENT_URL,
+    successRedirect: "http://localhost:3000/",
     failureRedirect: "/login/failed",
   })
 );
 
 // Login failure route
-router.get("/login/failed", (req, res) => {
-  res.status(401).json({
-    error: true,
-    message: "Login Failure",
-  });
-});
+router.get("/login/failed", authController.LoginFailed);
 
 // Login success route
-router.get("/login/success", (req, res) => {
-  if (req.user) {
-    res.status(200).json({
-      error: false,
-      message: "Successfully Logged In",
-      user: req.user,
-    });
-  } else {
-    res.status(401).json({
-      error: true,
-      message: "Not Authorized",
-    });
-  }
-
-  console.log(req.user);
-});
+router.get("/login/success", authController.LoginSuccess);
 
 // Google OAuth login route
 router.get("/google", passport.authenticate("google", { scope: ["profile", "email"] }));
 
 // Logout route
-router.get("/logout", (req, res) => {
-  req.logout((err) => {
-    if (err) {
-      return res.status(500).json({ error: true, message: "Logout failed" });
-    }
-    res.redirect(process.env.CLIENT_URL);
-  });
-});
+router.get("/logout", authController.LogOut);
 
 // Export the router
 module.exports = router;

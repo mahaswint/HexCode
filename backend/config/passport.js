@@ -17,13 +17,10 @@ passport.use( "google",
         scope:["profile","email"],
         },
         async function(accessToken,refreshToken,profile,done){
+          console.log("hiudyegwvcuvfb");
             try {
-                console.log(profile._json.email);
                 let user = await userSchema.findOne({ email: profile._json.email });
-                console.log(profile);
-                console.log(user);
                 if (!user) {
-                  console.log("inside if ")
                   user = new userSchema({
                     name: profile.displayName,
                     email: profile._json.email,
@@ -33,7 +30,6 @@ passport.use( "google",
                   await user.save();
                   console.log("after save")
                 }
-                console.log(user);
                 return done(null, user);
               } catch (err) {
                 return done(err, false);
@@ -44,9 +40,23 @@ passport.use( "google",
     )
 );
 
-passport.serializeUser((user,done)=>{
-    done(null,user)
-})
-passport.deserializeUser((user,done)=>{
-    done(null,user)
-})
+// passport.serializeUser((user,done)=>{
+//     done(null,user)
+// })
+
+passport.serializeUser((user, done) => {
+  done(null, user.id); // Save user ID to the session
+});
+// passport.deserializeUser((user,done)=>{
+//     done(null,user)
+// })
+
+passport.deserializeUser(async (id, done) => {
+  try {
+    console.log(id)
+    const user = await userSchema.findById(id); // Fetch the user from the database
+    done(null, user);
+  } catch (err) {
+    done(err);
+  }
+});

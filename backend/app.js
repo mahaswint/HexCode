@@ -6,7 +6,7 @@ const passport = require("passport");
 const cors = require("cors");
 const cookieSession = require('cookie-session');
 const projectRoutes = require('./routers/projectRoutes');
-const passportSetup = require('./config/passport');
+require('./config/passport');
 const authRoutes = require('./routers/auth');
 const session = require('express-session');
 require('dotenv').config(); 
@@ -17,12 +17,15 @@ const app = express();
 app.use(express.json());
 
 app.use(
-    session({
-        secret: process.env.SECRETKEY, 
-        resave: false,
-        saveUninitialized: true,
-        cookie: { secure: false }, 
-    })
+  session({
+    secret: process.env.SECRETKEY || "JAILOHIT",
+    resave: true,
+    saveUninitialized: false,
+    cookie: {
+      maxAge: 1000 * 60 * 60 * 24, // Session expiration time
+      secure: false, // set to true if using https
+    },
+  })
 );
 
 
@@ -40,8 +43,10 @@ app.use(
 
 app.use("/auth",authRoutes);
 
+
+
 app.use((req, res, next) => {
-  console.log(`${req.method} ${req.url}`);
+  console.log("startttt",req.user,req.session);
   next();
 });
 

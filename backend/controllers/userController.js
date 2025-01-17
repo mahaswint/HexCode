@@ -2,18 +2,49 @@ const User = require('../models/userModel');
 const Project = require('../models/projectModel');
 
 // Get logged-in user's data
+// exports.getMyData = async (req, res) => {
+
+//     // console.log(req)
+    
+//     // console.log("in user route",req.user);
+
+//     console.log(req.isAuthenticated())
+
+//     if(req.isAuthenticated()) {
+//         console.log("in user route",req.user);
+//     }
+//     try {
+//         const userId = req.user.id; // Assuming req.user is populated with the logged-in user's data
+//         const user = await User.findById(userId).select('-password').populate('projects', 'name visibility'); // Populate project details
+
+//         if (!user) return res.status(404).json({ message: 'User not found' });
+
+//         res.status(200).json(user);
+//     } catch (err) {
+//         res.status(500).json({ message: 'Server error', error: err.message });
+//     }
+// };
+
 exports.getMyData = async (req, res) => {
-    try {
-        const userId = req.user.id; // Assuming req.user is populated with the logged-in user's data
-        const user = await User.findById(userId).select('-password').populate('projects', 'name visibility'); // Populate project details
-
+    console.log("Authenticated:", req.isAuthenticated()); // Check if the user is authenticated
+    console.log("User object:", req.user); // Log the user object
+  
+    if (req.isAuthenticated()) {
+      try {
+        const userId = req.user.id; // Access user ID
+        const user = await User.findById(userId).select('-password').populate('projects', 'name visibility');
+        
         if (!user) return res.status(404).json({ message: 'User not found' });
-
+        
         res.status(200).json(user);
-    } catch (err) {
+      } catch (err) {
         res.status(500).json({ message: 'Server error', error: err.message });
+      }
+    } else {
+      return res.status(401).json({ message: 'Not authenticated' });
     }
-};
+  };
+  
 
 // Update logged-in user's data
 exports.updateMyData = async (req, res) => {
