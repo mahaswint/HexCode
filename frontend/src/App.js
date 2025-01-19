@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-d
 import Navbar from "./components/Navbar"
 import Home from "./pages/Home"
 import Login from "./pages/Login"
-import Profile from "./pages/Profile"
+import Profile from "./pages/profile/Profile"
 import axios from "axios";
 import Mypage from "./pages/Mypage";
 import MainPage from "./pages/MainPage";
