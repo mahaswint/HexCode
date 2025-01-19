@@ -1,7 +1,7 @@
-import './App.css';
+import '../App.css';
 import React,{useState} from 'react';
 
-const mainPage = () => {
+const MainPage = () => {
   // Define states
   const [prompt, setPrompt] = useState(""); // State for user input
   const [generatedCode, setGeneratedCode] = useState(
@@ -318,4 +318,4 @@ const mainPage = () => {
     </div>
   );
 };
-export default mainPage;
+export default MainPage;

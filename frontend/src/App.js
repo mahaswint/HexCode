@@ -7,7 +7,7 @@ import Login from "./pages/Login"
 import Profile from "./pages/Profile"
 import axios from "axios";
 import Mypage from "./pages/Mypage";
-import mainPage from "./pages/mainPage";
+import MainPage from "./pages/MainPage";
 
 function App() {
     const [user, setUser] = useState(null);
@@ -30,9 +30,9 @@ function App() {
             <Routes>
                 <Route path="/" element={user ? <Home user={user} /> : <Navigate to="/login" />} />
                 <Route path="/login" element={<Login />} />
-                <Route path="/profile" element={user ? <Profile user={user} /> : <Navigate to="/login" />} />
+                <Route path="/profile" element={<Profile/>} />
                 <Route path="/my" element={<Mypage/>} />
-                <Route path="/main" element={<mainPage/>} />
+                <Route path="/main" element={<MainPage/>} />
             </Routes>
         </Router>
     );
