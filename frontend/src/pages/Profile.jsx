@@ -1,8 +1,200 @@
-const Profile = ({ user }) => {
+import React from "react";
+const projects=[
+    {
+        title: "AI Chat Assistant",
+        id: "#PRJ-001",
+        description:
+            "A sophisticated chatbot powered by machine learning, capable of natural conversations and task assistance.",
+        tags: ["Python", "TensorFlow", "Flask"],
+    },
+    {
+        title: "E-Commerce Platform",
+        id: "#PRJ-002",
+        description:
+            "Full-stack e-commerce solution with real-time inventory management and payment processing.",
+        tags: ["React", "Node.js", "MongoDB"],
+    },
+    {
+        title: "Weather Dashboard",
+        id: "#PRJ-003",
+        description:
+            "Real-time weather tracking application with interactive maps and forecast predictions.",
+        tags: ["JavaScript", "Weather API", "Chart.js"],
+    },
+    {
+        title: "Social Media Analytics",
+        id: "#PRJ-004",
+        description:
+            "Analytics dashboard for tracking social media engagement and audience insights.",
+        tags: ["React", "Firebase", "D3.js"],
+    },
+    {
+        title: "Task Management App",
+        id: "#PRJ-005",
+        description:
+            "Collaborative task management tool with real-time updates and team features.",
+        tags: ["Vue.js", "Express", "PostgreSQL"],
+    },
+    {
+        title: "AI Chat Assistant",
+        id: "#PRJ-001",
+        description:
+            "A sophisticated chatbot powered by machine learning, capable of natural conversations and task assistance.",
+        tags: ["Python", "TensorFlow", "Flask"],
+    },
+    {
+        title: "E-Commerce Platform",
+        id: "#PRJ-002",
+        description:
+            "Full-stack e-commerce solution with real-time inventory management and payment processing.",
+        tags: ["React", "Node.js", "MongoDB"],
+    },
+    {
+        title: "Weather Dashboard",
+        id: "#PRJ-003",
+        description:
+            "Real-time weather tracking application with interactive maps and forecast predictions.",
+        tags: ["JavaScript", "Weather API", "Chart.js"],
+    },
+    {
+        title: "Social Media Analytics",
+        id: "#PRJ-004",
+        description:
+            "Analytics dashboard for tracking social media engagement and audience insights.",
+        tags: ["React", "Firebase", "D3.js"],
+    },
+    {
+        title: "Task Management App",
+        id: "#PRJ-005",
+        description:
+            "Collaborative task management tool with real-time updates and team features.",
+        tags: ["Vue.js", "Express", "PostgreSQL"],
+    },
+    {
+        title: "AI Chat Assistant",
+        id: "#PRJ-001",
+        description:
+            "A sophisticated chatbot powered by machine learning, capable of natural conversations and task assistance.",
+        tags: ["Python", "TensorFlow", "Flask"],
+    },
+    {
+        title: "E-Commerce Platform",
+        id: "#PRJ-002",
+        description:
+            "Full-stack e-commerce solution with real-time inventory management and payment processing.",
+        tags: ["React", "Node.js", "MongoDB"],
+    },
+    {
+        title: "Weather Dashboard",
+        id: "#PRJ-003",
+        description:
+            "Real-time weather tracking application with interactive maps and forecast predictions.",
+        tags: ["JavaScript", "Weather API", "Chart.js"],
+    },
+    {
+        title: "Social Media Analytics",
+        id: "#PRJ-004",
+        description:
+            "Analytics dashboard for tracking social media engagement and audience insights.",
+        tags: ["React", "Firebase", "D3.js"],
+    },
+    {
+        title: "Task Management App",
+        id: "#PRJ-005",
+        description:
+            "Collaborative task management tool with real-time updates and team features.",
+        tags: ["Vue.js", "Express", "PostgreSQL"],
+    },
+    {
+        title: "AI Chat Assistant",
+        id: "#PRJ-001",
+        description:
+            "A sophisticated chatbot powered by machine learning, capable of natural conversations and task assistance.",
+        tags: ["Python", "TensorFlow", "Flask"],
+    },
+    {
+        title: "E-Commerce Platform",
+        id: "#PRJ-002",
+        description:
+            "Full-stack e-commerce solution with real-time inventory management and payment processing.",
+        tags: ["React", "Node.js", "MongoDB"],
+    },
+    {
+        title: "Weather Dashboard",
+        id: "#PRJ-003",
+        description:
+            "Real-time weather tracking application with interactive maps and forecast predictions.",
+        tags: ["JavaScript", "Weather API", "Chart.js"],
+    },
+    {
+        title: "Social Media Analytics",
+        id: "#PRJ-004",
+        description:
+            "Analytics dashboard for tracking social media engagement and audience insights.",
+        tags: ["React", "Firebase", "D3.js"],
+    },
+    {
+        title: "Task Management App",
+        id: "#PRJ-005",
+        description:
+            "Collaborative task management tool with real-time updates and team features.",
+        tags: ["Vue.js", "Express", "PostgreSQL"],
+    },
+]
+const Profile = () => {
     return (
-        <div>
-            <h1>{user.name}'s Profile</h1>
-            <p>Email: {user.email}</p>
+        <div className="bg-[#0f172a] text-white min-h-screen p-8">
+            <div className="max-w-7xl mx-auto">
+                {/* Profile Section */}
+                <div className="flex gap-8">
+                    {/* Profile Info */}
+                    <div className="bg-[#1e293b] p-6 rounded-lg fixed h-[90vh] shadow-md w-1/4 ">
+                        <div className="bg-gray-700 w-[20vw] h-[40vh] mx-auto rounded-lg shadow-lg flex items-center justify-center">
+                            
+                        </div>
+                        <h2 className="text-xl text-center mt-4 font-bold">Rohan Shaw</h2>
+                        <p className="text-center text-[#94a3b8]">@rohan_codes</p>
+                        <h3 className="text-lg font-semibold mt-6">Skills</h3>
+                        <div className="flex flex-wrap gap-2 mt-2">
+                            {["Python", "Java", "MongoDB", "React", "Node.js"].map((skill, index) => (
+                                <span
+                                    key={index}
+                                    className="bg-blue-500 text-sm px-3 py-1 rounded-full text-white"
+                                >
+                                    {skill}
+                                </span>
+                            ))}
+                        </div>
+                        <h3 className="text-lg font-semibold mt-6">Projects</h3>
+                        <p className="text-4xl text-center font-bold mt-2">47</p>
+                    </div>
+
+                    {/* Projects Section */}
+                    <div className="flex-1 grid grid-cols-2 ml-96 gap-6">
+                    <h1 className="text-4xl font-bold col-span-2 p-4 bg-[#1e293b] rounded-lg" style={{ textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)' }}>Projects : </h1>
+                        {projects.map((project, index) => (
+                            <div
+                                key={index}
+                                className="bg-[#1e293b] p-6 rounded-lg shadow-md transform transition-transform duration-300 hover:scale-105 hover:bg-[#334155]"
+                            >
+                                <h3 className="text-lg font-bold">{project.title}</h3>
+                                <p className="text-sm text-[#94a3b8]">{project.id}</p>
+                                <p className="text-sm mt-4">{project.description}</p>
+                                <div className="flex flex-wrap gap-2 mt-4">
+                                    {project.tags.map((tag, tagIndex) => (
+                                        <span
+                                            key={tagIndex}
+                                            className="bg-[#334155] text-xs px-2 py-1 rounded text-white"
+                                        >
+                                            {tag}
+                                        </span>
+                                    ))}
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </div>
         </div>
     );
 };
