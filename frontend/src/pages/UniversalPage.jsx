@@ -1,4 +1,3 @@
-import { Navbar2 } from "../components/Navbar2";
 import { TemplateCard } from "../components/TemplateCard";
 
 const templates = [
@@ -16,7 +15,6 @@ const templates = [
   export const UniversalPage = () => {
     return (
         <div className="bg-gradient-to-br from-black from-40% via-gray-900 via-60% to-indigo-900 to-90%">
-        <Navbar2 />
         <div className="text-white p-8">
         
           {/* <div className="flex justify-between items-center mb-6">
@@ -27,7 +25,7 @@ const templates = [
           <div className="text-2xl font-bold mb-4">Public Projects</div>
           <div className="flex items-center my-4 mx-4 rounded-full border border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
           <input
-            className="px-2 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+            className="mx-2 px-2 rounded-lg bg-gray-900 dark:border-gray-600 dark:text-white"
             placeholder="search projects..."
           />
           <button className="p-2 ml-2 text-white">
