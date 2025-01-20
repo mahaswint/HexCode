@@ -9,6 +9,7 @@ import Mypage from "./pages/Mypage";
 import MainPage from "./pages/MainPage";
 import Landing from "./pages/Landing";
 import Footer from "./components/Footer";
+import { UniversalPage } from "./pages/UniversalPage";
 
 function App() {
     const [user, setUser] = useState(null);
@@ -32,6 +33,7 @@ function App() {
                 <Routes>
                     {/* <Route path="/" element={user ? <Landing user={user} /> : <Navigate to="/login" />} /> */}
                     <Route path="/" element={<Landing />} />
+                    <Route path="/universal" element={<UniversalPage />} />
                     <Route path="/login" element={<Login />} />
                     <Route path="/profile" element={user ? <Profile user={user} /> : <Navigate to="/login" />} />
                     <Route path="/my" element={<Mypage/>} />
