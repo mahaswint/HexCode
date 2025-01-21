@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-// import { useUser } from "../context/userContext";
+import { useUser } from "../context/userContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHexagonNodes, faUser, faBars, faArrowLeft, faSignOutAlt } from "@fortawesome/free-solid-svg-icons";
 import { Popover, PopoverButton, PopoverPanel } from "@headlessui/react";
 
-const Navbar = ({user}) => {
-    // const { user, setUser } = useUser();
+const Navbar = () => {
+    const { user, setUser } = useUser();
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -27,8 +27,7 @@ const Navbar = ({user}) => {
         
           if (response.ok) {
             console.log("Logout successful.");
-            // user = null;
-            // setUser(null);
+            setUser(null);
             navigate("/");
           } else {
             console.error("Failed to logout");
