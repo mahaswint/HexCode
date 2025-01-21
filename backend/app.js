@@ -10,7 +10,7 @@ require('./config/passport');
 const authRoutes = require('./routers/auth');
 const session = require('express-session');
 require('dotenv').config(); 
-
+const chatRoutes = require('./routers/chatRoutes')
 const app = express();
 
 // Middleware to parse JSON requests
@@ -53,7 +53,7 @@ app.use((req, res, next) => {
 // API Routes
 app.use('/api/user', userRoutes);
 app.use('/api/project', projectRoutes);
-
+app.use('/chat',chatRoutes)
 // Connect to MongoDB
 mongoose.connect(process.env.MONGODB_URI)
   .then(() => console.log('Connected to MongoDB'))

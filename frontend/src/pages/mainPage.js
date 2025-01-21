@@ -1,27 +1,56 @@
 import '../App.css';
-import React,{useState} from 'react';
+import React,{useState,useEffect} from 'react';
+import Prism from 'prismjs';
+import 'prismjs/themes/prism-okaidia.css';
 
 const MainPage = () => {
   // Define states
   const [prompt, setPrompt] = useState(""); // State for user input
-  const [generatedCode, setGeneratedCode] = useState(
+  const [generatedHTML, setGeneratedHTML] = useState(
     "<!DOCTYPE html><html><body><h1>Generated Website</h1></body></html>"
   ); // State for generated code
   const [showCode, setShowCode] = useState(false); // State for toggling between website/code views
   const [iframeWidth, setIframeWidth] = useState(1000); // State for resizable iframe width
   const [iframeHeight, setIframeHeight] = useState(750);
+  const [fileName,setFileName] = useState("html");
+  const [generatedCSS, setGeneratedCSS] = useState("");
 
+  useEffect(() => {
+    Prism.highlightAll(); // Applies syntax highlighting to all <code> elements
+  }, [generatedHTML, generatedCSS]);
+
+  let displayCode = fileName === "html" ? generatedHTML.replace(/(\s*<style>[\s\S]*?<\/style>\s*)/, '').trim() : generatedCSS;
+
+  useEffect(() => {
+    Prism.highlightAll();
+  }, [displayCode]);
   // Function to handle prompt submission
-  const handlePromptSubmit = async () => {
+  const handlePromptSubmit = async (e) => {
+    e.preventDefault(); // Prevents the default form submission behavior
+    console.log("Form submitted with prompt:", prompt);
     // Simulate fetching generated code from backend (replace this with your API call)
-    const fetchedCode = `<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>eCommerce Website</title>
-  <style>
-    * {
+    try{
+
+        const response = await fetch('http://localhost:5000/chat',{
+            method : 'POST',
+            headers : {
+                'Content-Type': 'application/json'
+            },
+            credentials: "include",
+            body: JSON.stringify({message:prompt})
+        })
+        
+        const data = await response.json();
+        console.log('Response from backend:', data);
+
+        let generatedCode = data.result.content.text;
+        console.log("This is the code that will be given to iframe",generatedCode)
+
+    }catch(error){
+        console.log('Error While fetching:',error);
+    }
+
+    const fetchedCSS = `* {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
@@ -147,7 +176,15 @@ const MainPage = () => {
       text-align: center;
       padding: 1rem;
       margin-top: 2rem;
-    }
+    }`
+    const fetchedHTML = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>eCommerce Website</title>
+  <style>
+    ${fetchedCSS}
   </style>
 </head>
 <body>
@@ -201,7 +238,10 @@ const MainPage = () => {
 </body>
 </html>
 `;
-    setGeneratedCode(fetchedCode); // Update generated code
+
+  
+    setGeneratedHTML(fetchedHTML); // Update generated code
+    setGeneratedCSS(fetchedCSS);
   };
 
   const handleMouseDown = (e, direction) => {
@@ -248,19 +288,22 @@ const MainPage = () => {
         {/* Prompt Input Section */}
         <div className="flex flex-col bg-white shadow-lg p-4 rounded-lg w-1/3">
           <h2 className="text-lg font-semibold mb-2">Enter Your Prompt</h2>
-          <textarea
-            className="border rounded-lg w-full p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
-            rows="8"
-            placeholder="Describe the website you want to generate..."
-            value={prompt}
-            onChange={(e) => setPrompt(e.target.value)} // Update prompt state
-          />
-          <button
-            onClick={handlePromptSubmit}
-            className="bg-blue-600 text-white py-2 px-4 rounded-lg mt-4 hover:bg-blue-700"
-          >
-            Generate Website
-          </button>
+            <form onSubmit={handlePromptSubmit}>
+                <textarea
+                    className="border rounded-lg w-full p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
+                    name="prompt"
+                    rows="8"
+                    placeholder="Describe the website you want to generate..."
+                    value={prompt}
+                    onChange={(e) => setPrompt(e.target.value)} // Update prompt state
+                    />
+                <button
+                    type='submit'
+                    className="bg-blue-600 text-white py-2 px-4 rounded-lg mt-4 hover:bg-blue-700"
+                    >
+                    Generate Website
+                </button>
+            </form>
         </div>
 
         {/* Generated Website Section */}
@@ -282,17 +325,333 @@ const MainPage = () => {
           <div className="relative border border-blue-700" style={{ width: iframeWidth, height: iframeHeight }}>
       {/* Iframe */}
       {showCode ? (
-    // Show Code View
-    <textarea
-      readOnly
-      value={generatedCode}
-      className="w-full h-full p-2 border border-gray-300 rounded-lg"
-      style={{ resize: "none", borderRadius: "8px" }}
-    ></textarea>
+    <div className='box-border overflow-scroll max-h-full'>
+    <nav className='flex justify-flex-start align-center w-3'>
+      <button
+      className={`py-2 px-4 rounded-md ${fileName === "html" ? "bg-blue-600 text-white" : "text-blue-600"} border-solid border-blue-600`}
+      onClick={() => setFileName("html")}
+      >
+      HTML
+      </button>
+      <button
+      className={`py-2 px-4 rounded-md ${fileName === "css" ? "bg-blue-600 text-white" : "text-blue-600"} border-solid border-blue-600`}
+      onClick={() => setFileName("css")}
+      >
+      CSS
+      </button>
+    </nav>
+    <pre
+        className="w-full h-full p-2 m-0 border border-gray-300 rounded-lg"
+        style={{
+          fontFamily: "'Courier New', Courier, monospace",
+          fontSize: "14px",
+          overflow: "scroll",
+          height:'calc(100% - 0.75rem)'
+        }}>
+        <code className={`language-${fileName === "html" ? "markup" : "css"}`}>
+          {displayCode}
+        </code>
+      </pre>
+    </div>
   ) : (
     // Show Website View
     <iframe
-      srcDoc={generatedCode}
+      srcDoc={`<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StyleHub - Fashion Store</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        /* Navigation */
+        nav {
+            background-color: #2c3e50;
+            padding: 1rem;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #3498db;
+        }
+
+        /* Hero Section */
+        .hero {
+            height: 80vh;
+            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1441984904996-e0b6ba687e04') center/cover;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-align: center;
+            margin-top: 4rem;
+        }
+
+        .hero-content h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .hero-content p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+        }
+
+        .cta-button {
+            padding: 1rem 2rem;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .cta-button:hover {
+            background-color: #2980b9;
+        }
+
+        /* Products Section */
+        .products {
+            max-width: 1200px;
+            margin: 4rem auto;
+            padding: 0 1rem;
+        }
+
+        .products h2 {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .product-card {
+            background-color: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .product-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .product-info {
+            padding: 1rem;
+        }
+
+        .product-title {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .product-price {
+            color: #2c3e50;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+
+        .add-to-cart {
+            display: block;
+            width: 100%;
+            padding: 0.8rem;
+            background-color: #3498db;
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .add-to-cart:hover {
+            background-color: #2980b9;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #2c3e50;
+            color: white;
+            padding: 2rem 1rem;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+        }
+
+        .footer-section h3 {
+            margin-bottom: 1rem;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-section ul li a {
+            color: white;
+            text-decoration: none;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .hero-content h1 {
+                font-size: 2rem;
+            }
+
+            .hero-content p {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-container">
+            <div class="logo">StyleHub</div>
+            <div class="nav-links">
+                <a href="#home">Home</a>
+                <a href="#shop">Shop</a>
+                <a href="#about">About</a>
+                <a href="#contact">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Welcome to StyleHub</h1>
+            <p>Discover the latest trends in fashion</p>
+            <a href="#shop" class="cta-button">Shop Now</a>
+        </div>
+    </section>
+
+    <section class="products">
+        <h2>Featured Products</h2>
+        <div class="product-grid">
+            <!-- Product 1 -->
+            <div class="product-card">
+                <img src="https://images.unsplash.com/photo-1523381210434-271e8be1f52b" alt="Product 1" class="product-image">
+                <div class="product-info">
+                    <h3 class="product-title">Classic T-Shirt</h3>
+                    <p class="product-price">$29.99</p>
+                    <a href="#" class="add-to-cart">Add to Cart</a>
+                </div>
+            </div>
+
+            <!-- Product 2 -->
+            <div class="product-card">
+                <img src="https://images.unsplash.com/photo-1544441893-675973e31985" alt="Product 2" class="product-image">
+                <div class="product-info">
+                    <h3 class="product-title">Denim Jacket</h3>
+                    <p class="product-price">$89.99</p>
+                    <a href="#" class="add-to-cart">Add to Cart</a>
+                </div>
+            </div>
+
+            <!-- Product 3 -->
+            <div class="product-card">
+                <img src="https://images.unsplash.com/photo-1591047139829-d91aecb6caea" alt="Product 3" class="product-image">
+                <div class="product-info">
+                    <h3 class="product-title">Sneakers</h3>
+                    <p class="product-price">$69.99</p>
+                    <a href="#" class="add-to-cart">Add to Cart</a>
+                </div>
+            </div>
+
+            <!-- Product 4 -->
+            <div class="product-card">
+                <img src="https://images.unsplash.com/photo-1585487000160-6ebcfceb0d03" alt="Product 4" class="product-image">
+                <div class="product-info">
+                    <h3 class="product-title">Summer Dress</h3>
+                    <p class="product-price">$49.99</p>
+                    <a href="#" class="add-to-cart">Add to Cart</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>About Us</h3>
+                <p>StyleHub is your destination for trendy and affordable fashion.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#shop">Shop</a></li>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Contact Us</h3>
+                <ul>
+                    <li>Email: info@stylehub.com</li>
+                    <li>Phone: (555) 123-4567</li>
+                    <li>Address: 123 Fashion St, Style City</li>
+                </ul>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>`}
       title="Generated Website"
       className="w-full h-full"
       style={{ border: "none", borderRadius: "8px" }}
