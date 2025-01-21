@@ -38,7 +38,7 @@ export const Footer = () => {
                 <div className="text-gray-300">Websites Generated</div>
             </div>
             <div className="hidden md:flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-6 justify-center md:justify-end w-full md:w-auto">
-                <Link to="/token" className="hover:text-gray-600 transition-colors duration-300">About</Link>
+                <Link to="/about" className="hover:text-gray-600 transition-colors duration-300">About</Link>
                 <Link to="/faqs" className="hover:text-gray-600 transition-colors duration-300">Licensing</Link>
                 <Link to="/roadmap" className="hover:text-gray-600 transition-colors duration-300">Contacts</Link>
                 <Link to="/privacy" className="hover:text-gray-600 transition-colors duration-300">Privacy</Link>

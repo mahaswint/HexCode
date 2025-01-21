@@ -29,10 +29,9 @@ function App() {
     return (
         <div className="flex flex-col items-center min-h-screen text-white bg-gradient-to-br from-black from-40% via-gray-900 via-60% to-indigo-900 to-90%">
             <Router>
-                <Navbar/>
+                <Navbar user={user}/>
                 <Routes>
-                    {/* <Route path="/" element={user ? <Landing user={user} /> : <Navigate to="/login" />} /> */}
-                    <Route path="/" element={<Landing />} />
+                    <Route path="/" element={<Landing/>} />
                     <Route path="/universal" element={<UniversalPage />} />
                     <Route path="/login" element={<Login />} />
                     <Route path="/profile" element={user ? <Profile user={user} /> : <Navigate to="/login" />} />
