@@ -166,8 +166,8 @@ const Profile = () => {
                                 </span>
                             ))}
                         </div>
-                        <h3 className="text-lg font-semibold mt-6">Projects</h3>
-                        <p className="text-4xl text-center font-bold mt-2">47</p>
+                        {/* <h3 className="text-lg font-semibold mt-6">Projects</h3>
+                        <p className="text-4xl text-center font-bold mt-2">47</p> */}
                     </div>
 
                     {/* Projects Section */}
