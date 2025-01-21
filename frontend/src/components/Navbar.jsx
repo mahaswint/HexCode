@@ -1,14 +1,41 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import { useUser } from "../context/userContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHexagonNodes, faUser, faBars, faArrowLeft, faSignOutAlt, faCog } from "@fortawesome/free-solid-svg-icons";
+import { faHexagonNodes, faUser, faBars, faArrowLeft, faSignOutAlt } from "@fortawesome/free-solid-svg-icons";
 import { Popover, PopoverButton, PopoverPanel } from "@headlessui/react";
 
 const Navbar = () => {
-    const [isLogged] = useState(false);
+    const { user, setUser } = useUser();
+    const navigate = useNavigate();
+    const location = useLocation();
+
+    const isUniversal = location.pathname === '/universal';
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
     const closeMobileMenu = () => setIsMobileMenuOpen(false);
+    const logout = async () => {
+        try {
+          const response = await fetch("http://localhost:5000/auth/logout", {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            credentials: "include", // Include credentials for session management
+          });
+            console.log("Logout request sent.");
+        
+          if (response.ok) {
+            console.log("Logout successful.");
+            setUser(null);
+            navigate("/");
+          } else {
+            console.error("Failed to logout");
+          }
+        } catch (error) {
+          console.error("An error occurred during logout:", error);
+        }
+    };
 
     return (
         <>
@@ -34,40 +61,39 @@ const Navbar = () => {
 
                 {/* Desktop Navigation */}
                 <div className="hidden md:flex space-x-6 flex-1 justify-center">
-                    <Link to="/modules" className="hover:text-gray-600 transition-colors duration-300">Home</Link>
-                    <Link to="/token" className="hover:text-gray-600 transition-colors duration-300">About</Link>
-                    <Link to="/faqs" className="hover:text-gray-600 transition-colors duration-300">Services</Link>
+                    <Link to="/" className="hover:text-gray-600 transition-colors duration-300">Home</Link>
+                    <Link to="/about" className="hover:text-gray-600 transition-colors duration-300">About</Link>
+                    {/* <Link to="/faqs" className="hover:text-gray-600 transition-colors duration-300">Services</Link>
                     <Link to="/roadmap" className="hover:text-gray-600 transition-colors duration-300">Contacts</Link>
-                    <Link to="/privacy" className="hover:text-gray-600 transition-colors duration-300">Privacy</Link>
+                    <Link to="/privacy" className="hover:text-gray-600 transition-colors duration-300">Privacy</Link> */}
                 </div>
 
                 <div className="hidden md:flex items-center flex-1 justify-end">
-                    {!isLogged && (
-                        <button className="border-solid rounded-md px-4 py-2 mr-2 bg-indigo-900 hover:bg-indigo-950 focus:ring-2 focus:outline-none focus:ring-indigo-300 text-white">
-                            Log-In
-                        </button>
+                    {!user && (
+                        <a href="http://localhost:5000/auth/google">
+                            <button className="border-solid rounded-md px-4 py-2 mr-2 bg-indigo-900 hover:bg-indigo-950 focus:ring-2 focus:outline-none focus:ring-indigo-300 text-white">
+                                Log-In
+                            </button>
+                        </a>
                     )}
                     
-                    {isLogged && (
+                    {user && (
                         <Popover className="relative">
                             <PopoverButton className="border-solid rounded-full mr-4 bg-gray-400 h-10 w-10 flex items-center justify-center">
-                                <FontAwesomeIcon icon={faUser} />
+                                <img src={user.imageURL} alt="User Avatar" className="h-full w-full object-cover rounded-full" />
                             </PopoverButton>
-
+                        
                             <PopoverPanel
                                 transition
-                                className="absolute right-0 mt-3 w-48 bg-white border rounded-lg shadow-lg ring-1 ring-gray-900/5 transition duration-200 ease-out"
-                            >
-                                <ul className="list-none p-2 text-black">
-                                    <li className="p-3 flex items-center gap-2 hover:bg-gray-200 cursor-pointer rounded-md">
+                                className="absolute right-0 mt-3 w-48 bg-gray-900 border rounded-lg shadow-lg ring-1 ring-gray-900/5 transition duration-200 ease-out">
+                                <ul className="list-none p-2 text-white">
+                                    <li className="p-3 flex items-center gap-2 hover:bg-gray-700 cursor-pointer rounded-md"
+                                        onClick={() => { navigate('/profile') }}>
                                         <FontAwesomeIcon icon={faUser} />
                                         Profile
                                     </li>
-                                    <li className="p-3 flex items-center gap-2 hover:bg-gray-200 cursor-pointer rounded-md">
-                                        <FontAwesomeIcon icon={faCog} />
-                                        Settings
-                                    </li>
-                                    <li className="p-3 flex items-center gap-2 hover:bg-gray-200 cursor-pointer rounded-md text-red-500">
+                                    <li className="p-3 flex items-center gap-2 hover:bg-gray-700 cursor-pointer rounded-md text-red-500 font-semibold"
+                                        onClick={logout}>
                                         <FontAwesomeIcon icon={faSignOutAlt} />
                                         Logout
                                     </li>
@@ -76,9 +102,12 @@ const Navbar = () => {
                         </Popover>
                     )}
 
-                    <button className="border-solid rounded-md px-4 py-2 bg-indigo-900 hover:bg-indigo-950 focus:ring-2 focus:outline-none focus:ring-indigo-300 text-white">
-                        Explore
-                    </button>
+                    {!isUniversal &&
+                        <button className="border-solid rounded-md px-4 py-2 bg-indigo-900 hover:bg-indigo-950 focus:ring-2 focus:outline-none focus:ring-indigo-300 text-white"
+                         onClick={()=>{navigate('/universal')}}>
+                            Explore
+                        </button>
+                    }
                 </div>
             </nav>
 
@@ -93,33 +122,49 @@ const Navbar = () => {
                             <FontAwesomeIcon icon={faArrowLeft} className="w-6 h-6 ml-48"/>
                         </button>
                         <div className="flex flex-col space-y-4 mt-6">
-                            <Link to="/modules" className="p-2 hover:bg-gray-100 rounded hover:text-gray-700 transition-all duration-300" onClick={closeMobileMenu}>Home</Link>
-                            <Link to="/token" className="p-2 hover:bg-gray-100 rounded hover:text-gray-700 transition-all duration-300" onClick={closeMobileMenu}>About</Link>
-                            <Link to="/faqs" className="p-2 hover:bg-gray-100 rounded hover:text-gray-700 transition-all duration-300" onClick={closeMobileMenu}>Services</Link>
+                            <Link to="/" className="p-2 hover:bg-gray-100 rounded hover:text-gray-700 transition-all duration-300" onClick={closeMobileMenu}>Home</Link>
+                            <Link to="/about" className="p-2 hover:bg-gray-100 rounded hover:text-gray-700 transition-all duration-300" onClick={closeMobileMenu}>About</Link>
+                            {/* <Link to="/faqs" className="p-2 hover:bg-gray-100 rounded hover:text-gray-700 transition-all duration-300" onClick={closeMobileMenu}>Services</Link>
                             <Link to="/roadmap" className="p-2 hover:bg-gray-100 rounded hover:text-gray-700 transition-all duration-300" onClick={closeMobileMenu}>Contacts</Link>
-                            <Link to="/privacy" className="p-2 hover:bg-gray-100 rounded hover:text-gray-700 transition-all duration-300" onClick={closeMobileMenu}>Privacy</Link>
+                            <Link to="/privacy" className="p-2 hover:bg-gray-100 rounded hover:text-gray-700 transition-all duration-300" onClick={closeMobileMenu}>Privacy</Link> */}
 
                             <div className="border-t pt-4">
-                                {!isLogged ? (
-                                    <button className="w-full border-solid rounded-md px-4 py-2 bg-indigo-900 hover:bg-indigo-950 text-white" onClick={closeMobileMenu}>
-                                        Log-In
-                                    </button>
+                                {!user ? (
+                                    <a href="http://localhost:5000/auth/google">
+                                        <button className="w-full border-solid rounded-md px-4 py-2 bg-indigo-900 hover:bg-indigo-950 text-white" onClick={ closeMobileMenu }>
+                                            Log-In
+                                        </button>
+                                    </a>
                                 ) : (
                                     <div>
-                                        <button className="w-full border border-gray-500 rounded-md px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 flex items-center justify-center shadow-md" onClick={closeMobileMenu}>
+                                        <button className="w-full border border-gray-500 rounded-md px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 flex items-center justify-center shadow-md" 
+                                            onClick={() => {
+                                                closeMobileMenu();
+                                                navigate('/profile');
+                                            }}>
                                             <FontAwesomeIcon icon={faUser} className="mr-2 text-gray-800" />
                                             Profile
                                         </button>
 
-                                        <button className="w-full border border-gray-500 rounded-md px-4 py-2 bg-gray-200 hover:bg-gray-300 text-red-600 flex items-center justify-center shadow-md mt-2" onClick={closeMobileMenu}>
-                                            <FontAwesomeIcon icon={faSignOutAlt} className="mr-2 text-red-600" />
+                                        <button className="w-full border border-gray-500 rounded-md px-4 py-2 bg-gray-200 hover:bg-gray-300 text-red-600 flex items-center justify-center shadow-md mt-2" 
+                                            onClick={() => {
+                                                closeMobileMenu();
+                                                logout();
+                                            }}>
+                                            <FontAwesomeIcon icon={faSignOutAlt} className="mr-2 text-red-600"/>
                                             Logout
                                         </button>
                                     </div>
                                 )}
-                                <button className="w-full border-solid rounded-md px-4 py-2 bg-indigo-900 hover:bg-indigo-950 text-white mt-2" onClick={closeMobileMenu}>
-                                    Explore
-                                </button>
+                                {!isUniversal &&
+                                    <button className="w-full border-solid rounded-md px-4 py-2 bg-indigo-900 hover:bg-indigo-950 text-white mt-2" 
+                                        onClick= {()=>{
+                                            closeMobileMenu();
+                                            navigate('/universal')
+                                        }}>
+                                        Explore
+                                    </button>
+                                }
                             </div>
                         </div>
                     </div>
