@@ -1,27 +1,33 @@
 import '../App.css';
-import React,{useState} from 'react';
+import React,{useState,useEffect} from 'react';
+import Prism from 'prismjs';
+import 'prismjs/themes/prism-okaidia.css';
 
 const MainPage = () => {
   // Define states
   const [prompt, setPrompt] = useState(""); // State for user input
-  const [generatedCode, setGeneratedCode] = useState(
+  const [generatedHTML, setGeneratedHTML] = useState(
     "<!DOCTYPE html><html><body><h1>Generated Website</h1></body></html>"
   ); // State for generated code
   const [showCode, setShowCode] = useState(false); // State for toggling between website/code views
   const [iframeWidth, setIframeWidth] = useState(1000); // State for resizable iframe width
   const [iframeHeight, setIframeHeight] = useState(750);
+  const [fileName,setFileName] = useState("html");
+  const [generatedCSS, setGeneratedCSS] = useState("");
 
+  useEffect(() => {
+    Prism.highlightAll(); // Applies syntax highlighting to all <code> elements
+  }, [generatedHTML, generatedCSS]);
+
+  let displayCode = fileName === "html" ? generatedHTML.replace(/(\s*<style>[\s\S]*?<\/style>\s*)/, '').trim() : generatedCSS;
+
+  useEffect(() => {
+    Prism.highlightAll();
+  }, [displayCode]);
   // Function to handle prompt submission
   const handlePromptSubmit = async () => {
     // Simulate fetching generated code from backend (replace this with your API call)
-    const fetchedCode = `<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>eCommerce Website</title>
-  <style>
-    * {
+    const fetchedCSS = `* {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
@@ -147,7 +153,15 @@ const MainPage = () => {
       text-align: center;
       padding: 1rem;
       margin-top: 2rem;
-    }
+    }`
+    const fetchedHTML = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>eCommerce Website</title>
+  <style>
+    ${fetchedCSS}
   </style>
 </head>
 <body>
@@ -201,7 +215,10 @@ const MainPage = () => {
 </body>
 </html>
 `;
-    setGeneratedCode(fetchedCode); // Update generated code
+
+  
+    setGeneratedHTML(fetchedHTML); // Update generated code
+    setGeneratedCSS(fetchedCSS);
   };
 
   const handleMouseDown = (e, direction) => {
@@ -248,8 +265,9 @@ const MainPage = () => {
         {/* Prompt Input Section */}
         <div className="flex flex-col bg-white shadow-lg p-4 rounded-lg w-1/3">
           <h2 className="text-lg font-semibold mb-2">Enter Your Prompt</h2>
+          
           <textarea
-            className="border rounded-lg w-full p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
+            className="border rounded-lg w-full p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
             rows="8"
             placeholder="Describe the website you want to generate..."
             value={prompt}
@@ -282,17 +300,38 @@ const MainPage = () => {
           <div className="relative border border-blue-700" style={{ width: iframeWidth, height: iframeHeight }}>
       {/* Iframe */}
       {showCode ? (
-    // Show Code View
-    <textarea
-      readOnly
-      value={generatedCode}
-      className="w-full h-full p-2 border border-gray-300 rounded-lg"
-      style={{ resize: "none", borderRadius: "8px" }}
-    ></textarea>
+    <div className='box-border overflow-scroll max-h-full'>
+    <nav className='flex justify-flex-start align-center w-3'>
+      <button
+      className={`py-2 px-4 rounded-md ${fileName === "html" ? "bg-blue-600 text-white" : "text-blue-600"} border-solid border-blue-600`}
+      onClick={() => setFileName("html")}
+      >
+      HTML
+      </button>
+      <button
+      className={`py-2 px-4 rounded-md ${fileName === "css" ? "bg-blue-600 text-white" : "text-blue-600"} border-solid border-blue-600`}
+      onClick={() => setFileName("css")}
+      >
+      CSS
+      </button>
+    </nav>
+    <pre
+        className="w-full h-full p-2 m-0 border border-gray-300 rounded-lg"
+        style={{
+          fontFamily: "'Courier New', Courier, monospace",
+          fontSize: "14px",
+          overflow: "scroll",
+          height:'calc(100% - 0.75rem)'
+        }}>
+        <code className={`language-${fileName === "html" ? "markup" : "css"}`}>
+          {displayCode}
+        </code>
+      </pre>
+    </div>
   ) : (
     // Show Website View
     <iframe
-      srcDoc={generatedCode}
+      srcDoc={generatedHTML}
       title="Generated Website"
       className="w-full h-full"
       style={{ border: "none", borderRadius: "8px" }}
