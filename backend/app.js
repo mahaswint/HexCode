@@ -51,8 +51,8 @@ app.use((req, res, next) => {
 });
 
 // API Routes
-app.use('/api/user', userRoutes);
-app.use('/api/project', projectRoutes);
+app.use('/user', userRoutes);
+app.use('/project', projectRoutes);
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGODB_URI)

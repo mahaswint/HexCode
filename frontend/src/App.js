@@ -1,40 +1,50 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { UserProvider, useUser } from "./context/userContext";  // Import UserContext
 
 import Navbar from "./components/Navbar"
-import Home from "./pages/Home"
 import Login from "./pages/Login"
+<<<<<<< HEAD
 import Profile from "./pages/profile/Profile"
 import axios from "axios";
+=======
+import Profile from "./pages/Profile"
+>>>>>>> 3f0c398d6fc410e36558770d71ed871677c806fe
 import Mypage from "./pages/Mypage";
 import MainPage from "./pages/MainPage";
+import Landing from "./pages/Landing";
+import Footer from "./components/Footer";
+import { UniversalPage } from "./pages/UniversalPage";
+
+function ProtectedRoute({ children }) {
+    const { user } = useUser();  // Get user context
+  
+    if (!user) {
+        window.location.href = "http://localhost:5000/auth/google";
+        return null;
+    }
+  
+    return children;  // Return children (Profile page) if user is authenticated
+}
 
 function App() {
-    const [user, setUser] = useState(null);
-
-    useEffect(() => {
-        const fetchUser = async () => {
-            try {
-                const res = await axios.get("http://localhost:5000/auth/login/success", { withCredentials: true });
-                setUser(res.data.user);
-            } catch (err) {
-                console.error("Not authenticated", err);
-            }
-        };
-        fetchUser();
-    }, []);
-
     return (
-        <Router>
-            <Navbar user={user} />
-            <Routes>
-                <Route path="/" element={user ? <Home user={user} /> : <Navigate to="/login" />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/profile" element={<Profile/>} />
-                <Route path="/my" element={<Mypage/>} />
-                <Route path="/main" element={<MainPage/>} />
-            </Routes>
-        </Router>
+        <UserProvider>
+            <div className="flex flex-col items-center min-h-screen text-white bg-gradient-to-br from-black from-40% via-gray-900 via-60% to-indigo-900 to-90%">
+                <Router>
+                    <Navbar/>
+                    <Routes>
+                        <Route path="/" element={<Landing/>} />
+                        <Route path="/universal" element={<UniversalPage />} />
+                        <Route path="/login" element={<Login />} />
+                        <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+                        <Route path="/my" element={<Mypage/>} />
+                        <Route path="/main" element={<MainPage/>} />
+                    </Routes>
+                    <Footer/>
+                </Router>
+            </div>
+        </UserProvider>
     );
 }
 
