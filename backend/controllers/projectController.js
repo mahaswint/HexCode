@@ -1,4 +1,5 @@
-
+const User = require('../models/userModel'); 
+const Project = require('../models/projectModel');
 exports.addProject = async (req, res) => {
     try {
         const { pid } = req.params; // The parent ID (if applicable) from request params
@@ -64,3 +65,19 @@ exports.deleteProject = async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 };
+
+exports.getAllProjects = async (req, res) => {
+    try {
+        const projects = await Project.find({ visibility: true });
+
+        if (!projects || projects.length === 0) {
+            return res.status(404).json({ error: 'No visible projects found' });
+        }
+
+        res.status(200).json(projects);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
+
