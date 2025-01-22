@@ -4,12 +4,9 @@ import { UserProvider, useUser } from "./context/userContext";  // Import UserCo
 
 import Navbar from "./components/Navbar"
 import Login from "./pages/Login"
-<<<<<<< HEAD
 import Profile from "./pages/profile/Profile"
-import axios from "axios";
-=======
-import Profile from "./pages/Profile"
->>>>>>> 3f0c398d6fc410e36558770d71ed871677c806fe
+// import axios from "axios";
+
 import Mypage from "./pages/Mypage";
 import MainPage from "./pages/MainPage";
 import Landing from "./pages/Landing";
@@ -37,7 +34,8 @@ function App() {
                         <Route path="/" element={<Landing/>} />
                         <Route path="/universal" element={<UniversalPage />} />
                         <Route path="/login" element={<Login />} />
-                        <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+                        {/* {<ProtectedRoute><Profile /></ProtectedRoute>} */}
+                        <Route path="/profile" element={<Profile />} />
                         <Route path="/my" element={<Mypage/>} />
                         <Route path="/main" element={<MainPage/>} />
                     </Routes>

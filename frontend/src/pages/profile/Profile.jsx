@@ -8,13 +8,7 @@ const projects=[
             "A sophisticated chatbot powered by machine learning, capable of natural conversations and task assistance.",
         tags: ["Python", "TensorFlow", "Flask"],
     },
-    {
-        title: "E-Commerce Platform",
-        id: "#PRJ-002",
-        description:
-            "Full-stack e-commerce solution with real-time inventory management and payment processing.",
-        tags: ["React", "Node.js", "MongoDB"],
-    },
+    
     {
         title: "Weather Dashboard",
         id: "#PRJ-003",
@@ -42,6 +36,13 @@ const projects=[
         description:
             "A sophisticated chatbot powered by machine learning, capable of natural conversations and task assistance.",
         tags: ["Python", "TensorFlow", "Flask"],
+    },
+    {
+        title: "E-Commerce Platform",
+        id: "#PRJ-002",
+        description:
+            "Full-stack e-commerce solution with real-time inventory management and payment processing.",
+        tags: ["React", "Node.js", "MongoDB"],
     },
     {
         title: "E-Commerce Platform",
@@ -144,12 +145,12 @@ const projects=[
 ]
 const Profile = () => {
     return (
-        <div className="bg-[#0f172a] text-white min-h-screen p-8">
+        <div className="bg-[#0f172a] text-white  p-8 h-full w-full">
             <div className="max-w-7xl mx-auto">
                 {/* Profile Section */}
                 <div className="flex gap-8">
                     {/* Profile Info */}
-                    <div className="bg-[#1e293b] p-6 rounded-lg fixed h-[90vh] shadow-md w-1/4 ">
+                    <div className="bg-[#1e293b] p-6 rounded-lg fixed h-[75vh] shadow-md w-1/4 ">
                         <div className="bg-gray-700 w-[20vw] h-[40vh] mx-auto rounded-lg shadow-lg flex items-center justify-center">
                             
                         </div>
