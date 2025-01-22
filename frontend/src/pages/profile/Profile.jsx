@@ -1,4 +1,5 @@
 import React from "react";
+import Projectlist from "./components/project";
 const projects=[
     {
         title: "AI Chat Assistant",
@@ -7,13 +8,7 @@ const projects=[
             "A sophisticated chatbot powered by machine learning, capable of natural conversations and task assistance.",
         tags: ["Python", "TensorFlow", "Flask"],
     },
-    {
-        title: "E-Commerce Platform",
-        id: "#PRJ-002",
-        description:
-            "Full-stack e-commerce solution with real-time inventory management and payment processing.",
-        tags: ["React", "Node.js", "MongoDB"],
-    },
+    
     {
         title: "Weather Dashboard",
         id: "#PRJ-003",
@@ -41,6 +36,13 @@ const projects=[
         description:
             "A sophisticated chatbot powered by machine learning, capable of natural conversations and task assistance.",
         tags: ["Python", "TensorFlow", "Flask"],
+    },
+    {
+        title: "E-Commerce Platform",
+        id: "#PRJ-002",
+        description:
+            "Full-stack e-commerce solution with real-time inventory management and payment processing.",
+        tags: ["React", "Node.js", "MongoDB"],
     },
     {
         title: "E-Commerce Platform",
@@ -143,12 +145,12 @@ const projects=[
 ]
 const Profile = () => {
     return (
-        <div className="bg-[#0f172a] text-white min-h-screen p-8">
+        <div className="bg-[#0f172a] text-white  p-8 h-full w-full">
             <div className="max-w-7xl mx-auto">
                 {/* Profile Section */}
                 <div className="flex gap-8">
                     {/* Profile Info */}
-                    <div className="bg-[#1e293b] p-6 rounded-lg fixed h-[90vh] shadow-md w-1/4 ">
+                    <div className="bg-[#1e293b] p-6 rounded-lg fixed h-[75vh] shadow-md w-1/4 ">
                         <div className="bg-gray-700 w-[20vw] h-[40vh] mx-auto rounded-lg shadow-lg flex items-center justify-center">
                             
                         </div>
@@ -165,34 +167,12 @@ const Profile = () => {
                                 </span>
                             ))}
                         </div>
-                        <h3 className="text-lg font-semibold mt-6">Projects</h3>
-                        <p className="text-4xl text-center font-bold mt-2">47</p>
+                        {/* <h3 className="text-lg font-semibold mt-6">Projects</h3>
+                        <p className="text-4xl text-center font-bold mt-2">47</p> */}
                     </div>
 
                     {/* Projects Section */}
-                    <div className="flex-1 grid grid-cols-2 ml-96 gap-6">
-                    <h1 className="text-4xl font-bold col-span-2 p-4 bg-[#1e293b] rounded-lg" style={{ textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)' }}>Projects : </h1>
-                        {projects.map((project, index) => (
-                            <div
-                                key={index}
-                                className="bg-[#1e293b] p-6 rounded-lg shadow-md transform transition-transform duration-300 hover:scale-105 hover:bg-[#334155]"
-                            >
-                                <h3 className="text-lg font-bold">{project.title}</h3>
-                                <p className="text-sm text-[#94a3b8]">{project.id}</p>
-                                <p className="text-sm mt-4">{project.description}</p>
-                                <div className="flex flex-wrap gap-2 mt-4">
-                                    {project.tags.map((tag, tagIndex) => (
-                                        <span
-                                            key={tagIndex}
-                                            className="bg-[#334155] text-xs px-2 py-1 rounded text-white"
-                                        >
-                                            {tag}
-                                        </span>
-                                    ))}
-                                </div>
-                            </div>
-                        ))}
-                    </div>
+                    <Projectlist projects={projects} />
                 </div>
             </div>
         </div>
