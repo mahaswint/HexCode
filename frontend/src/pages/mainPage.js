@@ -1,31 +1,46 @@
-import '../App.css';
+'use client'
+
 import React,{useState,useEffect} from 'react';
 import Prism from 'prismjs';
 import 'prismjs/themes/prism-okaidia.css';
-import Frame from 'react-frame-component';
-import { ResizableBox } from 'react-resizable';
-const MainPage = () => {
+import 'prismjs/components/prism-markup';
+import 'prismjs/components/prism-css';
+import 'prismjs/components/prism-javascript';
+import { Sandpack,
+    SandpackProvider,
+    SandpackLayout,
+    SandpackCodeEditor,
+    SandpackPreview,
+    SandpackFileExplorer,
+   } from "@codesandbox/sandpack-react";
+import { atomDark } from '@codesandbox/sandpack-themes';
+
+
+export default function MainPage({children}) {
+    const [prompt, setPrompt] = useState('');
+    const [projectStructure, setProjectStructure] = useState({
+        files: {
+            "/App.js": { code: "export default function App() { return <div>Hello World</div>; }" },
+            "/index.js": { code: `import React from 'react';\nimport ReactDOM from 'react-dom';\nimport App from './App';\n\nReactDOM.render(<App />, document.getElementById("root"));` }
+        },
+        entryFilePath: "/App.js"
+    });
   // Define states
-  const [prompt, setPrompt] = useState(""); // State for user input
-  const [generatedHTML, setGeneratedHTML] = useState(
-    "<!DOCTYPE html><html><head></head><body><h1>Generated Website</h1></body></html>"
-  ); // State for generated code
   const [showCode, setShowCode] = useState(false); // State for toggling between website/code views
-  const [fileName,setFileName] = useState("html");
-  const [generatedCSS, setGeneratedCSS] = useState("");
+  const [activeTab,setActiveTab] = useState("preview");
 
-  useEffect(() => {
-    Prism.highlightAll(); // Applies syntax highlighting to all <code> elements
-  }, [generatedHTML, generatedCSS]);
+  const highlightCode = React.useCallback(() => {
+    if (window.Prism) {
+      window.Prism.highlightAll();
+    }
+  }, []);
 
-  // let displayCode = fileName === "html" ? generatedHTML.replace(/(\s*<style>[\s\S]*?<\/style>\s*)/, '').trim() : generatedCSS;
+  // const handleClick = (type) => {
+  //   setFileName(type);
+  //   setTimeout(highlightCode, 0);
+  // };
 
-  // useEffect(() => {
-  //   Prism.highlightAll();
-  // }, [displayCode]);
-
-
-  const draggableScript = `<script>    
+  const draggableScript = `   
             const layout = document.getElementById('layout');
             let dragline = 'vertical';
     
@@ -113,17 +128,8 @@ const MainPage = () => {
             // Initialize all draggable elements
             document.querySelectorAll('.draggable').forEach(initializeDraggable);
             setupEmptyDivStyling();
-        </script>`
-  function injectCSSIntoHTML(htmlCode, cssCode) {
-    const headCloseIndex = htmlCode.toLowerCase().indexOf('</head>');
+        `
     
-    if (headCloseIndex === -1) {
-        throw new Error('No closing </head> tag found in HTML');
-    }
-    const styleTag = `<style>\n${cssCode}\n</style>\n`;
-    const newHTML = htmlCode.slice(0, headCloseIndex) + styleTag + htmlCode.slice(headCloseIndex);
-    return newHTML;
-  }
   // Function to handle prompt submission
   const handlePromptSubmit = async (e) => {
     e.preventDefault(); // Prevents the default form submission behavior
@@ -142,138 +148,118 @@ const MainPage = () => {
         
         const data = await response.json();
         console.log('Response from backend:', data);
+        const project_string = data.content[0].text;
+        const project_object = JSON.parse(project_string)
+        console.log("Object given to Sandpack:",project_object)
+        setProjectStructure({
+          files:project_object.files,
+          entryFilePath:project_object.entryFilePath
+        });
 
-        let text = data.content[0].text;
-        console.log("Raw text before parsing-",text)
+//         let text = data.content[0].text;
+//         console.log("Raw text before parsing-",text)
         
-        const matches = text.match(/{\s*"html":\s*`([\s\S]*?)`\s*,\s*"css":\s*`([\s\S]*?)`\s*}/);
+//         const matches = text.match(/{\s*"html":\s*`([\s\S]*?)`\s*,\s*"css":\s*`([\s\S]*?)`\s*}/);
 
-if (matches) {
-    const [_, htmlContent, cssContent] = matches;
+// if (matches) {
+//     const [_, htmlContent, cssContent] = matches;
     
-    // Create a new object with properly escaped content
-    var object_data = {
-        html: htmlContent,
-        css: cssContent
-    };
+//     // Create a new object with properly escaped content
+//     var object_data = {
+//         html: htmlContent,
+//         css: cssContent
+//     };
     
-    // Now you can use the processed data directly without JSON.parse
-    console.log("This is the object with html and css:", object_data);
-} else {
-    console.error("Could not extract HTML and CSS content");
-}
+//     // Now you can use the processed data directly without JSON.parse
+//     console.log("This is the object with html and css:", object_data);
+// } else {
+//     console.error("Could not extract HTML and CSS content");
+// }
         
-        setGeneratedHTML(object_data['html'])
-        setGeneratedCSS(object_data['css'])
+//         setGeneratedHTML(object_data['html'])
+//         setGeneratedCSS(object_data['css'])
+//         setGeneratedJS(object_data['js'])
         
-        console.log("This is the code that will be given to iframe",generatedHTML)
-
     }catch(error){
         console.log('Error While fetching:',error);
     }
 
   };
-  const displayCode = injectCSSIntoHTML(generatedHTML,generatedCSS)+draggableScript;
-  console.log(displayCode)
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col items-center">
-      {/* Header */}
-      <header className="w-full bg-blue-600 text-white py-4 text-center text-2xl font-bold">
-        Text-to-Website Generator
-      </header>
-
-      {/* Main Content */}
-      <div className="flex flex-grow w-full max-w-full p-4 space-x-4">
-        {/* Prompt Input Section */}
-        <div className="flex flex-col bg-white shadow-lg p-4 rounded-lg w-1/3">
-          <h2 className="text-lg font-semibold mb-2">Enter Your Prompt</h2>
-            <form onSubmit={handlePromptSubmit}>
-                <textarea
-                    className="border rounded-lg w-full p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
-                    name="prompt"
-                    rows="8"
-                    placeholder="Describe the website you want to generate..."
-                    value={prompt}
-                    onChange={(e) => setPrompt(e.target.value)} // Update prompt state
-                    />
-                <button
-                    type='submit'
-                    className="bg-blue-600 text-white py-2 px-4 rounded-lg mt-4 hover:bg-blue-700"
-                    >
-                    Generate Website
-                </button>
-            </form>
-        </div>
-
-        {/* Generated Website Section */}
-        <div className="flex-grow bg-white shadow-lg rounded-lg p-4 relative">
-          <nav className="flex space-x-4 border-b pb-2 mb-4">
-            <button
-              className={`py-2 px-4 rounded-md ${!showCode ? "bg-blue-600 text-white" : "text-blue-600"} border-solid border-blue-600`}
-              onClick={() => setShowCode(false)}>
-              View Website
-            </button>
-            <button
-              className={`py-2 px-4 rounded-md ${showCode ? "bg-blue-600 text-white" : "text-blue-600"} border-solid border-blue-600`}
-              onClick={() => setShowCode(true)}>
-              View Code
-            </button>
-          </nav>
-
-          {/* Content: Website or Code */}
-          <div className="relative" >
-      {/* Iframe */}
-      {showCode ? (
-    <div className='box-border overflow-scroll max-h-full'>
-    <nav className='flex justify-flex-start align-center w-3'>
+    <div className="flex h-screen">
+      <div className="w-1/2 p-4 bg-gray-100">
+        <textarea
+          className="w-full h-64 p-2 border rounded text-black"
+          value={prompt}
+          onChange={(e) => setPrompt(e.target.value)}
+          placeholder="Enter website description..."
+        />
+        <button 
+          className="mt-4 px-4 py-2 bg-blue-500 text-white rounded"
+          onClick={handlePromptSubmit}
+        >
+          Generate Website
+        </button>
+      </div>
+      <div className="w-1/2">
+      <nav className='flex justify-flex-start align-center w-3'>
       <button
-      className={`py-2 px-4 rounded-md ${fileName === "html" ? "bg-blue-600 text-white" : "text-blue-600"} border-solid border-blue-600`}
-      onClick={() => setFileName("html")}
+      className={`py-2 px-4 rounded-md ${activeTab === "preview" ? "bg-blue-600 text-white" : "text-blue-600"} border-solid border-blue-600`}
+      onClick={() => setActiveTab("preview")}
       >
-      HTML
+      Preview
       </button>
       <button
-      className={`py-2 px-4 rounded-md ${fileName === "css" ? "bg-blue-600 text-white" : "text-blue-600"} border-solid border-blue-600`}
-      onClick={() => setFileName("css")}
+      className={`py-2 px-4 rounded-md ${activeTab === "code" ? "bg-blue-600 text-white" : "text-blue-600"} border-solid border-blue-600`}
+      onClick={() => setActiveTab("code")}
       >
-      CSS
+      Code
       </button>
     </nav>
-    <pre
-        className="w-full h-full p-2 m-0 border border-gray-300 rounded-lg"
-        style={{
-          fontFamily: "'Courier New', Courier, monospace",
-          fontSize: "14px",
-          overflow: "scroll",
-          height:'calc(100% - 0.75rem)'
-        }}>
-        <code className={`language-${fileName === "html" ? "markup" : "css"}`}>
-          {fileName === "html"?generatedHTML:generatedCSS}
-        </code>
-      </pre>
-    </div>
-  ) : (
-    <ResizableBox
-    className='relative w-full h-full border-0'
-    width={1200}
-    height={700}
-    minConstraints={[300, 200]}
-    maxConstraints={[1200, 800]}
-    resizeHandles={["se"]}
-    handle={
-      <div className="absolute w-5 h-5 bg-gray-300 bottom-0 right-0 cursor-se-resize z-10"></div>
-    }
-    >
-    <Frame
-      initialContent={displayCode}
-      className='w-full h-full border-0'
-    />
-    </ResizableBox>
-  )}
-    </div>
-        </div>
+        {projectStructure && (
+          <SandpackProvider
+            template="react"
+            theme={atomDark}
+            files={projectStructure.files}
+            options={{
+              showNavigator: true,
+              showLineNumbers: true,
+              closableTabs: true,
+              activeFile: projectStructure.entryFilePath
+            }}
+            customSetup={{
+              dependencies:{"axios": "^1.7.9",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "cra-template": "1.2.0",
+    "dotenv": "^16.4.7",
+    "lucide-react": "^0.471.1",
+    "prism": "^4.1.2",
+    "prismjs": "^1.29.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-draggable": "^4.4.6",
+    "react-frame-component": "^5.2.7",
+    "react-grid-layout": "^1.5.0",
+    "react-resizable": "^3.0.5",
+    "react-router-dom": "^7.1.2",
+    "react-scripts": "5.0.1"},
+              main:"./src/App"
+  }}
+          >
+            <SandpackLayout>
+                {activeTab === "preview"?
+                <>
+                <SandpackPreview style={{height:'600px'}}/>
+                </>:
+                <>
+                <SandpackFileExplorer style={{height:'600px'}}/>
+                <SandpackCodeEditor style={{height:'600px'}}/>
+                </>}
+            </SandpackLayout>
+          </SandpackProvider>
+        )}
       </div>
     </div>
   );
 };
-export default MainPage;
