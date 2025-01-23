@@ -8,7 +8,7 @@ import Profile from "./pages/profile/Profile"
 // import axios from "axios";
 
 import Mypage from "./pages/Mypage";
-import MainPage from "./pages/MainPage";
+import MainPage from "./pages/mainPage";
 import Landing from "./pages/Landing";
 import Footer from "./components/Footer";
 import { UniversalPage } from "./pages/UniversalPage";
