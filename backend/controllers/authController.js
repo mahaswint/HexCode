@@ -1,11 +1,11 @@
-export function LoginFailed(req, res) {
+exports.LoginFailed = (req, res)=> {
   return res.status(401).json({
     error: true,
     message: "Login Failure",
   });
 }
 
-export function LoginSuccess(req, res) {
+exports.LoginSuccess = (req, res)=> {
   if (req.isAuthenticated()) {
     return res.status(200).json({
       isAuthenticated: true,
@@ -20,7 +20,7 @@ export function LoginSuccess(req, res) {
   }
 }
 
-export function LogOut(req, res) {
+exports.LogOut = (req, res)=> {
   console.log("Logout route hit");
 
   req.logout((err) => {

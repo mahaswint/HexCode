@@ -11,6 +11,8 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.33.1",
+    "body-parser": "^1.20.3",
     "cookie-parser": "^1.4.7",
     "cookie-session": "^2.1.0",
     "cors": "^2.8.5",
