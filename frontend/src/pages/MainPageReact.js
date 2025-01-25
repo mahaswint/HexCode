@@ -16,7 +16,7 @@ import { Sandpack,
 import { atomDark } from '@codesandbox/sandpack-themes';
 
 
-export default function MainPage({children}) {
+export default function MainPageReact({children}) {
     const [prompt, setPrompt] = useState('');
     const [projectStructure, setProjectStructure] = useState({
         files: {
@@ -143,7 +143,10 @@ export default function MainPage({children}) {
                 'Content-Type': 'application/json'
             },
             credentials: "include",
-            body: JSON.stringify({message:prompt})
+            body: JSON.stringify({
+              message: prompt,
+              route: window.location.pathname  // Add route to the body
+          })
         })
         
         const data = await response.json();
@@ -186,7 +189,7 @@ export default function MainPage({children}) {
 
   };
   return (
-    <div className="flex h-screen">
+    <div className="flex h-screen w-screen">
       <div className="w-1/2 p-4 bg-gray-100">
         <textarea
           className="w-full h-64 p-2 border rounded text-black"

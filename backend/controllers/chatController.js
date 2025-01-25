@@ -10,9 +10,13 @@ exports.chat = async (req,res)=> {
   console.log(req.user);
   if(req.isAuthenticated()){
     const userPrompt = req.body.message;
-    console.log('Received Prompt:',userPrompt);
+    const frontendRoute = req.body.route;
+    console.log('Received Prompt from user:',userPrompt);
+    console.log('frontend path:',frontendRoute)
 
-    const defaultPrompt = `
+    let defaultPrompt;
+    if(frontendRoute == '/main/react'){
+      defaultPrompt = `
     You are an expert web developer tasked with generating a complete, production-ready React.js project from a user's description. Follow these precise guidelines:
 
     1. Project Generation Requirements:
@@ -55,9 +59,20 @@ exports.chat = async (req,res)=> {
     Do not include any text excluding the code , that is the json object.
     All elements must have a draggable class and vertical or horizontal class.DO NOT GIVE ME A SCRIPT FOR draggable class as i am implementing my own script for drag and drop which will use the draggable class. 
     `;
+    }
+    else if(frontendRoute === '/main/plain'){
+      defaultPrompt = `
+      Your task is to create a one-page website based on the given specifications, delivered as an HTML file , CSS file and javascript file. The website should incorporate a variety of engaging and interactive design features, such as drop-down menus, dynamic text and content, clickable buttons, and more. Ensure that the design is visually appealing, responsive, and user-friendly. The HTML, CSS, and JavaScript code should be well-structured, efficiently organized, and properly commented for readability and maintainability.Do not include any text excluding the code.
+    All elements must have a draggable class and vertical or horizontal class.DO NOT GIVE ME A SCRIPT FOR draggable class as i am implementing my own script for drag and drop which will use the draggable class.Inside body there should be a div with id 'layout' as root element and what ever html you are generated for the page should be placed inside this layout div
+    Generate a JSON object with two keys: 'html' containing the HTML code and 'css' containing the CSS code and 'js' containing the javascript code for a simple website. Do not include additional text outside the JSON object.
+    `
+    }
+    else{
+      return res.status(400).json({ error: "Invalid route" });
+    }
 
     const prompt = `${defaultPrompt}\n\n${userPrompt}`;
-
+    console.log(prompt);
     try {
       const stream = client.messages
         .stream({
