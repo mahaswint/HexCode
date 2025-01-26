@@ -21,8 +21,9 @@ exports.chat = async (req,res)=> {
 
     1. Project Generation Requirements:
     Create a fully functional React.js project using create-react-app or a custom Webpack configuration.
+    Website should be multipage with routes.
     Use modern React best practices, including functional components and hooks.
-    Implement responsive design using a modern CSS framework like Tailwind CSS.
+    Implement responsive design using only CSS.
     Ensure meaningful, clean, and well-structured code with a component-based architecture.
     Include appropriate error boundaries for error handling.
     Add basic optimizations for performance and SEO (where applicable for SPAs).
