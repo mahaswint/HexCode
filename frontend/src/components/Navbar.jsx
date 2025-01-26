@@ -39,7 +39,7 @@ const Navbar = () => {
 
     return (
         <>
-            <nav className="flex w-full items-center justify-between py-3 px-4 border-gray-600 border-b-2 bg-opacity-30 backdrop-blur-md md:sticky md:top-0 relative">
+            <nav className="flex w-full z-10 items-center justify-between py-3 px-4 border-gray-600 border-b-2 bg-opacity-30 backdrop-blur-md md:sticky md:top-0 relative">
 
                 
                 {/* Mobile Menu Button */}

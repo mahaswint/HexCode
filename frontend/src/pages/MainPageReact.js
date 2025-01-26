@@ -19,12 +19,70 @@ import { atomDark } from '@codesandbox/sandpack-themes';
 export default function MainPageReact({children}) {
     const [prompt, setPrompt] = useState('');
     const [projectStructure, setProjectStructure] = useState({
-        files: {
-            "/App.js": { code: "export default function App() { return <div>Hello World</div>; }" },
-            "/index.js": { code: `import React from 'react';\nimport ReactDOM from 'react-dom';\nimport App from './App';\n\nReactDOM.render(<App />, document.getElementById("root"));` }
-        },
-        entryFilePath: "/App.js"
-    });
+      "projectTitle": "React E-commerce Website",
+      "explanation": "A modern, responsive e-commerce website with product listing, cart functionality, and checkout process",
+      "entryFilePath": "/App.js",
+      "files": {
+          "/App.js": {
+              "code": "import React from 'react';\nimport { BrowserRouter as Router, Routes, Route } from 'react-router-dom';\nimport Navbar from './components/Navbar';\nimport Home from './pages/Home';\nimport Products from './pages/Products';\nimport Cart from './pages/Cart';\nimport ProductDetail from './pages/ProductDetail';\nimport './css/App.css';\n\nfunction App() {\n  return (\n    <Router>\n      <div className='App'>\n        <Navbar />\n        <Routes>\n          <Route path='/' element={<Home />} />\n          <Route path='/products' element={<Products />} />\n          <Route path='/product/:id' element={<ProductDetail />} />\n          <Route path='/cart' element={<Cart />} />\n        </Routes>\n      </div>\n    </Router>\n  );\n}\n\nexport default App;"
+          },
+          "/components/Navbar.js": {
+              "code": "import React from 'react';\nimport { Link } from 'react-router-dom';\nimport '../css/Navbar.css';\n\nconst Navbar = () => {\n  return (\n    <nav className='navbar draggable horizontal'>\n      <div className='nav-brand draggable'>\n        <Link to='/'>EShop</Link>\n      </div>\n      <div className='nav-links draggable horizontal'>\n        <Link to='/' className='nav-link draggable'>Home</Link>\n        <Link to='/products' className='nav-link draggable'>Products</Link>\n        <Link to='/cart' className='nav-link draggable'>Cart</Link>\n      </div>\n    </nav>\n  );\n};\n\nexport default Navbar;"
+          },
+          "/components/ProductCard.js": {
+              "code": "import React from 'react';\nimport { Link } from 'react-router-dom';\nimport '../css/ProductCard.css';\n\nconst ProductCard = ({ product }) => {\n  return (\n    <div className='product-card draggable vertical'>\n      <img src={product.image} alt={product.name} className='draggable'/>\n      <h3 className='draggable'>{product.name}</h3>\n      <p className='price draggable'>${product.price}</p>\n      <Link to={`/product/${product.id}`} className='view-btn draggable'>\n        View Details\n      </Link>\n    </div>\n  );\n};\n\nexport default ProductCard;"
+          },
+          "/pages/Home.js": {
+              "code": "import React from 'react';\nimport { Link } from 'react-router-dom';\nimport '../css/Home.css';\n\nconst Home = () => {\n  return (\n    <div className='home draggable vertical'>\n      <div className='hero draggable vertical'>\n        <h1 className='draggable'>Welcome to EShop</h1>\n        <p className='draggable'>Discover amazing products at great prices</p>\n        <Link to='/products' className='shop-now-btn draggable'>\n          Shop Now\n        </Link>\n      </div>\n      <div className='features draggable horizontal'>\n        <div className='feature draggable vertical'>\n          <h3 className='draggable'>Free Shipping</h3>\n          <p className='draggable'>On orders over $50</p>\n        </div>\n        <div className='feature draggable vertical'>\n          <h3 className='draggable'>24/7 Support</h3>\n          <p className='draggable'>Get help anytime</p>\n        </div>\n        <div className='feature draggable vertical'>\n          <h3 className='draggable'>Easy Returns</h3>\n          <p className='draggable'>30-day return policy</p>\n        </div>\n      </div>\n    </div>\n  );\n};\n\nexport default Home;"
+          },
+          "/pages/Products.js": {
+              "code": "import React from 'react';\nimport ProductCard from '../components/ProductCard';\nimport '../css/Products.css';\n\nconst Products = () => {\n  const products = [\n    { id: 1, name: 'Smartphone', price: 699.99, image: 'https://via.placeholder.com/200' },\n    { id: 2, name: 'Laptop', price: 999.99, image: 'https://via.placeholder.com/200' },\n    { id: 3, name: 'Headphones', price: 149.99, image: 'https://via.placeholder.com/200' },\n    { id: 4, name: 'Smartwatch', price: 299.99, image: 'https://via.placeholder.com/200' }\n  ];\n\n  return (\n    <div className='products-page draggable vertical'>\n      <h2 className='draggable'>Our Products</h2>\n      <div className='products-grid draggable horizontal'>\n        {products.map(product => (\n          <ProductCard key={product.id} product={product} />\n        ))}\n      </div>\n    </div>\n  );\n};\n\nexport default Products;"
+          },
+          "/pages/ProductDetail.js": {
+              "code": "import React from 'react';\nimport { useParams } from 'react-router-dom';\nimport '../css/ProductDetail.css';\n\nconst ProductDetail = () => {\n  const { id } = useParams();\n\n  const product = {\n    id: 1,\n    name: 'Smartphone',\n    price: 699.99,\n    image: 'https://via.placeholder.com/400',\n    description: 'A high-end smartphone with amazing features.'\n  };\n\n  return (\n    <div className='product-detail draggable vertical'>\n      <div className='product-info draggable horizontal'>\n        <img src={product.image} alt={product.name} className='draggable'/>\n        <div className='info-text draggable vertical'>\n          <h2 className='draggable'>{product.name}</h2>\n          <p className='price draggable'>${product.price}</p>\n          <p className='description draggable'>{product.description}</p>\n          <button className='add-to-cart-btn draggable'>Add to Cart</button>\n        </div>\n      </div>\n    </div>\n  );\n};\n\nexport default ProductDetail;"
+          },
+          "/pages/Cart.js": {
+              "code": "import React from 'react';\nimport '../css/Cart.css';\n\nconst Cart = () => {\n  const cartItems = [\n    { id: 1, name: 'Smartphone', price: 699.99, quantity: 1 }\n  ];\n\n  return (\n    <div className='cart-page draggable vertical'>\n      <h2 className='draggable'>Shopping Cart</h2>\n      <div className='cart-items draggable vertical'>\n        {cartItems.map(item => (\n          <div key={item.id} className='cart-item draggable horizontal'>\n            <h3 className='draggable'>{item.name}</h3>\n            <p className='draggable'>${item.price}</p>\n            <input type='number' value={item.quantity} min='1' className='draggable'/>\n            <button className='remove-btn draggable'>Remove</button>\n          </div>\n        ))}\n      </div>\n      <div className='cart-total draggable horizontal'>\n        <h3 className='draggable'>Total: $699.99</h3>\n        <button className='checkout-btn draggable'>Checkout</button>\n      </div>\n    </div>\n  );\n};\n\nexport default Cart;"
+          },
+          "/css/App.css": {
+              "code": "* {\n  margin: 0;\n  padding: 0;\n  box-sizing: border-box;\n}\n\n.App {\n  font-family: Arial, sans-serif;\n  min-height: 100vh;\n  background-color: #f5f5f5;\n}\n\na {\n  text-decoration: none;\n  color: inherit;\n}"
+          },
+          "/css/Navbar.css": {
+              "code": ".navbar {\n  background-color: #2c3e50;\n  padding: 1rem 2rem;\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  color: white;\n}\n\n.nav-brand a {\n  font-size: 1.5rem;\n  font-weight: bold;\n  color: #ecf0f1;\n}\n\n.nav-links {\n  display: flex;\n  gap: 2rem;\n}\n\n.nav-link {\n  color: #ecf0f1;\n  transition: color 0.3s;\n}\n\n.nav-link:hover {\n  color: #3498db;\n}\n\n@media (max-width: 768px) {\n  .navbar {\n    flex-direction: column;\n    gap: 1rem;\n    text-align: center;\n  }\n\n  .nav-links {\n    flex-direction: column;\n    gap: 1rem;\n  }\n}"
+          },
+          "/css/Home.css": {
+              "code": ".home {\n  min-height: 90vh;\n}\n\n.hero {\n  background: linear-gradient(135deg, #2c3e50, #3498db);\n  color: white;\n  padding: 4rem 2rem;\n  text-align: center;\n}\n\n.hero h1 {\n  font-size: 2.5rem;\n  margin-bottom: 1rem;\n}\n\n.hero p {\n  font-size: 1.2rem;\n  margin-bottom: 2rem;\n}\n\n.shop-now-btn {\n  background-color: #e74c3c;\n  color: white;\n  padding: 1rem 2rem;\n  border-radius: 5px;\n  display: inline-block;\n  transition: background-color 0.3s;\n}\n\n.shop-now-btn:hover {\n  background-color: #c0392b;\n}\n\n.features {\n  display: flex;\n  justify-content: space-around;\n  padding: 4rem 2rem;\n  background-color: white;\n}\n\n.feature {\n  text-align: center;\n  padding: 1rem;\n}\n\n.feature h3 {\n  color: #2c3e50;\n  margin-bottom: 0.5rem;\n}\n\n@media (max-width: 768px) {\n  .features {\n    flex-direction: column;\n    gap: 2rem;\n  }\n}"
+          },
+          "/css/Products.css": {
+              "code": ".products-page {\n  padding: 2rem;\n}\n\n.products-page h2 {\n  text-align: center;\n  color: #2c3e50;\n  margin-bottom: 2rem;\n}\n\n.products-grid {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));\n  gap: 2rem;\n  padding: 1rem;\n}\n\n@media (max-width: 768px) {\n  .products-grid {\n    grid-template-columns: 1fr;\n  }\n}"
+          },
+          "/css/ProductCard.css": {
+              "code": ".product-card {\n  background-color: white;\n  border-radius: 8px;\n  padding: 1rem;\n  box-shadow: 0 2px 5px rgba(0,0,0,0.1);\n  text-align: center;\n  transition: transform 0.3s;\n}\n\n.product-card:hover {\n  transform: translateY(-5px);\n}\n\n.product-card img {\n  width: 100%;\n  height: auto;\n  border-radius: 4px;\n  margin-bottom: 1rem;\n}\n\n.product-card h3 {\n  color: #2c3e50;\n  margin-bottom: 0.5rem;\n}\n\n.price {\n  color: #e74c3c;\n  font-weight: bold;\n  margin-bottom: 1rem;\n}\n\n.view-btn {\n  background-color: #3498db;\n  color: white;\n  padding: 0.5rem 1rem;\n  border-radius: 4px;\n  display: inline-block;\n  transition: background-color 0.3s;\n}\n\n.view-btn:hover {\n  background-color: #2980b9;\n}"
+          },
+          "/css/ProductDetail.css": {
+              "code": ".product-detail {\n  padding: 2rem;\n}\n\n.product-info {\n  display: flex;\n  gap: 2rem;\n  max-width: 1200px;\n  margin: 0 auto;\n  background-color: white;\n  padding: 2rem;\n  border-radius: 8px;\n  box-shadow: 0 2px 5px rgba(0,0,0,0.1);\n}\n\n.product-info img {\n  width: 50%;\n  height: auto;\n  border-radius: 8px;\n}\n\n.info-text {\n  flex: 1;\n}\n\n.info-text h2 {\n  color: #2c3e50;\n  margin-bottom: 1rem;\n}\n\n.info-text .price {\n  color: #e74c3c;\n  font-size: 1.5rem;\n  margin-bottom: 1rem;\n}\n\n.description {\n  color: #7f8c8d;\n  margin-bottom: 2rem;\n}\n\n.add-to-cart-btn {\n  background-color: #2ecc71;\n  color: white;\n  padding: 1rem 2rem;\n  border: none;\n  border-radius: 4px;\n  cursor: pointer;\n  transition: background-color 0.3s;\n}\n\n.add-to-cart-btn:hover {\n  background-color: #27ae60;\n}\n\n@media (max-width: 768px) {\n  .product-info {\n    flex-direction: column;\n  }\n\n  .product-info img {\n    width: 100%;\n  }\n}"
+          },
+          "/css/Cart.css": {
+              "code": ".cart-page {\n  padding: 2rem;\n  max-width: 1200px;\n  margin: 0 auto;\n}\n\n.cart-page h2 {\n  color: #2c3e50;\n  margin-bottom: 2rem;\n  text-align: center;\n}\n\n.cart-items {\n  background-color: white;\n  border-radius: 8px;\n  padding: 1rem;\n  box-shadow: 0 2px 5px rgba(0,0,0,0.1);\n}\n\n.cart-item {\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  padding: 1rem;\n  border-bottom: 1px solid #ecf0f1;\n}\n\n.cart-item:last-child {\n  border-bottom: none;\n}\n\n.cart-item input {\n  width: 60px;\n  padding: 0.5rem;\n  border: 1px solid #bdc3c7;\n  border-radius: 4px;\n}\n\n.remove-btn {\n  background-color: #e74c3c;\n  color: white;\n  border: none;\n  padding: 0.5rem 1rem;\n  border-radius: 4px;\n  cursor: pointer;\n  transition: background-color 0.3s;\n}\n\n.remove-btn:hover {\n  background-color: #c0392b;\n}\n\n.cart-total {\n  margin-top: 2rem;\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  padding: 1rem;\n  background-color: white;\n  border-radius: 8px;\n  box-shadow: 0 2px 5px rgba(0,0,0,0.1);\n}\n\n.checkout-btn {\n  background-color: #2ecc71;\n  color: white;\n  border: none;\n  padding: 1rem 2rem;\n  border-radius: 4px;\n  cursor: pointer;\n  transition: background-color 0.3s;\n}\n\n.checkout-btn:hover {\n  background-color: #27ae60;\n}\n\n@media (max-width: 768px) {\n  .cart-item {\n    flex-direction: column;\n    gap: 1rem;\n    text-align: center;\n  }\n\n  .cart-total {\n    flex-direction: column;\n    gap: 1rem;\n    text-align: center;\n  }\n}"
+          }
+      },
+      "generatedFiles": [
+          "/App.js",
+          "/components/Navbar.js",
+          "/components/ProductCard.js",
+          "/pages/Home.js",
+          "/pages/Products.js",
+          "/pages/ProductDetail.js",
+          "/pages/Cart.js",
+          "/css/App.css",
+          "/css/Navbar.css",
+          "/css/Home.css",
+          "/css/Products.css",
+          "/css/ProductCard.css",
+          "/css/ProductDetail.css",
+          "/css/Cart.css"
+      ]
+  });
   // Define states
   const [showCode, setShowCode] = useState(false); // State for toggling between website/code views
   const [activeTab,setActiveTab] = useState("preview");
@@ -154,10 +212,8 @@ export default function MainPageReact({children}) {
         const project_string = data.content[0].text;
         const project_object = JSON.parse(project_string)
         console.log("Object given to Sandpack:",project_object)
-        setProjectStructure({
-          files:project_object.files,
-          entryFilePath:project_object.entryFilePath
-        });
+        console.log("Entry file path:",project_object.entryFilePath)
+        setProjectStructure(project_object);
 
 //         let text = data.content[0].text;
 //         console.log("Raw text before parsing-",text)
@@ -247,13 +303,13 @@ export default function MainPageReact({children}) {
     "react-resizable": "^3.0.5",
     "react-router-dom": "^7.1.2",
     "react-scripts": "5.0.1"},
-              main:"./src/App"
+              main:projectStructure.entryFilePath
   }}
           >
             <SandpackLayout>
                 {activeTab === "preview"?
                 <>
-                <SandpackPreview style={{height:'600px'}}/>
+                <SandpackPreview style={{height:'600px'}} showNavigator={true}/>
                 </>:
                 <>
                 <SandpackFileExplorer style={{height:'600px'}}/>

@@ -34,10 +34,11 @@ exports.chat = async (req,res)=> {
     Values must contain complete file contents.
     Include all necessary project files, excluding node_modules and .git directories.
     Maintain a standard React.js project structure.
+    entryFilePath must contain path to file App.js, the root app which has all routes.
+    Do not put App.js and other code files in src folder. Keep them in root folder itself.
+    Give the css files for all pages in css folder.Import them from that folder.
     
     3. Structural Details:
-    Use TypeScript (optional, but recommended).
-    Implement Tailwind CSS for styling.
     Include at least one reusable component, such as a Button or Card.
     Add basic routing configuration using React Router.
     Provide a clean and maintainable project setup.
