@@ -17,7 +17,7 @@ exports.addProject = async (req, res) => {
             owner,
             visibility,
             messages,
-            parentId: pid // Add the parentId from the request params
+            // Add the parentId from the request params
         });
 
         // Save the new project to the database
@@ -68,6 +68,7 @@ exports.deleteProject = async (req, res) => {
 
 exports.getAllProjects = async (req, res) => {
     try {
+        console.log("hit aagaya ");
         const projects = await Project.find({ visibility: true });
 
         if (!projects || projects.length === 0) {
@@ -80,4 +81,7 @@ exports.getAllProjects = async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 };
+
+
+
 

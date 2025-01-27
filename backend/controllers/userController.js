@@ -31,6 +31,7 @@ exports.getMyData = async (req, res) => {
   
     if (req.isAuthenticated()) {
       try {
+       
         const userId = req.user.id; // Access user ID
         const user = await User.findById(userId).select('-password').populate('projects', 'name visibility');
         
@@ -65,7 +66,9 @@ exports.updateMyData = async (req, res) => {
 // Get logged-in user's projects
 exports.getMyProjects = async (req, res) => {
     try {
-        const userId = req.user.id; 
+        
+        const userId = req.user._id;
+       
         const projects = await Project.find({
             $or: [
                 { owner: userId },
