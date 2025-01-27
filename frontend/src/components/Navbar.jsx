@@ -39,7 +39,7 @@ const Navbar = () => {
 
     return (
         <>
-            <nav className="flex w-full z-10 items-center justify-between py-3 px-4 border-gray-600 border-b-2 bg-opacity-30 backdrop-blur-md md:sticky md:top-0 relative">
+            <nav className="flex w-full z-20 items-center justify-between py-3 px-4 border-gray-600 border-b-2 bg-opacity-30 backdrop-blur-md md:sticky md:top-0 relative">
 
                 
                 {/* Mobile Menu Button */}
@@ -54,7 +54,7 @@ const Navbar = () => {
                     <Link to="/">
                         <FontAwesomeIcon 
                             icon={faHexagonNodes} 
-                            className="hidden md:w-10 md:h-10 md:inline text-indigo-900"
+                            className="hidden md:w-10 md:h-10 md:inline text-indigo-500"
                         />
                     </Link>
                 </div>
@@ -71,7 +71,7 @@ const Navbar = () => {
                 <div className="hidden md:flex items-center flex-1 justify-end">
                     {!user && (
                         <a href="http://localhost:5000/auth/google">
-                            <button className="border-solid rounded-md px-4 py-2 mr-2 bg-indigo-900 hover:bg-indigo-950 focus:ring-2 focus:outline-none focus:ring-indigo-300 text-white">
+                            <button className="border-solid rounded-md px-4 py-2 mr-2 bg-indigo-500 hover:bg-indigo-600 focus:ring-2 focus:outline-none focus:ring-indigo-300 text-white">
                                 Log-In
                             </button>
                         </a>
@@ -103,7 +103,7 @@ const Navbar = () => {
                     )}
 
                     {!isUniversal &&
-                        <button className="border-solid rounded-md px-4 py-2 bg-indigo-900 hover:bg-indigo-950 focus:ring-2 focus:outline-none focus:ring-indigo-300 text-white"
+                        <button className="border-solid rounded-md px-4 py-2 bg-indigo-500 hover:bg-indigo-600 focus:ring-2 focus:outline-none focus:ring-indigo-300 text-white"
                          onClick={()=>{navigate('/universal')}}>
                             Explore
                         </button>
@@ -131,7 +131,7 @@ const Navbar = () => {
                             <div className="border-t pt-4">
                                 {!user ? (
                                     <a href="http://localhost:5000/auth/google">
-                                        <button className="w-full border-solid rounded-md px-4 py-2 bg-indigo-900 hover:bg-indigo-950 text-white" onClick={ closeMobileMenu }>
+                                        <button className="w-full border-solid rounded-md px-4 py-2 bg-indigo-500 hover:bg-indigo-600 text-white" onClick={ closeMobileMenu }>
                                             Log-In
                                         </button>
                                     </a>
@@ -157,7 +157,7 @@ const Navbar = () => {
                                     </div>
                                 )}
                                 {!isUniversal &&
-                                    <button className="w-full border-solid rounded-md px-4 py-2 bg-indigo-900 hover:bg-indigo-950 text-white mt-2" 
+                                    <button className="w-full border-solid rounded-md px-4 py-2 bg-indigo-500 hover:bg-indigo-600 text-white mt-2" 
                                         onClick= {()=>{
                                             closeMobileMenu();
                                             navigate('/universal')

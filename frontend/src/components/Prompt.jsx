@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { 
-    faHexagonNodes, 
+    faRobot, 
     faListCheck, 
     faFilePen, 
     faSuitcase, 
@@ -9,48 +9,176 @@ import {
     faMicrophone 
 } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
+import Swal from 'sweetalert2';
+import axios from 'axios';
 
 const Prompt = () => {
     const [prompt, setPrompt] = useState("");
 
+    const handleCreateProject = async () => {
+        // Only trigger if there's text in the prompt
+        if (!prompt.trim()) return;
+
+        const { value: formValues } = await Swal.fire({
+            title: 'Create Project',
+            html: `
+                <div class="w-full max-w-xs md:max-w-md mx-auto space-y-4">
+                    <div class="flex flex-col space-y-2">
+                        <label class="text-left tracking-wide text-sm font-medium text-slate-200" for="projectName">
+                            Project Name:
+                        </label>
+                        <input
+                            id="projectName"
+                            class="w-full px-3 py-2 bg-slate-600 text-gray-50 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            placeholder="Enter project name"
+                        />
+                    </div>
+                    
+                    <div class="flex flex-col space-y-2">
+                        <label class="text-left tracking-wide text-sm font-medium text-slate-200" for="description">
+                            Description:
+                        </label>
+                        <input
+                            id="description"
+                            class="w-full px-3 py-2 bg-slate-600 text-gray-50 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            placeholder="Enter project description"
+                        />
+                    </div>
+                    
+                    <div class="flex flex-col space-y-2">
+                        <label class="text-left tracking-wide text-sm font-medium text-slate-200" for="visibility">
+                            Visibility:
+                        </label>
+                        <select
+                            id="visibility"
+                            class="w-full px-3 py-2 bg-slate-600 text-gray-50 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        >
+                            <option value="private">Private</option>
+                            <option value="public">Public</option>
+                        </select>
+                    </div>
+                    
+                    <div class="flex flex-col space-y-2">
+                        <label class="text-left tracking-wide text-sm font-medium text-slate-200" for="projectType">
+                            Project Type:
+                        </label>
+                        <select
+                            id="projectType"
+                            class="w-full px-3 py-2 bg-slate-600 text-gray-50 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        >
+                            <option value="react">React</option>
+                            <option value="html-css-js">HTML CSS JS</option>
+                        </select>
+                    </div>
+                </div>
+            `,
+            showCancelButton: true,
+            confirmButtonText: 'Create',
+            cancelButtonText: 'Cancel',
+            customClass: {
+                container: 'swal2-container-custom',
+                popup: 'rounded-lg max-w-xs md:max-w-md mx-auto bg-slate-800 text-indigo-500',
+                confirmButton: 'bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md',
+                cancelButton: 'bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-md'
+            },
+            backdrop: 'backdrop-filter: blur(10px);',
+            focusConfirm: false,
+            preConfirm: () => {
+                const name = document.getElementById('projectName').value.trim();
+                const description = document.getElementById('description').value.trim();
+                const visibility = document.getElementById('visibility').value;
+                const projectType = document.getElementById('projectType').value;
+
+                if (!name || !description) {
+                    Swal.showValidationMessage('Project Name and Description are required!');
+                    return false;
+                }
+
+                return { name, description, visibility, projectType };
+            }
+        });
+
+        if (formValues) {
+            try {
+                // Send the data to the backend
+                const response = await axios.post('/createproject', {
+                    prompt: prompt.trim(),
+                    projectDetails: formValues,
+                });
+
+                if (response.status === 200){
+                    await Swal.fire({
+                        icon: 'success',
+                        title: 'Project Created!',
+                        html: `
+                            <div class="text-center">
+                                <p>Your project <strong>${formValues.name}</strong> has been successfully created.</p>
+                                <p>Redirecting to Project Window</p>
+                            </div>
+                        `,
+                        customClass: {
+                            container: 'swal2-container-custom',
+                            popup: 'rounded-lg max-w-xs md:max-w-md mx-auto text-gray-200 p-6 shadow-xl',
+                            title: 'text-lg font-semibold text-green-400 mb-4',
+                            confirmButton: 'bg-green-500 hover:bg-green-600 text-white font-medium px-5 py-2 rounded-md',
+                            htmlContainer: 'text-sm font-normal text-gray-500',
+                            iconColor: 'text-green-400'
+                        },
+                        backdrop: 'backdrop-filter: blur(12px);',
+                    });
+                    
+                    // Clear the prompt after successful creation
+                    setPrompt("");
+                    
+                }
+            } catch (err) {
+                // Handle errors (e.g., network issues or server errors)
+                await Swal.fire({
+                    icon: 'error',
+                    title: 'Oops!',
+                    text: 'Something went wrong. Please try again later.',
+                });
+            }
+        }
+    };
+
     return ( 
-        <div className="relative w-[90vw] md:w-[50vw] h-auto min-h-[50vh] bg-white/10 backdrop-blur-lg rounded-2xl border border-t-4 border-l-2 border-indigo-400/60 shadow-lg shadow-black/30 p-4 mx-auto flex flex-col">
-            <div className="relative z-10 flex flex-col items-center mt-20">
-                <h3 className="text-lg font-semibold mb-4 text-gray-200">
-                    AI Powered Development
+        <div className="relative w-[90vw] md:w-[50vw] min-h-[50vh] bg-gradient-to-br from-[#1A1A2E] to-[#0F3460] backdrop-blur-lg rounded-2xl border border-indigo-400/60 shadow-2xl shadow-black/40 p-6 mx-auto flex flex-col my-10">
+            
+            {/* Title Section */}
+            <div className="relative z-10 flex flex-col items-center mt-16">
+                <h3 className="text-xl font-bold text-white mb-4 tracking-wide">
+                    <FontAwesomeIcon icon={faRobot} className="mr-2"/> AI Powered Development
                 </h3>
             </div>
 
-            <div className="relative z-10 flex justify-center mb-2 overflow-x-auto">
-                <div className="flex flex-wrap md:flex-nowrap justify-center gap-2 px-2">
-                    <button className="px-3 py-2 text-sm md:text-base text-gray-300 bg-white/10 border border-white/20 rounded-full shadow-md hover:bg-white/20 transition whitespace-nowrap">
-                        <FontAwesomeIcon icon={faSuitcase} className="mr-1" />
-                        Port Folio
-                    </button>
-                    
-                    <button className="px-3 py-2 text-sm md:text-base text-gray-300 bg-white/10 border border-white/20 rounded-full shadow-md hover:bg-white/20 transition">
-                        <FontAwesomeIcon icon={faFilePen} className="mr-1" />
-                        Blog
-                    </button>
-                    
-                    <button className="px-3 py-2 text-sm md:text-base text-gray-300 bg-white/10 border border-white/20 rounded-full shadow-md hover:bg-white/20 transition">
-                        <FontAwesomeIcon icon={faUsers} className="mr-1" />
-                        Social
-                    </button>
-                    
-                    <button className="px-3 py-2 text-sm md:text-base text-gray-300 bg-white/10 border border-white/20 rounded-full shadow-md hover:bg-white/20 transition">
-                        <FontAwesomeIcon icon={faListCheck} className="mr-1" />
-                        Tasks
-                    </button>
+            {/* Buttons Section */}
+            <div className="relative z-10 flex justify-center mb-4 ">
+                <div className="flex flex-wrap md:flex-nowrap justify-center gap-3 px-2">
+                    {[
+                        { icon: faSuitcase, label: "Portfolio" },
+                        { icon: faFilePen, label: "Blog" },
+                        { icon: faUsers, label: "Social" },
+                        { icon: faListCheck, label: "Tasks" }
+                    ].map((item, index) => (
+                        <button 
+                            key={index} 
+                            className="px-4 py-2 text-sm md:text-base text-white bg-gradient-to-r from-indigo-700 to-blue-700 rounded-full shadow-md hover:scale-105 transition-transform hover:shadow-lg whitespace-nowrap"
+                        >
+                            <FontAwesomeIcon icon={item.icon} className="mr-2" />
+                            {item.label}
+                        </button>
+                    ))}
                 </div>
             </div>
 
-            <div className="relative z-10 flex justify-center mt-auto p-2">
-                <div className="bg-[#111] flex items-center w-full md:w-[600px] px-4 py-2 rounded-full border border-gray-800">
+            {/* Input Section */}
+            <div className="relative z-10 flex justify-center mt-auto p-4">
+                <div className="bg-[#111] flex items-center w-full md:w-[600px] px-4 py-3 rounded-full border border-gray-700 shadow-inner">
                     <textarea 
-                        placeholder="Enter your prompt"
-                        className="flex-1 bg-transparent text-white outline-none border-none px-2 placeholder-gray-400 text-sm md:text-md resize-none max-h-80 h-20 overflow-y-scroll"
-                        style={{ height: 'auto', minHeight: '28px', maxHeight: '5em' }}
+                        placeholder="Type your prompt..."
+                        className="flex-1 bg-transparent text-white outline-none border-none px-2 placeholder-gray-400 text-md resize-none max-h-80 h-20 overflow-y-scroll"
+                        style={{ height: 'auto', minHeight: '32px', maxHeight: '5em' }}
                         rows="1"
                         value={prompt}
                         onInput={(e) => {
@@ -59,35 +187,37 @@ const Prompt = () => {
                             e.target.style.height = `${e.target.scrollHeight}px`;
                         }} 
                     />
+                    
+                    {/* Scrollbar Styling */}
                     <style>
                         {`
                             textarea::-webkit-scrollbar {
-                                width: 8px;
+                                width: 6px;
                             }
                             textarea::-webkit-scrollbar-thumb {
                                 background-color: rgba(255, 255, 255, 0.6);
-                                border-radius: 10px;
+                                border-radius: 8px;
                             }
                             textarea::-webkit-scrollbar-thumb:hover {
                                 background-color: rgba(255, 255, 255, 0.9);
                             }
                             textarea::-webkit-scrollbar-track {
                                 background-color: #111;
-                                border-radius: 10px;
+                                border-radius: 8px;
                             }
                         `}
                     </style>
-                    {!prompt.trim()? (
-                            <button className={`ml-2 hover:text-gray-300 px-3`}>
-                                <FontAwesomeIcon icon={faMicrophone} className="h-5 w-5 md:h-6 md:w-6"/>
-                            </button>
-                            
-                        ) : (
-                            <button className={`ml-2 hover:text-gray-300 px-3`}>                         
-                                <FontAwesomeIcon icon={faArrowUp} className="h-5 w-5 md:h-6 md:w-6"/>
-                            </button>
-                        )
-                    }
+
+                    {/* Microphone / Submit Button */}
+                    <button 
+                        className="ml-3 hover:text-gray-300 px-3 transform hover:scale-110 transition-transform" 
+                        onClick={handleCreateProject}
+                    >                         
+                        <FontAwesomeIcon 
+                            icon={prompt.trim() ? faArrowUp : faMicrophone} 
+                            className="h-6 w-6"
+                        />
+                    </button>
                 </div>
             </div>
         </div>
