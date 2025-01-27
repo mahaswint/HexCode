@@ -14,7 +14,7 @@ const projectSchema = new Schema(
             {
                 type: Schema.Types.ObjectId,
                 ref: "User",
-                required: true
+                // required: true
             }
         ],
         // Owner of the project
@@ -28,16 +28,17 @@ const projectSchema = new Schema(
             type: Boolean,
             default: false
         },
-        // Messages associated with the project
-        messages: [
+        // chat associated with the project
+        Chats: [
             {
-                type: Schema.Types.ObjectId,
-                ref: "Message"
-            }
+            text: { type: String },
+            userprompt: { type: String },
+            airesponse: { type: Schema.Types.Mixed }//code only
+            },
         ]
     },
     {
-        timestamps: true // Automatically adds `createdAt` and `updatedAt` fields
+        timestamps: true 
     }
 );
 

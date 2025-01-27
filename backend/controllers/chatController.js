@@ -1,3 +1,4 @@
+const Project = require('../models/projectModel');
 const Anthropic = require('@anthropic-ai/sdk');
 
 const CLAUDE_API_KEY = process.env.CLAUDE_API_KEY
@@ -8,11 +9,15 @@ const client = new Anthropic({
 
 exports.chat = async (req,res)=> {
   console.log(req.user);
+  
   if(req.isAuthenticated()){
     const userPrompt = req.body.message;
     const frontendRoute = req.body.route;
+    const projectId = req.pramas.pid;
+
     console.log('Received Prompt from user:',userPrompt);
     console.log('frontend path:',frontendRoute)
+    
 
     let defaultPrompt;
     if(frontendRoute == '/main/react'){
@@ -72,6 +77,7 @@ exports.chat = async (req,res)=> {
     else{
       return res.status(400).json({ error: "Invalid route" });
     }
+  
 
     const prompt = `${defaultPrompt}\n\n${userPrompt}`;
     console.log(prompt);
@@ -93,6 +99,22 @@ exports.chat = async (req,res)=> {
   
       const message = await stream.finalMessage();
       console.log("Model Response:-",message);
+
+
+      const project = await Project.findById(projectId);
+      if (!project) {
+        return res.status(404).json({ error: "Project not found" });
+      }
+
+      // Add the user prompt and AI response to the messages array
+      project.chats.push({
+        // text: message.content, 
+        userprompt: userPrompt,
+        airesponse: JSON.parse(message), 
+      });
+
+      // Save the project
+      await project.save();
       res.json(message)
     } catch (error) {
       console.error('Error:', error);
