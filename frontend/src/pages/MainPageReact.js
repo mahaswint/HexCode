@@ -245,80 +245,88 @@ export default function MainPageReact({children}) {
 
   };
   return (
-    <div className="flex h-screen w-screen">
-      <div className="w-1/2 p-4 bg-gray-100">
-        <textarea
-          className="w-full h-64 p-2 border rounded text-black"
-          value={prompt}
-          onChange={(e) => setPrompt(e.target.value)}
-          placeholder="Enter website description..."
-        />
-        <button 
-          className="mt-4 px-4 py-2 bg-blue-500 text-white rounded"
-          onClick={handlePromptSubmit}
-        >
-          Generate Website
-        </button>
-      </div>
-      <div className="w-1/2">
-      <nav className='flex justify-flex-start align-center w-3'>
-      <button
-      className={`py-2 px-4 rounded-md ${activeTab === "preview" ? "bg-blue-600 text-white" : "text-blue-600"} border-solid border-blue-600`}
-      onClick={() => setActiveTab("preview")}
+  <div className="flex h-screen w-screen text-white">
+    {/* Left Panel */}
+    <div className="w-1/2 p-6 border-r border-gray-700">
+      <textarea
+        className="w-full h-64 p-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+        value={prompt}
+        onChange={(e) => setPrompt(e.target.value)}
+        placeholder="Enter website description..."
+      />
+      <button 
+        className="mt-4 px-6 py-2 bg-indigo-500 hover:bg-indigo-600 text-white font-semibold rounded-lg shadow-md transition"
+        onClick={handlePromptSubmit}
       >
-      Preview
+        Generate Website
       </button>
-      <button
-      className={`py-2 px-4 rounded-md ${activeTab === "code" ? "bg-blue-600 text-white" : "text-blue-600"} border-solid border-blue-600`}
-      onClick={() => setActiveTab("code")}
-      >
-      Code
-      </button>
-    </nav>
-        {projectStructure && (
-          <SandpackProvider
-            template="react"
-            theme={atomDark}
-            files={projectStructure.files}
-            options={{
-              showNavigator: true,
-              showLineNumbers: true,
-              closableTabs: true,
-              activeFile: projectStructure.entryFilePath
-            }}
-            customSetup={{
-              dependencies:{"axios": "^1.7.9",
-    "class-variance-authority": "^0.7.1",
-    "clsx": "^2.1.1",
-    "cra-template": "1.2.0",
-    "dotenv": "^16.4.7",
-    "lucide-react": "^0.471.1",
-    "prism": "^4.1.2",
-    "prismjs": "^1.29.0",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "react-draggable": "^4.4.6",
-    "react-frame-component": "^5.2.7",
-    "react-grid-layout": "^1.5.0",
-    "react-resizable": "^3.0.5",
-    "react-router-dom": "^7.1.2",
-    "react-scripts": "5.0.1"},
-              main:projectStructure.entryFilePath
-  }}
-          >
-            <SandpackLayout>
-                {activeTab === "preview"?
-                <>
-                <SandpackPreview style={{height:'600px'}} showNavigator={true}/>
-                </>:
-                <>
-                <SandpackFileExplorer style={{height:'600px'}}/>
-                <SandpackCodeEditor style={{height:'600px'}}/>
-                </>}
-            </SandpackLayout>
-          </SandpackProvider>
-        )}
-      </div>
     </div>
-  );
+
+    {/* Right Panel */}
+    <div className="w-1/2 flex flex-col">
+      {/* Navigation Tabs */}
+      <nav className="flex space-x-4 p-4 border-b border-gray-700">
+        <button
+          className={`py-2 px-6 rounded-md font-medium transition ${activeTab === "preview" ? "bg-indigo-500 text-white" : "text-blue-400 hover:text-white"}`}
+          onClick={() => setActiveTab("preview")}
+        >
+          Preview
+        </button>
+        <button
+          className={`py-2 px-6 rounded-md font-medium transition ${activeTab === "code" ? "bg-indigo-500 text-white" : "text-blue-400 hover:text-white"}`}
+          onClick={() => setActiveTab("code")}
+        >
+          Code
+        </button>
+      </nav>
+
+      {/* Sandpack Editor */}
+      {projectStructure && (
+        <SandpackProvider
+          template="react"
+          theme={atomDark}
+          files={projectStructure.files}
+          options={{
+            showNavigator: true,
+            showLineNumbers: true,
+            closableTabs: true,
+            activeFile: projectStructure.entryFilePath,
+          }}
+          customSetup={{
+            dependencies: {
+              "axios": "^1.7.9",
+              "class-variance-authority": "^0.7.1",
+              "clsx": "^2.1.1",
+              "cra-template": "1.2.0",
+              "dotenv": "^16.4.7",
+              "lucide-react": "^0.471.1",
+              "prism": "^4.1.2",
+              "prismjs": "^1.29.0",
+              "react": "^18.3.1",
+              "react-dom": "^18.3.1",
+              "react-draggable": "^4.4.6",
+              "react-frame-component": "^5.2.7",
+              "react-grid-layout": "^1.5.0",
+              "react-resizable": "^3.0.5",
+              "react-router-dom": "^7.1.2",
+              "react-scripts": "5.0.1",
+            },
+            main: projectStructure.entryFilePath,
+          }}
+        >
+          <SandpackLayout className="h-full bg-gray-900">
+            {activeTab === "preview" ? (
+              <SandpackPreview style={{ height: '600px' }} showNavigator={true} />
+            ) : (
+              <div className="flex h-[600px]">
+                <SandpackFileExplorer className="w-1/3 border-r border-gray-700" />
+                <SandpackCodeEditor className="w-2/3" />
+              </div>
+            )}
+          </SandpackLayout>
+        </SandpackProvider>
+      )}
+    </div>
+  </div>
+);
 };

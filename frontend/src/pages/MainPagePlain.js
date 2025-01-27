@@ -264,116 +264,100 @@ if (matches) {
   const downloadableCode = injectContentIntoHTML(generatedHTML, generatedCSS, generatedJS, '');
   console.log("This is the code that will be given to the iframe:",displayCode)
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col items-center">
-      {/* Header */}
-      <header className="w-full bg-blue-600 text-white py-4 text-center text-2xl font-bold">
-        Text-to-Website Generator
-      </header>
-
-      {/* Main Content */}
-      <div className="flex flex-grow w-full max-w-full p-4 space-x-4">
-        {/* Prompt Input Section */}
-        <div className="flex flex-col bg-white shadow-lg p-4 rounded-lg w-1/3">
-          <h2 className="text-lg font-semibold mb-2">Enter Your Prompt</h2>
-            <form onSubmit={handlePromptSubmit}>
-                <textarea
-                    className="border rounded-lg w-full p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
-                    name="prompt"
-                    rows="8"
-                    placeholder="Describe the website you want to generate..."
-                    value={prompt}
-                    onChange={(e) => setPrompt(e.target.value)} // Update prompt state
-                    />
+    <div className="flex h-screen w-screen text-white bg-gray-900">
+      {/* Left Panel */}
+      <div className="w-1/2 p-6 border-r border-gray-700 bg-gray-800">
+        <textarea
+          className="w-full h-64 p-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+          value={prompt}
+          onChange={(e) => setPrompt(e.target.value)}
+          placeholder="Enter website description..."
+        />
+        <button 
+          className="mt-4 px-6 py-2 bg-indigo-500 hover:bg-indigo-600 text-white font-semibold rounded-lg shadow-md transition"
+          onClick={handlePromptSubmit}
+        >
+          Generate Website
+        </button>
+      </div>
+  
+      {/* Right Panel */}
+      <div className="w-1/2 flex flex-col bg-gray-900">
+        {/* Navigation Tabs */}
+        <nav className="flex space-x-4 p-4 border-b border-gray-700">
+          <button
+            className={`py-2 px-6 rounded-md font-medium transition ${!showCode ? "bg-indigo-500 text-white" : "text-blue-400 hover:text-white"} border border-blue-600`}
+            onClick={() => setShowCode(false)}
+          >
+            View Website
+          </button>
+          <button
+            className={`py-2 px-6 rounded-md font-medium transition ${showCode ? "bg-indigo-500 text-white" : "text-blue-400 hover:text-white"} border border-blue-600`}
+            onClick={() => {setShowCode(true); setTimeout(highlightCode, 0);}}
+          >
+            View Code
+          </button>
+          <button
+            className="py-2 px-6 rounded-md bg-indigo-500 hover:bg-indigo-600 text-white border border-blue-600"
+            onClick={downloadHtmlContent}
+          >
+            Download Code
+          </button>
+        </nav>
+  
+        {/* Generated Website or Code */}
+        <div className="flex-grow bg-gray-900 p-4">
+          {showCode ? (
+            <div className="box-border overflow-scroll max-h-full">
+              <nav className="flex justify-start items-center space-x-2 mb-2">
                 <button
-                    type='submit'
-                    className="bg-blue-600 text-white py-2 px-4 rounded-lg mt-4 hover:bg-blue-700"
-                    >
-                    Generate Website
+                  className={`py-2 px-4 rounded-md ${fileName === "html" ? "bg-indigo-500 text-white" : "text-blue-400"} border border-blue-600`}
+                  onClick={() => handleClick("html")}
+                >
+                  HTML
                 </button>
-            </form>
-        </div>
-
-        {/* Generated Website Section */}
-        <div className="flex-grow bg-white shadow-lg rounded-lg p-4 relative">
-          <nav className="flex space-x-4 border-b pb-2 mb-4">
-            <button
-              className={`py-2 px-4 rounded-md ${!showCode ? "bg-blue-600 text-white" : "text-blue-600"} border-solid border-blue-600`}
-              onClick={() => setShowCode(false)}>
-              View Website
-            </button>
-            <button
-              className={`py-2 px-4 rounded-md ${showCode ? "bg-blue-600 text-white" : "text-blue-600"} border-solid border-blue-600`}
-              onClick={() => {setShowCode(true); setTimeout(highlightCode, 0);}}>
-              View Code
-            </button>
-            <button
-              className={`py-2 px-4 rounded-md  bg-blue-600 text-white border-solid border-blue-600`}
-              onClick={downloadHtmlContent}>
-              Download Code 
-            </button>
-          </nav>
-
-          {/* Content: Website or Code */}
-          <div className="relative" >
-      {/* Iframe */}
-      {showCode ? (
-    <div className='box-border overflow-scroll max-h-full'>
-    <nav className='flex justify-flex-start align-center w-3'>
-      <button
-      className={`py-2 px-4 rounded-md ${fileName === "html" ? "bg-blue-600 text-white" : "text-blue-600"} border-solid border-blue-600`}
-      onClick={() => handleClick("html")}
-      >
-      HTML
-      </button>
-      <button
-      className={`py-2 px-4 rounded-md ${fileName === "css" ? "bg-blue-600 text-white" : "text-blue-600"} border-solid border-blue-600`}
-      onClick={() => handleClick("css")}
-      >
-      CSS
-      </button>
-      <button
-      className={`py-2 px-4 rounded-md ${fileName === "js" ? "bg-blue-600 text-white" : "text-blue-600"} border-solid border-blue-600`}
-      onClick={() => handleClick("js")}
-      >
-      JavaScript
-      </button>
-    </nav>
-    <pre
-        className="w-full h-full p-2 m-0 border border-gray-300 rounded-lg"
-        style={{
-          fontFamily: "'Courier New', Courier, monospace",
-          fontSize: "14px",
-          overflow: "scroll",
-          height:'calc(100% - 0.75rem)'
-        }}>
-        <code className={`language-${fileName === "html" ? "markup" : "css"}`}>
-          {fileName === "html"?generatedHTML:fileName === "css"?generatedCSS:generatedJS}
-        </code>
-      </pre>
-    </div>
-  ) : (
-    <ResizableBox
-    className='relative w-full h-full border-0'
-    width={1200}
-    height={700}
-    minConstraints={[300, 200]}
-    maxConstraints={[1200, 800]}
-    resizeHandles={["se"]}
-    handle={
-      <div className="absolute w-5 h-5 bg-gray-300 bottom-0 right-0 cursor-se-resize z-10"></div>
-    }
-    >
-    <Frame
-        ref={iframeRef}
-      initialContent={displayCode}
-      className='w-full h-full border-0'
-    />
-    </ResizableBox>
-  )}
-    </div>
+                <button
+                  className={`py-2 px-4 rounded-md ${fileName === "css" ? "bg-indigo-500 text-white" : "text-blue-400"} border border-blue-600`}
+                  onClick={() => handleClick("css")}
+                >
+                  CSS
+                </button>
+                <button
+                  className={`py-2 px-4 rounded-md ${fileName === "js" ? "bg-indigo-500 text-white" : "text-blue-400"} border border-blue-600`}
+                  onClick={() => handleClick("js")}
+                >
+                  JavaScript
+                </button>
+              </nav>
+              <pre className="w-full h-full p-2 m-0 border border-gray-600 rounded-lg bg-gray-800 text-white overflow-scroll">
+                <code className={`language-${fileName === "html" ? "markup" : "css"}`}>
+                  {fileName === "html" ? generatedHTML : fileName === "css" ? generatedCSS : generatedJS}
+                </code>
+              </pre>
+            </div>
+          ) : (
+            <ResizableBox
+              className="relative w-full h-full border-0"
+              width={1200}
+              height={700}
+              minConstraints={[300, 200]}
+              maxConstraints={[1200, 800]}
+              resizeHandles={["se"]}
+              handle={
+                <div className="absolute w-5 h-5 bg-gray-600 bottom-0 right-0 cursor-se-resize z-10"></div>
+              }
+            >
+              <Frame
+                ref={iframeRef}
+                initialContent={displayCode}
+                className="w-full h-full border-0"
+              />
+            </ResizableBox>
+          )}
         </div>
       </div>
     </div>
   );
+  
 };
 export default MainPagePlain;
