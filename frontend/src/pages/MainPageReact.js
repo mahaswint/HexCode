@@ -17,6 +17,12 @@ import { atomDark } from '@codesandbox/sandpack-themes';
 
 
 export default function MainPageReact({children}) {
+  useEffect(()=>{
+      const data = localStorage.getItem('firstprompt');
+      const parsedData = JSON.parse(data);
+      console.log(parsedData);
+    },[]);
+    
     const [prompt, setPrompt] = useState('');
     const [projectStructure, setProjectStructure] = useState({
       "projectTitle": "React E-commerce Website",

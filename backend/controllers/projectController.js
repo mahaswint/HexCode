@@ -2,27 +2,26 @@ const User = require('../models/userModel');
 const Project = require('../models/projectModel');
 exports.addProject = async (req, res) => {
     try {
-        const { pid } = req.params; // The parent ID (if applicable) from request params
-        const { name, users, owner, visibility, messages } = req.body;
-
-        // Validate required fields
-        if (!name || !users || !owner) {
-            return res.status(400).json({ error: 'Name, users, and owner are required fields' });
-        }
-
+        // The parent ID (if applicable) from request params
+        const { userId, name, description, visibility, projectType, prompt } = req.body
+    
         // Create a new project instance with the incoming data
         const project = new Project({
-            name,
-            users,
-            owner,
-            visibility,
-            messages,
-            // Add the parentId from the request params
+            name:name,
+            users:[],
+            owner:userId,
+            visibility:(visibility==='public'),
+            description: description,
+            projectType: (projectType==='react'),
+            chats:[]
         });
 
         // Save the new project to the database
         await project.save();
-        res.status(201).json(project); // Return the created project in the response
+        res.status(201).json({
+            PID:project._id,
+            prompt:prompt
+        }); // Return the created project in the response
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Internal server error' });

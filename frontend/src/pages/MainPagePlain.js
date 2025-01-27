@@ -15,6 +15,13 @@ const MainPagePlain = () => {
   const [generatedCSS, setGeneratedCSS] = useState("");
   const [generatedJS, setGeneratedJS] = useState("");
 
+
+  useEffect(()=>{
+    const data = localStorage.getItem('firstprompt');
+    const parsedData = JSON.parse(data);
+    console.log(parsedData);
+  },[])
+
   useEffect(() => {
     Prism.highlightAll(); // Applies syntax highlighting to all <code> elements
   }, [generatedHTML, generatedCSS,generatedJS]);
