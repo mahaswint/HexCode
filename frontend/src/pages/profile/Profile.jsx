@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios"; // Ensure axios is imported
 import Projectlist from "./components/project";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faUserPen } from "@fortawesome/free-solid-svg-icons";
+import Swal from 'sweetalert2';
 
 const Profile = () => {
     const [user, setUser] = useState(null); // State to hold authenticated user data
@@ -66,6 +69,61 @@ const Profile = () => {
         getAllProjects(user._id); // Pass user ID to fetch projects
       }
     }, [user]);
+
+  // handle profile update function
+  function handleUpdateUser(){
+    if (!user.name.trim() || !user.username.trim()) {
+        // alert("Please fill out all required fields.");
+        return;
+    }
+    
+  }
+
+  // edit user dialogbox
+  function handleShowEditDialog(setUser, user, handleUpdateUser) {
+    Swal.fire({
+        title: "<span class='text-white'>Edit Profile</span>",
+        background: "#1e293b",
+        color: "#ffffff",
+        html: `
+            <form id="edit-profile-form" class="flex flex-col gap-4 text-left">
+                <label class="text-sm font-medium text-gray-300">Name</label>
+                <input type="text" id="swal-name" class="swal2-input bg-gray-700 text-white border-none rounded-lg focus:ring-2 focus:ring-blue-500">
+    
+                <label class="text-sm font-medium text-gray-300">Username</label>
+                <input type="text" id="swal-username" class="swal2-input bg-gray-700 text-white border-none rounded-lg focus:ring-2 focus:ring-blue-500">
+    
+                <label class="text-sm font-medium text-gray-300">Skills (comma separated)</label>
+                <input type="text" id="swal-skills" class="swal2-input bg-gray-700 text-white border-none rounded-lg focus:ring-2 focus:ring-blue-500">
+            </form>
+        `,
+        showCancelButton: true,
+        confirmButtonText: "<span class='text-white'>Save Changes</span>",
+        cancelButtonText: "<span class='text-gray-400'>Cancel</span>",
+        customClass: {
+            popup: 'rounded-lg shadow-lg',
+            confirmButton: 'bg-indigo-700 hover:bg-indigo-800 text-white font-bold py-2 px-4 rounded',
+            cancelButton: 'bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded'
+        },
+        didOpen: () => {
+            document.getElementById("swal-name").value = user.Name || "";
+            document.getElementById("swal-username").value = user.userName || "";
+            document.getElementById("swal-skills").value = user.skills || "";
+        },
+        preConfirm: () => {
+            return {
+                Name: document.getElementById("swal-name").value,
+                userName: document.getElementById("swal-username").value,
+                skills: document.getElementById("swal-skills").value,
+            };
+        },
+    }).then((result) => {
+        if (result.isConfirmed) {
+            setUser(result.value);
+            handleUpdateUser();
+        }
+    });
+}
   return (
     <div className="bg-[#0f172a] text-white p-8 h-full w-full">
       <div className="max-w-7xl mx-auto">
@@ -74,6 +132,7 @@ const Profile = () => {
           {/* Profile Info */}
           <div className="bg-[#1e293b] p-6 rounded-lg fixed h-[75vh] shadow-md w-1/4">
             <div className="bg-gray-700 w-[20vw] h-[40vh] mx-auto rounded-lg shadow-lg flex items-center justify-center"></div>
+            {user && <div className="flex justify-end mx-2 my-2"><button onClick={()=>handleShowEditDialog(setUser,user,handleUpdateUser)}><FontAwesomeIcon icon={faUserPen} /></button></div>}
             <h2 className="text-xl text-center mt-4 font-bold">
               {user ? user.name : "Loading..."}
             </h2>
