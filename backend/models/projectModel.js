@@ -28,8 +28,18 @@ const projectSchema = new Schema(
             type: Boolean,
             default: false
         },
+        // Description
+        description: {
+            type: String,
+            required: true
+        },
+        // Project Type
+        projectType: {
+            type: Boolean,
+            required: true
+        },
         // chat associated with the project
-        Chats: [
+        chats: [
             {
             text: { type: String },
             userprompt: { type: String },

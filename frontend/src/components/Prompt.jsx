@@ -11,14 +11,19 @@ import {
 import { useState } from "react";
 import Swal from 'sweetalert2';
 import axios from 'axios';
+import { useUser } from "../context/userContext";
 
 const Prompt = () => {
+    const { user, setUser } = useUser();
+    
     const [prompt, setPrompt] = useState("");
 
     const handleCreateProject = async () => {
-        // Only trigger if there's text in the prompt
-        if (!prompt.trim()) return;
-
+        if(!user){
+            window.location.href = "http://localhost:5000/auth/google";
+            return;
+        }
+        if(!prompt.trim()) return;
         const { value: formValues } = await Swal.fire({
             title: 'Create Project',
             html: `
@@ -101,12 +106,25 @@ const Prompt = () => {
         if (formValues) {
             try {
                 // Send the data to the backend
-                const response = await axios.post('/createproject', {
-                    prompt: prompt.trim(),
-                    projectDetails: formValues,
+                const response = await fetch("http://localhost:5000/project/add", { 
+                    method: "POST", 
+                    headers: { 
+                        "Content-Type": "application/json", 
+                    },
+                    body: JSON.stringify({
+                        userId: user._id,
+                        name: formValues.name,
+                        description: formValues.description,
+                        visibility: formValues.visibility,
+                        projectType: formValues.projectType,
+                        prompt: prompt
+                    }),
+                    credentials: "include", 
                 });
-
-                if (response.status === 200){
+                const data = await response.json();
+                localStorage.setItem('firstprompt',JSON.stringify(data));
+                if (response.status === 201){
+                    
                     await Swal.fire({
                         icon: 'success',
                         title: 'Project Created!',
@@ -130,8 +148,11 @@ const Prompt = () => {
                     // Clear the prompt after successful creation
                     setPrompt("");
                     
+                    window.location.href = `/main/${(formValues.projectType==='react')?'react':'plain'}`;
                 }
             } catch (err) {
+                console.log(err);
+                
                 // Handle errors (e.g., network issues or server errors)
                 await Swal.fire({
                     icon: 'error',
@@ -214,7 +235,7 @@ const Prompt = () => {
                         onClick={handleCreateProject}
                     >                         
                         <FontAwesomeIcon 
-                            icon={prompt.trim() ? faArrowUp : faMicrophone} 
+                            icon={faArrowUp} 
                             className="h-6 w-6"
                         />
                     </button>
