@@ -145,7 +145,7 @@ const projects=[
 ]
 const Profile = () => {
     return (
-        <div className="bg-[#0f172a] text-white  p-8 h-full w-full">
+        <div className="text-white  p-8 h-full w-full">
             <div className="max-w-7xl mx-auto">
                 {/* Profile Section */}
                 <div className="flex gap-8">
