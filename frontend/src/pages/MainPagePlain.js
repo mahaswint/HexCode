@@ -14,13 +14,19 @@ const MainPagePlain = () => {
   const [fileName,setFileName] = useState("html");
   const [generatedCSS, setGeneratedCSS] = useState("");
   const [generatedJS, setGeneratedJS] = useState("");
+  const [projectID,setProjectID] = useState('');
 
 
-  useEffect(()=>{
-    const data = localStorage.getItem('firstprompt');
-    const parsedData = JSON.parse(data);
-    console.log(parsedData);
-  },[])
+  let parsedData;
+    useEffect(()=>{
+        const data = localStorage.getItem('firstprompt');
+        parsedData = JSON.parse(data);
+        console.log(parsedData);
+        const prompt_area = document.querySelector('#prompt-area')
+        prompt_area.innerHTML=parsedData.prompt;
+        setPrompt(parsedData.prompt);
+        setProjectID(parsedData.PID);
+      },[]);
 
   useEffect(() => {
     Prism.highlightAll(); // Applies syntax highlighting to all <code> elements
@@ -214,8 +220,8 @@ const MainPagePlain = () => {
     console.log("Form submitted with prompt:", prompt);
     // Simulate fetching generated code from backend (replace this with your API call)
     try{
-
-        const response = await fetch('http://localhost:5000/chat',{
+        console.log(parsedData.PID);
+        const response = await fetch(`http://localhost:5000/chat/${projectID}`,{
             method : 'POST',
             headers : {
                 'Content-Type': 'application/json'
@@ -268,6 +274,7 @@ if (matches) {
       {/* Left Panel */}
       <div className="w-1/2 p-6 border-r border-gray-700 bg-gray-800">
         <textarea
+          id="prompt-area"
           className="w-full h-64 p-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:outline-none"
           value={prompt}
           onChange={(e) => setPrompt(e.target.value)}
