@@ -17,13 +17,21 @@ import { atomDark } from '@codesandbox/sandpack-themes';
 
 
 export default function MainPageReact({children}) {
+  let parsedData;
   useEffect(()=>{
       const data = localStorage.getItem('firstprompt');
-      const parsedData = JSON.parse(data);
+      parsedData = JSON.parse(data);
       console.log(parsedData);
+      const prompt_area = document.querySelector('#prompt-area')
+      prompt_area.innerHTML=parsedData.prompt;
+      setPrompt(parsedData.prompt);
+      setProjectID(parsedData.PID);
     },[]);
+
+    
     
     const [prompt, setPrompt] = useState('');
+    const [projectID,setProjectID] = useState('');
     const [projectStructure, setProjectStructure] = useState({
       "projectTitle": "React E-commerce Website",
       "explanation": "A modern, responsive e-commerce website with product listing, cart functionality, and checkout process",
@@ -200,8 +208,8 @@ export default function MainPageReact({children}) {
     console.log("Form submitted with prompt:", prompt);
     // Simulate fetching generated code from backend (replace this with your API call)
     try{
-
-        const response = await fetch('http://localhost:5000/chat',{
+      console.log(projectID);
+        const response = await fetch(`http://localhost:5000/chat/${projectID}`,{
             method : 'POST',
             headers : {
                 'Content-Type': 'application/json'
@@ -219,6 +227,12 @@ export default function MainPageReact({children}) {
         const project_object = JSON.parse(project_string)
         console.log("Object given to Sandpack:",project_object)
         console.log("Entry file path:",project_object.entryFilePath)
+        // const something = {
+        //   PID:parsedData.PID,
+        //   prompt:'',
+
+        // }
+        // localStorage.setItem('firstprompt',JSON.stringify(something));
         setProjectStructure(project_object);
 
 //         let text = data.content[0].text;
@@ -255,6 +269,7 @@ export default function MainPageReact({children}) {
     {/* Left Panel */}
     <div className="w-1/2 p-6 border-r border-gray-700">
       <textarea
+        id="prompt-area"
         className="w-full h-64 p-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:outline-none"
         value={prompt}
         onChange={(e) => setPrompt(e.target.value)}
