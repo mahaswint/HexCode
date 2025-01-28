@@ -128,5 +128,32 @@ exports.chat = async (req,res)=> {
   } else{
     res.json({'error':"Not Authorized"})
   }
-    
 }
+
+
+  exports.getchat=async (req, res) => {
+    const { pid } = req.params; 
+
+    try {
+      console.log("mein toh chal gaya bhenchod");[]
+
+      
+        const project = await Project.findById(pid);
+
+        if (!project) {
+            return res.status(404).json({ message: "Project not found" });
+        }
+
+
+        const chats = project.chats;
+        console.log(chats);
+
+        
+        res.status(200).json({ chats });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "An error occurred while fetching project chats", error: error.message });
+    }
+}
+    
+

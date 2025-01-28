@@ -15,6 +15,12 @@ const MainPagePlain = () => {
   const [generatedCSS, setGeneratedCSS] = useState("");
   const [generatedJS, setGeneratedJS] = useState("");
   const [projectID,setProjectID] = useState('');
+  const previousPrompts = [
+    {
+      prompt : "hi",
+      response: "hi"
+    }
+  ];
 
 
   let parsedData;
@@ -272,7 +278,29 @@ if (matches) {
   return (
     <div className="flex h-screen w-screen text-white bg-gray-900">
       {/* Left Panel */}
-      <div className="w-1/2 p-6 border-r border-gray-700 bg-gray-800">
+      <div className="w-1/2 p-6 border-r border-gray-700 bg-gray-800 flex flex-col">
+        {/* Previous Prompts Section */}
+        <div className="flex-grow max-h-64 overflow-y-auto p-3 mb-4 border border-gray-700 rounded-lg bg-gray-900">
+          {previousPrompts.map((entry, index) => (
+            <div key={index} className="mb-3">
+              {/* User Prompt */}
+              <div className="flex justify-end">
+                <div className="bg-indigo-500 text-white px-4 py-2 rounded-lg max-w-[80%]">
+                  {entry.prompt}
+                </div>
+              </div>
+
+              {/* AI Response */}
+              {entry.response && (
+                <div className="flex justify-start mt-1">
+                  <div className="bg-gray-700 text-white px-4 py-2 rounded-lg max-w-[80%]">
+                    {entry.response}
+                  </div>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
         <textarea
           id="prompt-area"
           className="w-full h-64 p-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:outline-none"
