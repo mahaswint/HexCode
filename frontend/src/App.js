@@ -13,6 +13,9 @@ import MainPagePlain from "./pages/MainPagePlain";
 import Landing from "./pages/Landing";
 import Footer from "./components/Footer";
 import { UniversalPage } from "./pages/UniversalPage";
+import { ActionContext } from './pages/ActionContext';
+import { useState } from "react";
+
 
 function ProtectedRoute({ children }) {
     const { user } = useUser();  // Get user context
@@ -26,8 +29,12 @@ function ProtectedRoute({ children }) {
 }
 
 function App() {
+    const [action, setAction] = useState();
+
     return (
         <UserProvider>
+            <ActionContext.Provider value={{ action, setAction }}>
+
             {/* Subtle Animated Glow */}
             <div className="absolute inset-0 pointer-events-none">
                 <div className="absolute top-14 left-1.5 w-60 h-60 bg-indigo-500 rounded-full blur-3xl opacity-20 animate-pulse"></div>
@@ -49,6 +56,8 @@ function App() {
                     <Footer/>
                 </Router>
             </div>
+            </ActionContext.Provider>
+
         </UserProvider>
     );
 }

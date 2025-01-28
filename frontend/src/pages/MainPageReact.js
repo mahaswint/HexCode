@@ -1,6 +1,6 @@
 'use client'
 
-import React,{useState,useEffect} from 'react';
+import React,{useState,useEffect,useContext} from 'react';
 import Prism from 'prismjs';
 import 'prismjs/themes/prism-okaidia.css';
 import 'prismjs/components/prism-markup';
@@ -14,9 +14,13 @@ import { Sandpack,
     SandpackFileExplorer,
    } from "@codesandbox/sandpack-react";
 import { atomDark } from '@codesandbox/sandpack-themes';
+import SandpackPreviewClient from './SandpackPreviewClient';
+import { ActionContext } from './ActionContext'; // Updated import path
+
 
 
 export default function MainPageReact({children}) {
+  const { action, setAction } = useContext(ActionContext) || {};
   let parsedData;
   useEffect(()=>{
       const data = localStorage.getItem('firstprompt');
@@ -106,6 +110,17 @@ export default function MainPageReact({children}) {
       window.Prism.highlightAll();
     }
   }, []);
+
+  const onActionBtn = (action) => {
+    if (setAction) {
+        setAction({
+            actionType: action,
+            timeStamp: Date.now()
+        });
+    } else {
+        console.error("setAction is not defined");
+    }
+};
 
   // const handleClick = (type) => {
   //   setFileName(type);
@@ -299,6 +314,20 @@ export default function MainPageReact({children}) {
         >
           Code
         </button>
+        <button
+          className={"bg-indigo-500 text-white py-2 px-6" }
+          onClick={() => onActionBtn("deploy")}
+        >
+          Deploy
+        </button>
+        <button
+          className={"bg-indigo-500 text-white py-2 px-6" }
+          onClick={() => onActionBtn("export")}
+         
+        >
+          Export
+        </button>
+    
       </nav>
 
       {/* Sandpack Editor */}
@@ -337,7 +366,11 @@ export default function MainPageReact({children}) {
         >
           <SandpackLayout className="h-full bg-gray-900">
             {activeTab === "preview" ? (
-              <SandpackPreview style={{ height: '600px' }} showNavigator={true} />
+
+              // <SandpackPreview style={{ height: '600px' }} showNavigator={true} />
+              <SandpackPreviewClient />
+
+
             ) : (
               <div className="flex h-[600px]">
                 <SandpackFileExplorer className="w-1/3 border-r border-gray-700" />
