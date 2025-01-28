@@ -14,6 +14,7 @@ const MainPagePlain = () => {
   const [fileName,setFileName] = useState("html");
   const [generatedCSS, setGeneratedCSS] = useState("");
   const [generatedJS, setGeneratedJS] = useState("");
+  const [projectID,setProjectID] = useState('');
 
 
   let parsedData;
@@ -23,6 +24,8 @@ const MainPagePlain = () => {
         console.log(parsedData);
         const prompt_area = document.querySelector('#prompt-area')
         prompt_area.innerHTML=parsedData.prompt;
+        setPrompt(parsedData.prompt);
+        setProjectID(parsedData.PID);
       },[]);
 
   useEffect(() => {
@@ -218,7 +221,7 @@ const MainPagePlain = () => {
     // Simulate fetching generated code from backend (replace this with your API call)
     try{
         console.log(parsedData.PID);
-        const response = await fetch(`http://localhost:5000/chat/${parsedData.PID}`,{
+        const response = await fetch(`http://localhost:5000/chat/${projectID}`,{
             method : 'POST',
             headers : {
                 'Content-Type': 'application/json'
