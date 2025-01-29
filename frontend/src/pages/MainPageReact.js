@@ -389,7 +389,6 @@ export default function MainPageReact({children}) {
               "class-variance-authority": "^0.7.1",
               "clsx": "^2.1.1",
               "cra-template": "1.2.0",
-              "dotenv": "^16.4.7",
               "lucide-react": "^0.471.1",
               "prism": "^4.1.2",
               "prismjs": "^1.29.0",
