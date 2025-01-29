@@ -46,6 +46,7 @@ const MainPagePlain = () => {
   const [fileName,setFileName] = useState("html");
   const [generatedCSS, setGeneratedCSS] = useState("");
   const [generatedJS, setGeneratedJS] = useState("");
+  const [generatedText,setGeneratedText] = useState("")
   const [projectID,setProjectID] = useState('');
   const previousPrompts = [
     {
@@ -276,25 +277,26 @@ const MainPagePlain = () => {
 
         let text = data.content[0].text;
         console.log("Raw text before parsing-",text)
-        
-        const matches = text.match(/{\s*"html":\s*`([\s\S]*?)`\s*,\s*"css":\s*`([\s\S]*?)`\s*,\s*"js":\s*`([\s\S]*?)`\s*}/);
+        const object_data = JSON.parse(text)
+        // const matches = text.match(/{\s*"html":\s*`([\s\S]*?)`\s*,\s*"css":\s*`([\s\S]*?)`\s*,\s*"js":\s*`([\s\S]*?)`\s*,\s*"text":\s*`([\s\S]*?)`\s*}/);
 
-if (matches) {
-    const [_, htmlContent, cssContent,jsContent] = matches;
+// if (matches) {
+//     const [_, htmlContent, cssContent,jsContent,textContent] = matches;
     
-    // Create a new object with properly escaped content
-    var object_data = {
-        html: htmlContent,
-        css: cssContent,
-        js: jsContent
-    };
+//     // Create a new object with properly escaped content
+//     var object_data = {
+//         html: htmlContent,
+//         css: cssContent,
+//         js: jsContent,
+//         text: textContent
+//     };
     
-    // Now you can use the processed data directly without JSON.parse
-    console.log("This is the object with html and css:", object_data);
-} else {
-    console.error("Could not extract HTML and CSS content");
-}
-        
+//     // Now you can use the processed data directly without JSON.parse
+//     console.log("This is the object with html and css:", object_data);
+// } else {
+//     console.error("Could not extract HTML and CSS content");
+// }
+        setGeneratedText(object_data['text'])
         setGeneratedHTML(object_data['html'])
         setGeneratedCSS(object_data['css'])
         setGeneratedJS(object_data['js'])

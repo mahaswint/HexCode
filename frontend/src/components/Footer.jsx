@@ -31,7 +31,7 @@ export const Footer = () => {
             initial={{ opacity: 0, y: 50 }} 
             animate={isInView ? { opacity: 1, y: 0 } : {}} 
             transition={{ duration: 0.6, ease: "easeOut" }}
-            className="w-full bg-gray-950 mt-4 py-4 px-7 flex md:flex-row justify-between items-center border-gray-600 border-t"
+            className="w-full bg-gray-950 mt-4 py-2 px-4 flex md:flex-row justify-between items-center"
         >
             <div className="flex flex-col items-start mb-4 md:mb-0 gap-2">
                 <div className="text-white font-semibold text-xl">
@@ -41,7 +41,6 @@ export const Footer = () => {
                     <span>&copy;2025 HexCode. All Rights Reserved</span>
                     <Link to="/faqs" className="hover:text-gray-400 transition-colors duration-300">Licensing</Link>
                     <Link to="/privacy" className="hover:text-gray-400 transition-colors duration-300">Privacy</Link>
-                    {/* <Link to="/roadmap" className="hover:text-gray-600 transition-colors duration-300">Contacts</Link> */}
                     {/* <Link to="/about" className="hover:text-gray-600 transition-colors duration-300">About</Link>
                      */}
                 </div>
