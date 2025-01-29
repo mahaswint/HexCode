@@ -1,15 +1,17 @@
 import { useVoting } from '../hooks/useVoting';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faReact, faHtml5, faCss3Alt, faSquareJs  } from "@fortawesome/free-brands-svg-icons";
 
 export const TemplateCard = ({ id, title, description, initialVotes }) => {
     const { votes, loading, error, handleVote } = useVoting(id, initialVotes);
-    
+    let type = false;
     return (
-      <div className="bg-gradient-to-b from-slate-800 to-slate-700 rounded-xl p-6 hover:scale-105 transition-transform duration-300 ease-out">
+      <div className="bg-slate-700 rounded-xl p-6 hover:scale-105 transition-transform duration-300 ease-out">
         {/* Header Section */}
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-xl font-semibold text-white">{title}</h3>
           <button className="px-4 py-1.5 bg-blue-500/10 text-blue-400 rounded-full 
-            border border-blue-500/20 hover:bg-blue-500 hover:text-white transition-all 
+            border border-blue-500/20 hover:bg-indigo-600 hover:border-indigo-600/20 hover:text-white transition-all 
             text-sm font-medium">
             Preview
           </button>
@@ -20,7 +22,7 @@ export const TemplateCard = ({ id, title, description, initialVotes }) => {
         
         {/* Footer with Voting */}
         <div className="flex items-center justify-between w-full">
-          <div className="flex items-center gap-3">
+          <div className="flex items-center">
             {/* Upvote Button */}
             <button 
               onClick={() => handleVote('up')}
@@ -30,7 +32,7 @@ export const TemplateCard = ({ id, title, description, initialVotes }) => {
               aria-label="Upvote"
             >
               <svg 
-                className={`w-8 h-8 transition-all 
+                className={`w-6 h-6 transition-all 
                   ${votes.upvotes.includes('current-user-id') 
                     ? 'fill-green-500 stroke-green-500' 
                     : 'fill-transparent stroke-slate-400 group-hover:stroke-green-400'}`}
@@ -56,7 +58,7 @@ export const TemplateCard = ({ id, title, description, initialVotes }) => {
               aria-label="Downvote"
             >
               <svg 
-                className={`w-8 h-8 transition-all rotate-180 
+                className={`w-6 h-6 transition-all rotate-180 
                   ${votes.downvotes.includes('current-user-id') 
                     ? 'fill-red-500 stroke-red-500' 
                     : 'fill-transparent stroke-slate-400 group-hover:stroke-red-400'}`}
@@ -75,8 +77,14 @@ export const TemplateCard = ({ id, title, description, initialVotes }) => {
           </div>
 
           {/* React Tag - Aligned to the End */}
-          <div className="rounded-lg border bg-gray-200/10 px-4 py-1 relative right-0 bottom-0">
-            React
+          <div className="rounded-lg">
+          {type? (<FontAwesomeIcon icon={faReact} className='h-8 w-8' />):(
+            <div>
+            <FontAwesomeIcon icon={faHtml5} className='h-7 w-7' />
+            <FontAwesomeIcon icon={faCss3Alt} className='h-7 w-7' />
+            <FontAwesomeIcon icon={faSquareJs} className='h-7 w-7' />
+            </div>
+          )}
           </div>
         </div>
         </div>
