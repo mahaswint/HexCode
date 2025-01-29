@@ -65,15 +65,15 @@ exports.chat = async (req,res)=> {
     }
 
     Generate a project that demonstrates professional-grade web development practices, tailored precisely to the user's prompt.
-    Do not include any text excluding the code , that is the json object.
+    Do not include any text excluding the code , that is the json object. If you want to give any text explanation of implementation or anything related to conversation, give it in the value of 'explanation' key in the json string.
     All elements must have a draggable class and vertical or horizontal class.DO NOT GIVE ME A SCRIPT FOR draggable class as i am implementing my own script for drag and drop which will use the draggable class. 
     `;
     }
     else if(frontendRoute === '/main/plain'){
       defaultPrompt = `
-      Your task is to create a one-page website based on the given specifications, delivered as an HTML file , CSS file and javascript file. The website should incorporate a variety of engaging and interactive design features, such as drop-down menus, dynamic text and content, clickable buttons, and more. Ensure that the design is visually appealing, responsive, and user-friendly. The HTML, CSS, and JavaScript code should be well-structured, efficiently organized, and properly commented for readability and maintainability.Do not include any text excluding the code.
+      Your task is to create a one-page website based on the given specifications, delivered as an HTML file , CSS file and javascript file. The website should incorporate a variety of engaging and interactive design features, such as drop-down menus, dynamic text and content, clickable buttons, and more. Ensure that the design is visually appealing, responsive, and user-friendly. The HTML, CSS, and JavaScript code should be well-structured, efficiently organized, and properly commented for readability and maintainability.Do not include any text excluding the code.If you want to give any text or explanation or anything relation to conversation give it in the json string as value of key 'text'
     All elements must have a draggable class and vertical or horizontal class.DO NOT GIVE ME A SCRIPT FOR draggable class as i am implementing my own script for drag and drop which will use the draggable class.Inside body there should be a div with id 'layout' as root element and what ever html you are generated for the page should be placed inside this layout div
-    Generate a JSON object with three keys: 'html' containing the HTML code and 'css' containing the CSS code and 'js' containing the javascript code for a simple website. Do not include additional text outside the JSON object.
+    Generate a JSON object with four keys: 'html' containing the HTML code and 'css' containing the CSS code and 'js' containing the javascript code and 'text' containing relevant explanation or implementation for a simple website. Do not include additional text outside the JSON object.
     `
     }
     else{
@@ -81,18 +81,31 @@ exports.chat = async (req,res)=> {
     }
   
 
-    const prompt = `${defaultPrompt}\n\n${userPrompt}`;
-    console.log(prompt);
+    // const prompt = `${defaultPrompt}\n\n${userPrompt}`;
+    console.log(userPrompt);
     try {
       const stream = client.messages
         .stream({
           model: 'claude-3-5-sonnet-latest',
           max_tokens: 8000,
+          system: [
+            {
+              "type":"text",
+              "text":defaultPrompt,
+              "cache_control":{"type":"ephemeral"}
+            }
+          ],
           messages: [
             {
               role: 'user',
-              content: prompt,
-            },
+              content: [
+                {
+                  "type": "text",
+                  "text": userPrompt,
+                  "cache_control": {"type": "ephemeral"}
+                }
+              ]
+            }
           ],
         })
         .on('text', (text) => {

@@ -2,13 +2,45 @@ import '../App.css';
 import React,{useState,useEffect,useRef} from 'react';
 import Prism from 'prismjs';
 import 'prismjs/themes/prism-okaidia.css';
+import 'prismjs/components/prism-markup';
+import 'prismjs/components/prism-css';
+import 'prismjs/components/prism-javascript';
 import Frame from 'react-frame-component';
 import { ResizableBox } from 'react-resizable';
 const MainPagePlain = () => {
   // Define states
   const [prompt, setPrompt] = useState(""); // State for user input
   const [generatedHTML, setGeneratedHTML] = useState(
-    "<!DOCTYPE html><html><head></head><body><h1>Generated Website</h1></body></html>"
+    `<!DOCTYPE html><html><head></head><body>
+    <div style="
+  position: relative;
+  width: 90vw;
+  min-height: 50vh;
+  background: linear-gradient(to bottom right, #1A1A2E, #0F3460);
+  backdrop-filter: blur(10px);
+  border-radius: 1rem;
+  border: 1px solid rgba(99, 102, 241, 0.6);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 8px 10px -6px rgba(0, 0, 0, 0.4);
+  padding: 1.5rem;
+  margin: 2.5rem auto;
+  display: flex;
+  flex-direction: column;
+}
+">
+
+    <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="hexagon-nodes" 
+    class="svg-inline--fa fa-hexagon-nodes" 
+    role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 700">
+    <style>
+        path {
+            fill: #6366f1;
+        }
+    </style>
+    <path fill="currentColor" d="M248 106.6c18.9-9 32-28.3 32-50.6c0-30.9-25.1-56-56-56s-56 25.1-56 56c0 22.3 13.1 41.6 32 50.6l0 98.8c-2.8 1.3-5.5 2.9-8 4.7l-80.1-45.8c1.6-20.8-8.6-41.6-27.9-52.8C57.2 96 23 105.2 7.5 132S1.2 193 28 208.5c1.3 .8 2.6 1.5 4 2.1l0 90.8c-1.3 .6-2.7 1.3-4 2.1C1.2 319-8 353.2 7.5 380S57.2 416 84 400.5c19.3-11.1 29.4-32 27.8-52.8l50.5-28.9c-11.5-11.2-19.9-25.6-23.8-41.7L88 306.1c-2.6-1.8-5.2-3.3-8-4.7l0-90.8c2.8-1.3 5.5-2.9 8-4.7l80.1 45.8c-.1 1.4-.2 2.8-.2 4.3c0 22.3 13.1 41.6 32 50.6l0 98.8c-18.9 9-32 28.3-32 50.6c0 30.9 25.1 56 56 56s56-25.1 56-56c0-22.3-13.1-41.6-32-50.6l0-98.8c2.8-1.3 5.5-2.9 8-4.7l80.1 45.8c-1.6 20.8 8.6 41.6 27.8 52.8c26.8 15.5 61 6.3 76.5-20.5s6.3-61-20.5-76.5c-1.3-.8-2.7-1.5-4-2.1l0-90.8c1.4-.6 2.7-1.3 4-2.1c26.8-15.5 36-49.7 20.5-76.5S390.8 96 364 111.5c-19.3 11.1-29.4 32-27.8 52.8l-50.6 28.9c11.5 11.2 19.9 25.6 23.8 41.7L360 205.9c2.6 1.8 5.2 3.3 8 4.7l0 90.8c-2.8 1.3-5.5 2.9-8 4.6l-80.1-45.8c.1-1.4 .2-2.8 .2-4.3c0-22.3-13.1-41.6-32-50.6l0-98.8z">
+    </path>
+    </svg>
+    </div>
+    </body></html>`
   ); // State for generated code
   const [showCode, setShowCode] = useState(false); // State for toggling between website/code views
   const [fileName,setFileName] = useState("html");
@@ -226,7 +258,7 @@ const MainPagePlain = () => {
     console.log("Form submitted with prompt:", prompt);
     // Simulate fetching generated code from backend (replace this with your API call)
     try{
-        console.log(parsedData.PID);
+        // console.log(parsedData.PID);
         const response = await fetch(`http://localhost:5000/chat/${projectID}`,{
             method : 'POST',
             headers : {
@@ -280,7 +312,7 @@ if (matches) {
       {/* Left Panel */}
       <div className="w-1/2 p-6 border-r border-gray-700 bg-gray-800 flex flex-col">
         {/* Previous Prompts Section */}
-        <div className="flex-grow max-h-64 overflow-y-auto p-3 mb-4 border border-gray-700 rounded-lg bg-gray-900">
+        <div className="flex-grow max-h-64 overflow-y-auto p-3 mb-4 border border-gray-700 rounded-lg bg-white">
           {previousPrompts.map((entry, index) => (
             <div key={index} className="mb-3">
               {/* User Prompt */}
@@ -341,7 +373,7 @@ if (matches) {
         </nav>
   
         {/* Generated Website or Code */}
-        <div className="flex-grow bg-gray-900 p-4">
+        <div className="flex-grow bg-white p-4">
           {showCode ? (
             <div className="box-border overflow-scroll max-h-full">
               <nav className="flex justify-start items-center space-x-2 mb-2">
@@ -372,9 +404,9 @@ if (matches) {
             </div>
           ) : (
             <ResizableBox
-              className="relative w-full h-full border-0"
-              width={1200}
-              height={700}
+              className="relative w-full h-full border-[1.5px] border-zinc-600 border-solid bg-white rounded-md"
+              // width={400}
+              // height={700}
               minConstraints={[300, 200]}
               maxConstraints={[1200, 800]}
               resizeHandles={["se"]}

@@ -31,7 +31,7 @@ const projectSchema = new Schema(
         // Description
         description: {
             type: String,
-            required: true
+            required: false
         },
         // Project Type
         projectType: {
