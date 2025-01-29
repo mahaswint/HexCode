@@ -17,7 +17,7 @@ function SandpackPreviewClient() {
     }, [sandpack && action]);
 
     const GetSandpackClient = async () => {
-        const client = previewRef.current?.getClient();
+        const client = previewRef?.current?.getClient();
         if (client) {
             console.log(client);
             const result = await client.getCodeSandboxURL();
