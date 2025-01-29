@@ -21,6 +21,9 @@ import { ActionContext } from './ActionContext'; // Updated import path
 
 export default function MainPageReact({children}) {
   const { action, setAction } = useContext(ActionContext) || {};
+  const [userprompts, setUserprompts] = useState([]);
+  const [aimessage, setAimessage] = useState([]);
+
   let parsedData;
   useEffect(()=>{
       const data = localStorage.getItem('firstprompt');
@@ -31,9 +34,6 @@ export default function MainPageReact({children}) {
       setPrompt(parsedData.prompt);
       setProjectID(parsedData.PID);
   },[]);
-  useEffect(()=>{
-    getHistory();
-  },[])
 
     // const previousPrompts = [
     //   {
@@ -41,32 +41,6 @@ export default function MainPageReact({children}) {
     //     response: "A modern, responsive e-commerce website with product listing, cart functionality, and checkout process"
     //   }
     // ];
-    const getHistory = async () => {
-      try {
-        const response = await fetch(`http://localhost:5000/chat/getchat/${projectID}`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          credentials: "include",
-        });
-    
-        // Await the JSON parsing
-        const data = await response.json(); 
-        console.log("Previous prompts from backend:", data);
-    
-        
-        const previousChatsArray = data.chats; 
-        console.log(previousChatsArray);
-        setPreviousPrompts(previousChatsArray)
-        console.log(previousPrompts)
-    
-       
-    
-      } catch (e) {
-        console.log("Error while fetching chat history:", e);
-      }
-    };
     
 
     
@@ -263,6 +237,7 @@ export default function MainPageReact({children}) {
   const handlePromptSubmit = async (e) => {
     e.preventDefault(); // Prevents the default form submission behavior
     console.log("Form submitted with prompt:", prompt);
+    setUserprompts((prevPrompts) => [...prevPrompts, prompt]);
     // Simulate fetching generated code from backend (replace this with your API call)
     try{
       console.log(projectID);
@@ -282,8 +257,10 @@ export default function MainPageReact({children}) {
         console.log('Response from backend:', data);
         const project_string = data.content[0].text;
         const project_object = JSON.parse(project_string)
-        console.log("Object given to Sandpack:",project_object)
+        console.log("Object given to Sandpack:",project_object.explanation)
+        setAimessage((prevMessages) => [...prevMessages, project_object.explanation]);
         console.log("Entry file path:",project_object.entryFilePath)
+        console.log([userprompts,aimessage]);
         // const something = {
         //   PID:parsedData.PID,
         //   prompt:'',
@@ -327,26 +304,26 @@ export default function MainPageReact({children}) {
     <div className="w-1/2 p-6 border-r border-gray-700 bg-gray-800 flex flex-col">
         {/* Previous Prompts Section */}
         <div className="flex-grow max-h-64 overflow-y-auto p-3 mb-4 border border-gray-700 rounded-lg bg-gray-900">
-          {previousPrompts.map((entry, index) => (
-            <div key={index} className="mb-3">
-              {/* User Prompt */}
-              <div className="flex justify-end">
-                <div className="bg-indigo-500 text-white px-4 py-2 rounded-lg max-w-[80%]">
-                  {entry.userprompt}
-                </div>
-              </div>
-
-              {/* AI Response */}
-              {entry.airesponse && (
-                <div className="flex justify-start mt-1">
-                  <div className="bg-gray-700 text-white px-4 py-2 rounded-lg max-w-[80%]">
-                    {entry.userprompt}
-                  </div>
-                </div>
-              )}
-            </div>
-          ))}
+  {userprompts.map((prompt, index) => (
+    <div key={index} className="mb-3">
+      {/* User Prompt */}
+      <div className="flex justify-end">
+        <div className="bg-indigo-500 text-white px-4 py-2 rounded-lg max-w-[80%]">
+          {prompt}
         </div>
+      </div>
+
+      {/* AI Response */}
+      {aimessage[index] && (
+        <div className="flex justify-start mt-1">
+          <div className="bg-gray-700 text-white px-4 py-2 rounded-lg max-w-[80%]">
+            {aimessage[index]}
+          </div>
+        </div>
+      )}
+    </div>
+  ))}
+</div>
       <textarea
         id="prompt-area"
         className="w-full h-64 p-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:outline-none"
