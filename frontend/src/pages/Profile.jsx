@@ -124,20 +124,26 @@ const Profile = () => {
         }
     });
 }
+console.log(projects);
   return (
     <div className="bg-[#0f172a] text-white p-8 h-full w-full">
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-7xl mx-auto h-screen">
         {/* Profile Section */}
         <div className="flex gap-8">
           {/* Profile Info */}
           <div className="bg-[#1e293b] p-6 rounded-lg fixed h-[75vh] shadow-md w-1/4">
-            <div className="bg-gray-700 w-[20vw] h-[40vh] mx-auto rounded-lg shadow-lg flex items-center justify-center"></div>
+          {user && (
+            <div className="bg-gray-700 w-[20vw] h-[40vh] mx-auto rounded-lg shadow-lg flex items-center justify-center">
+                <img src={user.imageURL} alt="" />
+            </div>
+          )}
+            
             {user && <div className="flex justify-end mx-2 my-2"><button onClick={()=>handleShowEditDialog(setUser,user,handleUpdateUser)}><FontAwesomeIcon icon={faUserPen} /></button></div>}
             <h2 className="text-xl text-center mt-4 font-bold">
               {user ? user.name : "Loading..."}
             </h2>
             <p className="text-center text-[#94a3b8]">
-              {user ? `@${user.username}` : ""}
+              {user ? `@${user.email}` : ""}
             </p>
             <h3 className="text-lg font-semibold mt-6">Skills</h3>
             <div className="flex flex-wrap gap-2 mt-2">
@@ -161,7 +167,7 @@ const Profile = () => {
             ) : error ? (
               <p className="text-center text-red-500">{error}</p>
             ) : (
-              <Projectlist projects={projects} />
+              <Projectlist projects={projects} /> 
             )}
           </div>
         </div>

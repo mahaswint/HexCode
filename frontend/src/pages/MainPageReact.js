@@ -1,6 +1,6 @@
 'use client'
 
-import React,{useState,useEffect} from 'react';
+import React,{useState,useEffect,useContext} from 'react';
 import Prism from 'prismjs';
 import 'prismjs/themes/prism-okaidia.css';
 import 'prismjs/components/prism-markup';
@@ -14,16 +14,44 @@ import { Sandpack,
     SandpackFileExplorer,
    } from "@codesandbox/sandpack-react";
 import { atomDark } from '@codesandbox/sandpack-themes';
+import SandpackPreviewClient from './SandpackPreviewClient';
+import { ActionContext } from './ActionContext'; // Updated import path
+
 
 
 export default function MainPageReact({children}) {
+  const { action, setAction } = useContext(ActionContext) || {};
+  const [userprompts, setUserprompts] = useState([]);
+  const [aimessage, setAimessage] = useState([]);
+
+  let parsedData;
   useEffect(()=>{
       const data = localStorage.getItem('firstprompt');
-      const parsedData = JSON.parse(data);
+      parsedData = JSON.parse(data);
       console.log(parsedData);
-    },[]);
+      const prompt_area = document.querySelector('#prompt-area')
+      prompt_area.innerHTML=parsedData.prompt;
+      setPrompt(parsedData.prompt);
+      setProjectID(parsedData.PID);
+  },[]);
+
+    // const previousPrompts = [
+    //   {
+    //     prompt : "hi",
+    //     response: "A modern, responsive e-commerce website with product listing, cart functionality, and checkout process"
+    //   }
+    // ];
     
+
+    
+    const [previousPrompts,setPreviousPrompts] = useState([
+        {
+          prompt : "hi",
+          response: "A modern, responsive e-commerce website with product listing, cart functionality, and checkout process"
+        }
+      ]);
     const [prompt, setPrompt] = useState('');
+    const [projectID,setProjectID] = useState('');
     const [projectStructure, setProjectStructure] = useState({
       "projectTitle": "React E-commerce Website",
       "explanation": "A modern, responsive e-commerce website with product listing, cart functionality, and checkout process",
@@ -98,6 +126,17 @@ export default function MainPageReact({children}) {
       window.Prism.highlightAll();
     }
   }, []);
+
+  const onActionBtn = (action) => {
+    if (setAction) {
+        setAction({
+            actionType: action,
+            timeStamp: Date.now()
+        });
+    } else {
+        console.error("setAction is not defined");
+    }
+};
 
   // const handleClick = (type) => {
   //   setFileName(type);
@@ -198,10 +237,11 @@ export default function MainPageReact({children}) {
   const handlePromptSubmit = async (e) => {
     e.preventDefault(); // Prevents the default form submission behavior
     console.log("Form submitted with prompt:", prompt);
+    setUserprompts((prevPrompts) => [...prevPrompts, prompt]);
     // Simulate fetching generated code from backend (replace this with your API call)
     try{
-
-        const response = await fetch('http://localhost:5000/chat',{
+      console.log(projectID);
+        const response = await fetch(`http://localhost:5000/chat/${projectID}`,{
             method : 'POST',
             headers : {
                 'Content-Type': 'application/json'
@@ -217,8 +257,16 @@ export default function MainPageReact({children}) {
         console.log('Response from backend:', data);
         const project_string = data.content[0].text;
         const project_object = JSON.parse(project_string)
-        console.log("Object given to Sandpack:",project_object)
+        console.log("Object given to Sandpack:",project_object.explanation)
+        setAimessage((prevMessages) => [...prevMessages, project_object.explanation]);
         console.log("Entry file path:",project_object.entryFilePath)
+        console.log([userprompts,aimessage]);
+        // const something = {
+        //   PID:parsedData.PID,
+        //   prompt:'',
+
+        // }
+        // localStorage.setItem('firstprompt',JSON.stringify(something));
         setProjectStructure(project_object);
 
 //         let text = data.content[0].text;
@@ -253,8 +301,31 @@ export default function MainPageReact({children}) {
   return (
   <div className="flex h-screen w-screen text-white">
     {/* Left Panel */}
-    <div className="w-1/2 p-6 border-r border-gray-700">
+    <div className="w-1/2 p-6 border-r border-gray-700 bg-gray-800 flex flex-col">
+        {/* Previous Prompts Section */}
+        <div className="flex-grow max-h-64 overflow-y-auto p-3 mb-4 border border-gray-700 rounded-lg bg-gray-900">
+  {userprompts.map((prompt, index) => (
+    <div key={index} className="mb-3">
+      {/* User Prompt */}
+      <div className="flex justify-end">
+        <div className="bg-indigo-500 text-white px-4 py-2 rounded-lg max-w-[80%]">
+          {prompt}
+        </div>
+      </div>
+
+      {/* AI Response */}
+      {aimessage[index] && (
+        <div className="flex justify-start mt-1">
+          <div className="bg-gray-700 text-white px-4 py-2 rounded-lg max-w-[80%]">
+            {aimessage[index]}
+          </div>
+        </div>
+      )}
+    </div>
+  ))}
+</div>
       <textarea
+        id="prompt-area"
         className="w-full h-64 p-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:outline-none"
         value={prompt}
         onChange={(e) => setPrompt(e.target.value)}
@@ -284,6 +355,20 @@ export default function MainPageReact({children}) {
         >
           Code
         </button>
+        <button
+          className={"bg-indigo-500 text-white py-2 px-6" }
+          onClick={() => onActionBtn("deploy")}
+        >
+          Deploy
+        </button>
+        <button
+          className={"bg-indigo-500 text-white py-2 px-6" }
+          onClick={() => onActionBtn("export")}
+         
+        >
+          Export
+        </button>
+    
       </nav>
 
       {/* Sandpack Editor */}
@@ -304,7 +389,6 @@ export default function MainPageReact({children}) {
               "class-variance-authority": "^0.7.1",
               "clsx": "^2.1.1",
               "cra-template": "1.2.0",
-              "dotenv": "^16.4.7",
               "lucide-react": "^0.471.1",
               "prism": "^4.1.2",
               "prismjs": "^1.29.0",
@@ -322,7 +406,11 @@ export default function MainPageReact({children}) {
         >
           <SandpackLayout className="h-full bg-gray-900">
             {activeTab === "preview" ? (
-              <SandpackPreview style={{ height: '600px' }} showNavigator={true} />
+
+              // <SandpackPreview style={{ height: '600px' }} showNavigator={true} />
+              <SandpackPreviewClient />
+
+
             ) : (
               <div className="flex h-[600px]">
                 <SandpackFileExplorer className="w-1/3 border-r border-gray-700" />

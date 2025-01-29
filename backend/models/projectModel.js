@@ -31,7 +31,7 @@ const projectSchema = new Schema(
         // Description
         description: {
             type: String,
-            required: true
+            required: false
         },
         // Project Type
         projectType: {
@@ -42,7 +42,7 @@ const projectSchema = new Schema(
         chats: [
             {
             text: { type: String },
-            userprompt: { type: String },
+            userprompt: { type: Schema.Types.Mixed  },
             airesponse: { type: Schema.Types.Mixed }//code only
             },
         ],

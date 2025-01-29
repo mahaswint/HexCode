@@ -1,26 +1,77 @@
 import '../App.css';
-import React,{useState,useEffect,useRef} from 'react';
+import React,{useState,useEffect,useRef,useContext} from 'react';
 import Prism from 'prismjs';
 import 'prismjs/themes/prism-okaidia.css';
+import 'prismjs/components/prism-markup';
+import 'prismjs/components/prism-css';
+import 'prismjs/components/prism-javascript';
 import Frame from 'react-frame-component';
 import { ResizableBox } from 'react-resizable';
+import { Sandpack, SandpackProvider, useSandpack, SandpackLayout } from "@codesandbox/sandpack-react";
+import SandpackPreviewClient2 from './SandpackPreviewClient2';
+import { ActionContext } from './ActionContext'; // Updated import path
 const MainPagePlain = () => {
   // Define states
   const [prompt, setPrompt] = useState(""); // State for user input
+  const { action, setAction } = useContext(ActionContext) || {};
+
   const [generatedHTML, setGeneratedHTML] = useState(
-    "<!DOCTYPE html><html><head></head><body><h1>Generated Website</h1></body></html>"
+    `<!DOCTYPE html><html><head></head><body>
+    <div style="
+  position: relative;
+  width: 90vw;
+  min-height: 50vh;
+  background: linear-gradient(to bottom right, #1A1A2E, #0F3460);
+  backdrop-filter: blur(10px);
+  border-radius: 1rem;
+  border: 1px solid rgba(99, 102, 241, 0.6);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 8px 10px -6px rgba(0, 0, 0, 0.4);
+  padding: 1.5rem;
+  margin: 2.5rem auto;
+  display: flex;
+  flex-direction: column;
+}
+">
+
+    <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="hexagon-nodes" 
+    class="svg-inline--fa fa-hexagon-nodes" 
+    role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 700">
+    <style>
+        path {
+            fill: #6366f1;
+        }
+    </style>
+    <path fill="currentColor" d="M248 106.6c18.9-9 32-28.3 32-50.6c0-30.9-25.1-56-56-56s-56 25.1-56 56c0 22.3 13.1 41.6 32 50.6l0 98.8c-2.8 1.3-5.5 2.9-8 4.7l-80.1-45.8c1.6-20.8-8.6-41.6-27.9-52.8C57.2 96 23 105.2 7.5 132S1.2 193 28 208.5c1.3 .8 2.6 1.5 4 2.1l0 90.8c-1.3 .6-2.7 1.3-4 2.1C1.2 319-8 353.2 7.5 380S57.2 416 84 400.5c19.3-11.1 29.4-32 27.8-52.8l50.5-28.9c-11.5-11.2-19.9-25.6-23.8-41.7L88 306.1c-2.6-1.8-5.2-3.3-8-4.7l0-90.8c2.8-1.3 5.5-2.9 8-4.7l80.1 45.8c-.1 1.4-.2 2.8-.2 4.3c0 22.3 13.1 41.6 32 50.6l0 98.8c-18.9 9-32 28.3-32 50.6c0 30.9 25.1 56 56 56s56-25.1 56-56c0-22.3-13.1-41.6-32-50.6l0-98.8c2.8-1.3 5.5-2.9 8-4.7l80.1 45.8c-1.6 20.8 8.6 41.6 27.8 52.8c26.8 15.5 61 6.3 76.5-20.5s6.3-61-20.5-76.5c-1.3-.8-2.7-1.5-4-2.1l0-90.8c1.4-.6 2.7-1.3 4-2.1c26.8-15.5 36-49.7 20.5-76.5S390.8 96 364 111.5c-19.3 11.1-29.4 32-27.8 52.8l-50.6 28.9c11.5 11.2 19.9 25.6 23.8 41.7L360 205.9c2.6 1.8 5.2 3.3 8 4.7l0 90.8c-2.8 1.3-5.5 2.9-8 4.6l-80.1-45.8c.1-1.4 .2-2.8 .2-4.3c0-22.3-13.1-41.6-32-50.6l0-98.8z">
+    </path>
+    </svg>
+    </div>
+    </body></html>`
   ); // State for generated code
   const [showCode, setShowCode] = useState(false); // State for toggling between website/code views
   const [fileName,setFileName] = useState("html");
   const [generatedCSS, setGeneratedCSS] = useState("");
   const [generatedJS, setGeneratedJS] = useState("");
+  const [generatedText,setGeneratedText] = useState("")
+  const [projectID,setProjectID] = useState('');
+  const [deployedCode,setDeployedCode] = useState('');
+  const previousPrompts = [
+    {
+      prompt : "hi",
+      response: "hi"
+    }
+  ];
 
 
-  useEffect(()=>{
-    const data = localStorage.getItem('firstprompt');
-    const parsedData = JSON.parse(data);
-    console.log(parsedData);
-  },[])
+  let parsedData;
+    useEffect(()=>{
+        const data = localStorage.getItem('firstprompt');
+        parsedData = JSON.parse(data);
+        console.log(parsedData);
+        const prompt_area = document.querySelector('#prompt-area')
+        prompt_area.innerHTML=parsedData.prompt;
+        setPrompt(parsedData.prompt);
+        setProjectID(parsedData.PID);
+      },[]);
 
   useEffect(() => {
     Prism.highlightAll(); // Applies syntax highlighting to all <code> elements
@@ -78,6 +129,42 @@ const MainPagePlain = () => {
     // Clean up
     document.body.removeChild(downloadLink);
     URL.revokeObjectURL(downloadLink.href);
+  };
+
+  const onActionBtn = (action) => {
+    if (setAction) {
+
+      setAction({
+        actionType: action,
+        timeStamp: Date.now()
+      });
+      console.log(action);
+
+    } else {
+      console.error("setAction is not defined");
+    }
+    const iframeDocument = iframeRef.current.contentDocument || iframeRef.current.contentWindow.document;
+  
+    if (!iframeDocument) {
+      console.error("Unable to access iframe content.");
+      return;
+    }
+  
+    // Get the updated HTML content of the iframe
+    const updatedHtml = `
+      <!DOCTYPE html>
+      <html>
+        ${iframeDocument.documentElement.innerHTML}
+      </html>
+    `;
+  
+    // Optionally clean the updated HTML (e.g., remove the script tag)
+    const cleanedCode = updatedHtml.replace(
+      /<script[^>]*id="draggable-script"[\s\S]*?<\/script>/s,
+      ""
+    );
+    console.log("Deployable code after removing the draggable script:", cleanedCode);
+    setDeployedCode(cleanedCode);
   };
   
   const draggableScript = `document.addEventListener('DOMContentLoaded', () => {
@@ -214,8 +301,8 @@ const MainPagePlain = () => {
     console.log("Form submitted with prompt:", prompt);
     // Simulate fetching generated code from backend (replace this with your API call)
     try{
-
-        const response = await fetch('http://localhost:5000/chat',{
+        // console.log(parsedData.PID);
+        const response = await fetch(`http://localhost:5000/chat/${projectID}`,{
             method : 'POST',
             headers : {
                 'Content-Type': 'application/json'
@@ -232,25 +319,26 @@ const MainPagePlain = () => {
 
         let text = data.content[0].text;
         console.log("Raw text before parsing-",text)
-        
-        const matches = text.match(/{\s*"html":\s*`([\s\S]*?)`\s*,\s*"css":\s*`([\s\S]*?)`\s*,\s*"js":\s*`([\s\S]*?)`\s*}/);
+        const object_data = JSON.parse(text)
+        // const matches = text.match(/{\s*"html":\s*`([\s\S]*?)`\s*,\s*"css":\s*`([\s\S]*?)`\s*,\s*"js":\s*`([\s\S]*?)`\s*,\s*"text":\s*`([\s\S]*?)`\s*}/);
 
-if (matches) {
-    const [_, htmlContent, cssContent,jsContent] = matches;
+// if (matches) {
+//     const [_, htmlContent, cssContent,jsContent,textContent] = matches;
     
-    // Create a new object with properly escaped content
-    var object_data = {
-        html: htmlContent,
-        css: cssContent,
-        js: jsContent
-    };
+//     // Create a new object with properly escaped content
+//     var object_data = {
+//         html: htmlContent,
+//         css: cssContent,
+//         js: jsContent,
+//         text: textContent
+//     };
     
-    // Now you can use the processed data directly without JSON.parse
-    console.log("This is the object with html and css:", object_data);
-} else {
-    console.error("Could not extract HTML and CSS content");
-}
-        
+//     // Now you can use the processed data directly without JSON.parse
+//     console.log("This is the object with html and css:", object_data);
+// } else {
+//     console.error("Could not extract HTML and CSS content");
+// }
+        setGeneratedText(object_data['text'])
         setGeneratedHTML(object_data['html'])
         setGeneratedCSS(object_data['css'])
         setGeneratedJS(object_data['js'])
@@ -261,13 +349,37 @@ if (matches) {
 
   };
   const displayCode = injectContentIntoHTML(generatedHTML, generatedCSS, generatedJS, draggableScript);
+  const displayCodedeploy = injectContentIntoHTML(generatedHTML, generatedCSS, generatedJS);
   const downloadableCode = injectContentIntoHTML(generatedHTML, generatedCSS, generatedJS, '');
   console.log("This is the code that will be given to the iframe:",displayCode)
   return (
     <div className="flex h-screen w-screen text-white bg-gray-900">
       {/* Left Panel */}
-      <div className="w-1/2 p-6 border-r border-gray-700 bg-gray-800">
+      <div className="w-1/2 p-6 border-r border-gray-700 bg-gray-800 flex flex-col">
+        {/* Previous Prompts Section */}
+        <div className="flex-grow max-h-64 overflow-y-auto p-3 mb-4 border border-gray-700 rounded-lg bg-white">
+          {previousPrompts.map((entry, index) => (
+            <div key={index} className="mb-3">
+              {/* User Prompt */}
+              <div className="flex justify-end">
+                <div className="bg-indigo-500 text-white px-4 py-2 rounded-lg max-w-[80%]">
+                  {entry.prompt}
+                </div>
+              </div>
+
+              {/* AI Response */}
+              {entry.response && (
+                <div className="flex justify-start mt-1">
+                  <div className="bg-gray-700 text-white px-4 py-2 rounded-lg max-w-[80%]">
+                    {entry.response}
+                  </div>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
         <textarea
+          id="prompt-area"
           className="w-full h-64 p-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:outline-none"
           value={prompt}
           onChange={(e) => setPrompt(e.target.value)}
@@ -303,10 +415,16 @@ if (matches) {
           >
             Download Code
           </button>
+          <button
+            className="py-2 px-6 rounded-md bg-indigo-500 hover:bg-indigo-600 text-white border border-blue-600"
+            onClick={() => onActionBtn("deploy")}
+          >
+            Deploy Website
+          </button>
         </nav>
   
         {/* Generated Website or Code */}
-        <div className="flex-grow bg-gray-900 p-4">
+        <div className="flex-grow bg-white p-4">
           {showCode ? (
             <div className="box-border overflow-scroll max-h-full">
               <nav className="flex justify-start items-center space-x-2 mb-2">
@@ -337,9 +455,9 @@ if (matches) {
             </div>
           ) : (
             <ResizableBox
-              className="relative w-full h-full border-0"
-              width={1200}
-              height={700}
+              className="relative w-full h-full border-[1.5px] border-zinc-600 border-solid bg-white rounded-md"
+              // width={400}
+              // height={700}
               minConstraints={[300, 200]}
               maxConstraints={[1200, 800]}
               resizeHandles={["se"]}
@@ -354,6 +472,35 @@ if (matches) {
               />
             </ResizableBox>
           )}
+
+        <div  style={{ opacity: 0 }}>
+            <SandpackProvider
+              template="react"
+              files={{
+                "public/index.html": {
+                  code: displayCodedeploy,
+                  active: true
+                },
+                "/index.js":{
+                  code:"",
+                  active:true
+                }
+               
+              }}
+              options={{
+                showNavigator: true,
+                showLineNumbers: true,
+                closableTabs: true,
+                activeFile:"/index.html",
+              }}
+            >
+              <SandpackLayout className="h-full bg-gray-900">
+                <SandpackPreviewClient2 />
+              </SandpackLayout>
+            </SandpackProvider>
+          </div>
+
+
         </div>
       </div>
     </div>
