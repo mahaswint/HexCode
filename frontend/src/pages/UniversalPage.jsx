@@ -2,7 +2,7 @@ import { TemplateCard } from "../components/TemplateCard";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass, faRocket,faHexagonNodes } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
-import InfiniteScroll from 'react-infinite-scroller';
+import InfiniteScroll from "react-infinite-scroller";
 
 const templates = [
     { title: "Blank Bot", description: "Create a blank chatbot, which you can train and customize later.Create a blank chatbot, which you can train and customize later.Create a blank chatbot, which you can train and customize later.Create a blank chatbot, which you can train and customize later.Create a blank chatbot, which you can train and customize later.Create a blank chatbot, which you can train and customize later.Create a blank chatbot, which you can train and customize later.Create a blank chatbot, which you can train and customize later.Create a blank chatbot, which you can train and customize later.Create a blank chatbot, which you can train and customize later.", imgSrc: "/assets/IMG_0664.jpg" },
