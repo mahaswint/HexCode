@@ -45,7 +45,21 @@ const projectSchema = new Schema(
             userprompt: { type: Schema.Types.Mixed  },
             airesponse: { type: Schema.Types.Mixed }//code only
             },
-        ]
+        ],
+        votes: {
+            upvotes: [{
+                type: Schema.Types.ObjectId,
+                ref: "User"
+            }],
+            downvotes: [{
+                type: Schema.Types.ObjectId,
+                ref: "User"
+            }]
+        },
+        voteCount: {
+            type: Number,
+            default: 0
+        }
     },
     {
         timestamps: true 

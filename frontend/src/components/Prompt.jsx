@@ -6,12 +6,10 @@ import {
     faSuitcase, 
     faUsers, 
     faArrowUp,
-    faMicrophone 
 } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
 import Swal from 'sweetalert2';
-import axios from 'axios';
-import { useUser } from "../context/userContext";
+import { useUser } from "../hooks/userContext";
 
 const Prompt = () => {
     const { user, setUser } = useUser();
@@ -147,6 +145,15 @@ const Prompt = () => {
                     icon: 'error',
                     title: 'Oops!',
                     text: 'Something went wrong. Please try again later.',
+                    customClass: {
+                        container: 'swal2-container-custom',
+                        popup: 'rounded-lg max-w-xs md:max-w-md mx-auto text-gray-200 p-6 shadow-xl',
+                        title: 'text-lg font-semibold text-red-400 mb-4',
+                        confirmButton: 'bg-red-500 hover:bg-red-600 text-white font-medium px-5 py-2 rounded-md',
+                        htmlContainer: 'text-sm font-normal text-gray-500',
+                        iconColor: 'text-red-400'
+                    },
+                    backdrop: 'backdrop-filter: blur(12px);'
                 });
             }
         }
@@ -166,9 +173,9 @@ const Prompt = () => {
             <div className="relative z-10 flex justify-center mb-4 ">
                 <div className="flex flex-wrap md:flex-nowrap justify-center gap-3 px-2">
                     {[
-                        { icon: faSuitcase, label: "Portfolio" },
-                        { icon: faFilePen, label: "Blog" },
-                        { icon: faUsers, label: "Social" },
+                        { icon: faSuitcase, label: "Portfolio"},
+                        { icon: faFilePen, label: "Blog"},
+                        { icon: faUsers, label: "E-Commerce" },
                         { icon: faListCheck, label: "Tasks" }
                     ].map((item, index) => (
                         <button 

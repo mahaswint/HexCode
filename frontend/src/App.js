@@ -1,10 +1,10 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
-import { UserProvider, useUser } from "./context/userContext";  // Import UserContext
+import { UserProvider, useUser } from "./hooks/userContext";  // Import UserContext
 
 import Navbar from "./components/Navbar"
 import Login from "./pages/Login"
-import Profile from "./pages/profile/Profile"
+import Profile from "./pages/Profile"
 // import axios from "axios";
 
 import Mypage from "./pages/Mypage";

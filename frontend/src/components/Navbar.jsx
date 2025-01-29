@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { useUser } from "../context/userContext";
+import { useUser } from "../hooks/userContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHexagonNodes, faUser, faBars, faArrowLeft, faSignOutAlt } from "@fortawesome/free-solid-svg-icons";
 import { Popover, PopoverButton, PopoverPanel } from "@headlessui/react";
