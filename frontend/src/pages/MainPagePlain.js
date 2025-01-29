@@ -1,5 +1,5 @@
 import '../App.css';
-import React,{useState,useEffect,useRef} from 'react';
+import React,{useState,useEffect,useRef,useContext} from 'react';
 import Prism from 'prismjs';
 import 'prismjs/themes/prism-okaidia.css';
 import 'prismjs/components/prism-markup';
@@ -7,9 +7,14 @@ import 'prismjs/components/prism-css';
 import 'prismjs/components/prism-javascript';
 import Frame from 'react-frame-component';
 import { ResizableBox } from 'react-resizable';
+import { Sandpack, SandpackProvider, useSandpack, SandpackLayout } from "@codesandbox/sandpack-react";
+import SandpackPreviewClient2 from './SandpackPreviewClient2';
+import { ActionContext } from './ActionContext'; // Updated import path
 const MainPagePlain = () => {
   // Define states
   const [prompt, setPrompt] = useState(""); // State for user input
+  const { action, setAction } = useContext(ActionContext) || {};
+
   const [generatedHTML, setGeneratedHTML] = useState(
     `<!DOCTYPE html><html><head></head><body>
     <div style="
@@ -48,6 +53,7 @@ const MainPagePlain = () => {
   const [generatedJS, setGeneratedJS] = useState("");
   const [generatedText,setGeneratedText] = useState("")
   const [projectID,setProjectID] = useState('');
+  const [deployedCode,setDeployedCode] = useState('');
   const previousPrompts = [
     {
       prompt : "hi",
@@ -123,6 +129,42 @@ const MainPagePlain = () => {
     // Clean up
     document.body.removeChild(downloadLink);
     URL.revokeObjectURL(downloadLink.href);
+  };
+
+  const onActionBtn = (action) => {
+    if (setAction) {
+
+      setAction({
+        actionType: action,
+        timeStamp: Date.now()
+      });
+      console.log(action);
+
+    } else {
+      console.error("setAction is not defined");
+    }
+    const iframeDocument = iframeRef.current.contentDocument || iframeRef.current.contentWindow.document;
+  
+    if (!iframeDocument) {
+      console.error("Unable to access iframe content.");
+      return;
+    }
+  
+    // Get the updated HTML content of the iframe
+    const updatedHtml = `
+      <!DOCTYPE html>
+      <html>
+        ${iframeDocument.documentElement.innerHTML}
+      </html>
+    `;
+  
+    // Optionally clean the updated HTML (e.g., remove the script tag)
+    const cleanedCode = updatedHtml.replace(
+      /<script[^>]*id="draggable-script"[\s\S]*?<\/script>/s,
+      ""
+    );
+    console.log("Deployable code after removing the draggable script:", cleanedCode);
+    setDeployedCode(cleanedCode);
   };
   
   const draggableScript = `document.addEventListener('DOMContentLoaded', () => {
@@ -307,6 +349,7 @@ const MainPagePlain = () => {
 
   };
   const displayCode = injectContentIntoHTML(generatedHTML, generatedCSS, generatedJS, draggableScript);
+  const displayCodedeploy = injectContentIntoHTML(generatedHTML, generatedCSS, generatedJS);
   const downloadableCode = injectContentIntoHTML(generatedHTML, generatedCSS, generatedJS, '');
   console.log("This is the code that will be given to the iframe:",displayCode)
   return (
@@ -372,6 +415,12 @@ const MainPagePlain = () => {
           >
             Download Code
           </button>
+          <button
+            className="py-2 px-6 rounded-md bg-indigo-500 hover:bg-indigo-600 text-white border border-blue-600"
+            onClick={() => onActionBtn("deploy")}
+          >
+            Deploy Website
+          </button>
         </nav>
   
         {/* Generated Website or Code */}
@@ -423,6 +472,35 @@ const MainPagePlain = () => {
               />
             </ResizableBox>
           )}
+
+        <div  style={{ opacity: 0 }}>
+            <SandpackProvider
+              template="react"
+              files={{
+                "public/index.html": {
+                  code: displayCodedeploy,
+                  active: true
+                },
+                "/index.js":{
+                  code:"",
+                  active:true
+                }
+               
+              }}
+              options={{
+                showNavigator: true,
+                showLineNumbers: true,
+                closableTabs: true,
+                activeFile:"/index.html",
+              }}
+            >
+              <SandpackLayout className="h-full bg-gray-900">
+                <SandpackPreviewClient2 />
+              </SandpackLayout>
+            </SandpackProvider>
+          </div>
+
+
         </div>
       </div>
     </div>
