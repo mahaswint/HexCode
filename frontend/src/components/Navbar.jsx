@@ -39,7 +39,7 @@ const Navbar = () => {
 
     return (
         <>
-            <nav className="flex w-full z-20 items-center justify-between py-4 px-7 border-gray-600 border-b-2 bg-opacity-30 backdrop-blur-md md:sticky md:top-0 relative">
+            <nav className="flex w-full z-20 items-center justify-between py-3 px-7 border-gray-600 border-b-2 bg-opacity-50 backdrop-blur-sm md:sticky md:top-0 relative">
 
                 
                 {/* Mobile Menu Button */}
@@ -101,13 +101,6 @@ const Navbar = () => {
                             </PopoverPanel>
                         </Popover>
                     )}
-
-                    {/* {!isUniversal &&
-                        <button className="border-solid rounded-md px-4 py-2 bg-indigo-500 hover:bg-indigo-600 focus:ring-2 focus:outline-none focus:ring-indigo-300 text-white text-md"
-                         onClick={()=>{navigate('/universal')}}>
-                            Explore
-                        </button>
-                    } */}
                 </div>
             </nav>
 
@@ -121,8 +114,8 @@ const Navbar = () => {
                         >
                             <FontAwesomeIcon icon={faArrowLeft} className="w-6 h-6 ml-48"/>
                         </button>
-                        <div className="flex flex-col mt-6">
-                            <div className="flex flex-col space-y-4">
+                        <div className="flex flex-col mt-6 h-[90%]">
+                            <div className="flex flex-col space-y-4 flex-grow">
                                 <Link to="/" className="p-2 hover:bg-gray-100 rounded hover:text-gray-700 transition-all duration-300" onClick={closeMobileMenu}>Home</Link>
                                 <Link to="/about" className="p-2 hover:bg-gray-100 rounded hover:text-gray-700 transition-all duration-300" onClick={closeMobileMenu}>About</Link>
                                 {/* <Link to="/faqs" className="p-2 hover:bg-gray-100 rounded hover:text-gray-700 transition-all duration-300" onClick={closeMobileMenu}>Services</Link>
@@ -130,7 +123,7 @@ const Navbar = () => {
                                 <Link to="/privacy" className="p-2 hover:bg-gray-100 rounded hover:text-gray-700 transition-all duration-300" onClick={closeMobileMenu}>Privacy</Link> */}
                             </div>
 
-                            <div className="border-t pt-4 ">
+                            <div className="border-t pt-4">
                                 {!user ? (
                                     <a href="http://localhost:5000/auth/google">
                                         <button className="w-full border-solid rounded-md px-4 py-2 bg-indigo-500 hover:bg-indigo-600 text-white" onClick={ closeMobileMenu }>

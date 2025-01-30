@@ -1,11 +1,12 @@
 'use client'
 
-import React,{useState,useEffect,useContext} from 'react';
+import React,{useState,useEffect,useContext,useRef} from 'react';
 import Prism from 'prismjs';
 import 'prismjs/themes/prism-okaidia.css';
 import 'prismjs/components/prism-markup';
 import 'prismjs/components/prism-css';
 import 'prismjs/components/prism-javascript';
+
 import { Sandpack,
     SandpackProvider,
     SandpackLayout,
@@ -18,7 +19,12 @@ import SandpackPreviewClient from './SandpackPreviewClient';
 import { ActionContext } from './ActionContext'; // Updated import path
 import { useParams } from 'react-router-dom';
 
+import { useSpring, animated } from "@react-spring/web";
+import { useDrag } from "@use-gesture/react";
 
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBarsStaggered, faCode, faWindowMaximize,faWandMagicSparkles,faFileExport, faRocket, faFloppyDisk } from "@fortawesome/free-solid-svg-icons";
+import { faReact, faHtml5, faCss3Alt, faSquareJs  } from "@fortawesome/free-brands-svg-icons";
 
 export default function MainPageReact({children}) {
   const { action, setAction } = useContext(ActionContext) || {};
@@ -54,14 +60,6 @@ export default function MainPageReact({children}) {
     }
   }, []);
   
-
-    // const previousPrompts = [
-    //   {
-    //     prompt : "hi",
-    //     response: "A modern, responsive e-commerce website with product listing, cart functionality, and checkout process"
-    //   }
-    // ];
-    
 
     
     const [previousPrompts,setPreviousPrompts] = useState([
@@ -201,77 +199,167 @@ export default function MainPageReact({children}) {
     }
 
   };
-  return (
-  <div className="flex h-screen w-screen text-white">
-    {/* Left Panel */}
-    <div className="w-1/2 p-6 border-r border-gray-700 bg-gray-800 flex flex-col">
-        {/* Previous Prompts Section */}
-        <div className="flex-grow max-h-64 overflow-y-auto p-3 mb-4 border border-gray-700 rounded-lg bg-gray-900">
-  {userprompts.map((prompt, index) => (
-    <div key={index} className="mb-3">
-      {/* User Prompt */}
-      <div className="flex justify-end">
-        <div className="bg-indigo-500 text-white px-4 py-2 rounded-lg max-w-[80%]">
-          {prompt}
-        </div>
-      </div>
 
-      {/* AI Response */}
-      {aimessage[index] && (
-        <div className="flex justify-start mt-1">
-          <div className="bg-gray-700 text-white px-4 py-2 rounded-lg max-w-[80%]">
-            {aimessage[index]}
+  const toggleView = ()=>{
+    if(showCode){
+      setShowCode(false);
+    }
+    else{
+      setShowCode(true);
+      setTimeout(highlightCode, 0);
+    }
+  };
+
+  const minLeftWidth = 55;
+  const [hovered, setHovered] = useState(false);
+  const containerRef = useRef(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [{ rightWidth }, api] = useSpring(() => ({ rightWidth: minLeftWidth }));
+
+  const bind = useDrag(({ movement: [mx], offset: [ox], dragging }) => {
+    setIsDragging(dragging);
+    const containerWidth = containerRef.current?.clientWidth || window.innerWidth;
+    const newRightWidth = minLeftWidth - (ox / containerWidth) * 100;
+    const clampedRightWidth = Math.max(minLeftWidth, Math.min(70, newRightWidth));
+    api.start({
+      rightWidth: clampedRightWidth,
+      immediate: dragging,
+    });
+  });
+
+  return (
+  <div ref={containerRef} className="flex h-screen w-full text-white bg-gray-900"
+  onMouseEnter={() => setHovered(true)}
+  onMouseLeave={() => setHovered(false)}
+  >
+    {/* Left Panel */}
+    <animated.div
+      className="w-1/2 p-6 border-r border-gray-700 bg-gray-900 flex flex-col"
+      style={{ width: rightWidth.to(rw => `${100 - rw}%`) }}>
+      {/* Previous Prompts Section */}
+      <div className="flex-grow h-[70%] overflow-y-auto p-3 mb-4 rounded-lg bg-gradient-to-br from-[#1A1A2E] to-[#0F3460] border border-indigo-400/20 shadow-2xl shadow-black/40">
+        <div className="flex gap-2 text-xl font-semibold">
+          <div>
+          <FontAwesomeIcon icon={faBarsStaggered} />
+          </div>
+          <div>
+            Response History
           </div>
         </div>
-      )}
-    </div>
-  ))}
-</div>
-      <textarea
-        id="prompt-area"
-        className="w-full h-64 p-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-        value={prompt}
-        onChange={(e) => setPrompt(e.target.value)}
-        placeholder="Enter website description..."
-      />
-      <button 
-        className="mt-4 px-6 py-2 bg-indigo-500 hover:bg-indigo-600 text-white font-semibold rounded-lg shadow-md transition"
-        onClick={handlePromptSubmit}
-      >
-        Generate Website
-      </button>
-    </div>
-
-    {/* Right Panel */}
-    <div className="w-1/2 flex flex-col">
-      {/* Navigation Tabs */}
-      <nav className="flex space-x-4 p-4 border-b border-gray-700">
-        <button
-          className={`py-2 px-6 rounded-md font-medium transition ${activeTab === "preview" ? "bg-indigo-500 text-white" : "text-blue-400 hover:text-white"}`}
-          onClick={() => setActiveTab("preview")}
+        {previousPrompts.map((entry, index) => (
+          <div key={index} className="mb-3">
+            {/* User Prompt */}
+            <div className="flex justify-end">
+              <div className="bg-indigo-500 text-white px-4 py-2 rounded-lg max-w-[80%]">
+                {entry.prompt}
+              </div>
+            </div>
+            {/* AI Response */}
+            {entry.response && (
+              <div className="flex justify-start mt-1">
+                <div className="bg-gray-700 text-white px-4 py-2 rounded-lg max-w-[80%]">
+                  {entry.response}
+                </div>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+      <div className='flex flex-col items-end w-full h-[30%]  bg-gray-800 border border-gray-600 rounded-lg'>
+        <textarea
+          id="prompt-area"
+          className="w-full h-[80%] p-3 bg-gray-800 rounded-lg text-white placeholder-gray-400 focus:outline-none resize-none"
+          value={prompt}
+          onChange={(e) => setPrompt(e.target.value)}
+          placeholder="Enter website description..."
+        />
+        <button 
+          className="h-10 w-10 p-2 m-2 bg-indigo-500 hover:bg-indigo-600 text-white font-semibold rounded-full shadow-md transition"
+          onClick={handlePromptSubmit}
         >
-          Preview
+          <FontAwesomeIcon icon={faWandMagicSparkles} />
         </button>
-        <button
-          className={`py-2 px-6 rounded-md font-medium transition ${activeTab === "code" ? "bg-indigo-500 text-white" : "text-blue-400 hover:text-white"}`}
-          onClick={() => setActiveTab("code")}
-        >
-          Code
-        </button>
-        <button
-          className={"bg-indigo-500 text-white py-2 px-6" }
-          onClick={() => onActionBtn("deploy")}
-        >
-          Deploy
-        </button>
-        <button
-          className={"bg-indigo-500 text-white py-2 px-6" }
-          onClick={() => onActionBtn("export")}
-         
-        >
-          Export
-        </button>
+      </div>
+    </animated.div>
     
+    {/* Draggable divider (visible only on hover) */}
+    <animated.div
+      {...bind()}
+      className="w-2 bg-slate-600 cursor-ew-resize transition-opacity duration-300"
+      style={{ opacity: isDragging || hovered ? 1 : 0 }}
+    />
+    
+    {/* Right Panel */}
+    <animated.div className="w-1/2 h-full flex flex-col bg-gray-900" style={{ width: rightWidth.to(rw => `${rw}%`) }}>
+      {/* Navigation Tabs */}
+      <nav className="flex flex-row justify-between p-2 bg-gray-900 border-b border-gray-700 h-[9%] mb-4">
+        <div 
+          className="bg-gray-900 inline-flex rounded-full p-1 transition-colors duration-300 border border-gray-200/50"
+          role="group"
+        >
+          <button
+            type="button"
+            className={`flex items-center rounded-full px-3 py-1 text-sm font-medium transition-all duration-300 
+              ${activeTab === "preview" ? "bg-white text-gray-900 shadow-lg" : "bg-gray-900 text-white"}`}
+            onClick={() => setActiveTab("preview")}
+          >
+            <FontAwesomeIcon 
+              icon={faWindowMaximize} 
+              className="mr-2 mt-[0.2rem] text-xs md:text-sm" 
+            />
+            <span className="hidden sm:inline">Preview</span>
+          </button>
+
+          <button
+            type="button"
+            className={`flex items-center rounded-full px-3 py-1 text-sm font-medium transition-all duration-300 
+              ${activeTab === "code" ? "bg-white text-gray-900 shadow-lg" : "bg-gray-900 text-white"}`}
+            onClick={() => setActiveTab("code")}
+          >
+            <FontAwesomeIcon 
+              icon={faCode} 
+              className="mr-2 mt-[0.2rem] text-xs md:text-sm" 
+            />
+            <span className="hidden sm:inline">Code</span>
+          </button>
+          </div>
+
+          <div className='flex flex-row gap-3'>
+          <button
+            className={"relative group p-2 h-10 w-10 mt-1 rounded-full text-white ring-1 ring-slate-100/60" }
+            onClick={() => onActionBtn("export")}
+          
+          >
+            <FontAwesomeIcon icon={faFileExport} className="text-xl" />
+            <span className="absolute z-50 left-1/2 bottom-full mb-2 w-max -translate-x-1/2 
+                     scale-0 rounded bg-gray-700 text-white text-xs px-2 py-1 
+                     opacity-0 transition-all group-hover:scale-100 group-hover:opacity-100">
+              Export
+            </span>
+          </button>
+          
+          <button className="relative group p-2 h-10 w-10 mt-1 rounded-full text-white ring-1 ring-slate-100/60"
+          >
+            <FontAwesomeIcon icon={faFloppyDisk} className="text-xl" />
+            <span className="absolute z-50 left-1/2 bottom-full mb-2 w-max -translate-x-1/2 
+                     scale-0 rounded bg-gray-700 text-white text-xs px-2 py-1 
+                     opacity-0 transition-all group-hover:scale-100 group-hover:opacity-100">
+              Save Changes
+            </span>
+          </button>
+        
+          <button
+            className="relative group p-2 h-10 w-10 mt-1 rounded-full text-white ring-1 ring-slate-100/60"
+            onClick={() => onActionBtn("deploy")}
+          >
+            <FontAwesomeIcon icon={faRocket} className="text-xl" />
+            <span className="absolute z-50 left-1/2 bottom-full mb-2 w-max -translate-x-1/2 
+                     scale-0 rounded bg-gray-700 text-white text-xs px-2 py-1 
+                     opacity-0 transition-all group-hover:scale-100 group-hover:opacity-100">
+              Deploy
+            </span>
+          </button>
+          </div>
       </nav>
 
       {/* Sandpack Editor */}
@@ -309,13 +397,9 @@ export default function MainPageReact({children}) {
         >
           <SandpackLayout className="h-full bg-gray-900">
             {activeTab === "preview" ? (
-
-              // <SandpackPreview style={{ height: '600px' }} showNavigator={true} />
-              <SandpackPreviewClient />
-
-
+              <SandpackPreviewClient className="h-full"/>
             ) : (
-              <div className="flex h-[600px]">
+              <div className="flex h-full">
                 <SandpackFileExplorer className="w-1/3 border-r border-gray-700" />
                 <SandpackCodeEditor className="w-2/3" />
               </div>
@@ -323,7 +407,7 @@ export default function MainPageReact({children}) {
           </SandpackLayout>
         </SandpackProvider>
       )}
-    </div>
+    </animated.div>
   </div>
 );
 };

@@ -57,7 +57,7 @@ const Introduction = () => {
     };
 
     return (
-        <div className="relative min-h-[98%] flex flex-col items-center justify-center text-gray-800 mt-16">
+        <div className="relative min-h-[98%] flex flex-col items-center justify-center text-gray-800 mt-12">
             {/* Main Content */}
             <motion.div
                 initial={{ opacity: 0, y: 50 }}
@@ -84,7 +84,7 @@ const Introduction = () => {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.5 }}
-                    className="text-2xl md:text-4xl text-gray-400 mb-8 font-semibold"
+                    className="text-2xl md:text-4xl text-gray-400 mb-6 font-semibold"
                 >
                     The Future of Intelligent Web Development
                 </motion.h2>
@@ -94,7 +94,7 @@ const Introduction = () => {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.7 }}
-                    className="max-w-2xl mx-auto text-base md:text-xl text-gray-600 mb-12"
+                    className="max-w-2xl mx-auto text-base md:text-xl text-gray-600 mb-10"
                 >
                     Revolutionize your development workflow with AI-powered website generation. 
                     Create stunning, responsive designs with unprecedented speed and precision.
@@ -108,13 +108,13 @@ const Introduction = () => {
                             initial={{ opacity: 0, y: 50 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.9 + idx * 0.2 }}
-                            className="bg-white/10 backdrop-blur-lg shadow-md border-[0.8px] border-gray-500 rounded-lg p-8 text-gray-200  transition-all duration-300 group hover:scale-105 hover:shadow-lg"
+                            className="bg-white/10 backdrop-blur-lg shadow-md border-[0.8px] border-gray-500 rounded-lg p-6 text-gray-200  transition-all duration-300 group hover:scale-105 hover:shadow-lg"
                         >
                             <FontAwesomeIcon
                                 icon={feature.icon}
-                                className="text-4xl mb-4 text-indigo-500 transition-colors"
+                                className="text-3xl mb-4 text-indigo-500 transition-colors"
                             />
-                            <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
+                            <h3 className="text-lg font-semibold mb-2">{feature.title}</h3>
                             <p className="text-md text-gray-300 font-light">{feature.description}</p>
                         </motion.div>
                     ))}
@@ -127,7 +127,7 @@ const Introduction = () => {
                         </button>
                     } */}
                 <div
-                    className="flex justify-center gap-5 items-center md:mt-8 md:mb-24"
+                    className="flex justify-center gap-5 items-center md:mt-6 md:mb-24"
                 >
 
                     <motion.button

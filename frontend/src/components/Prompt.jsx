@@ -124,7 +124,7 @@ const Prompt = () => {
                         customClass: {
                             container: 'swal2-container-custom',
                             popup: 'rounded-lg max-w-xs md:max-w-md mx-auto text-gray-200 p-6 shadow-xl',
-                            title: 'text-lg font-semibold text-green-400 mb-4',
+                            title: 'text-xl font-semibold text-green-400 mb-4',
                             confirmButton: 'bg-green-500 hover:bg-green-600 text-white font-medium px-5 py-2 rounded-md',
                             htmlContainer: 'text-sm font-normal text-gray-500',
                             iconColor: 'text-green-400'
@@ -148,7 +148,7 @@ const Prompt = () => {
                     customClass: {
                         container: 'swal2-container-custom',
                         popup: 'rounded-lg max-w-xs md:max-w-md mx-auto text-gray-200 p-6 shadow-xl',
-                        title: 'text-lg font-semibold text-red-400 mb-4',
+                        title: 'text-xl font-semibold text-red-400 mb-4',
                         confirmButton: 'bg-red-500 hover:bg-red-600 text-white font-medium px-5 py-2 rounded-md',
                         htmlContainer: 'text-sm font-normal text-gray-500',
                         iconColor: 'text-red-400'
