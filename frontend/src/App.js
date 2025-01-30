@@ -47,7 +47,7 @@ function App() {
                         {/* {<ProtectedRoute><Profile /></ProtectedRoute>} */}
                         <Route path="/profile" element={<Profile />} />
                         <Route path="/my" element={<Mypage/>} />
-                        <Route path="/main/react" element={<MainPageReact/>} />
+                        <Route path="/main/react/:projectid" element={<MainPageReact/>} />
                         <Route path="/main/plain" element={<MainPagePlain/>} />
                     </Routes>
                     <Footer/>

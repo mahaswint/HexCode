@@ -20,9 +20,10 @@ exports.chat = async (req,res)=> {
     console.log('frontend path:',frontendRoute)
     console.log('project ID', projectId)
     
+    console.log('matching route:',`/main/react/${projectId}`);
 
     let defaultPrompt;
-    if(frontendRoute == '/main/react'){
+    if(frontendRoute == `/main/react/${projectId}`){
       defaultPrompt = `
     You are an expert web developer tasked with generating a complete, production-ready React.js project from a user's description. Follow these precise guidelines:
 
@@ -69,16 +70,14 @@ exports.chat = async (req,res)=> {
     All elements must have a draggable class and vertical or horizontal class.DO NOT GIVE ME A SCRIPT FOR draggable class as i am implementing my own script for drag and drop which will use the draggable class. 
     `;
     }
-    else if(frontendRoute === '/main/plain'){
+    else if(frontendRoute === `/main/plain/${projectId}`){
       defaultPrompt = `
       Your task is to create a one-page website based on the given specifications, delivered as an HTML file , CSS file and javascript file. The website should incorporate a variety of engaging and interactive design features, such as drop-down menus, dynamic text and content, clickable buttons, and more. Ensure that the design is visually appealing, responsive, and user-friendly. The HTML, CSS, and JavaScript code should be well-structured, efficiently organized, and properly commented for readability and maintainability.Do not include any text excluding the code.If you want to give any text or explanation or anything relation to conversation give it in the json string as value of key 'text'
     Ensure that every element in the HTML, including sections, divs, project cards, price cards, and any other components, has both the draggable class and either horizontal or vertical class. Assign horizontal to headers, footers, and navigation elements, while all other elements should have vertical. No element should be left without these classes.DO NOT GIVE ME A SCRIPT FOR draggable class as i am implementing my own script for drag and drop which will use the draggable class.Inside body there should be a div with id 'layout' as root element and what ever html you are generated for the page should be placed inside this layout div
     Generate a JSON object with four keys: 'html' containing the HTML code and 'css' containing the CSS code and 'js' containing the javascript code and 'text' containing relevant explanation or implementation for a simple website. Do not include additional text outside the JSON object.Do not enclose the value of the keys in backticks, enclose in double quotes and escape all the double quotes and newline characters inside the values of html,css and js .Don't forget to add the newline characters in the code and escape them as they are crutial for indentation.
     `
     }
-    else{
-      return res.status(400).json({ error: "Invalid route" });
-    }
+    
   
 
     // const prompt = `${defaultPrompt}\n\n${userPrompt}`;
@@ -121,11 +120,14 @@ exports.chat = async (req,res)=> {
         return res.status(404).json({ error: "Project not found" });
       }
 
+      const airesponseJson = message.content[0].text;
+      const airesponseObject = JSON.parse(airesponseJson)
       // Add the user prompt and AI response to the messages array
       project.chats.push({
         // text: message.content, 
         userprompt: userPrompt,
         airesponse: message.content[0].text,
+        text : airesponseObject.explanation
       });
       console.log("BETICHOD");
       console.log(userPrompt)

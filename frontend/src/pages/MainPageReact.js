@@ -16,6 +16,7 @@ import { Sandpack,
 import { atomDark } from '@codesandbox/sandpack-themes';
 import SandpackPreviewClient from './SandpackPreviewClient';
 import { ActionContext } from './ActionContext'; // Updated import path
+import { useParams } from 'react-router-dom';
 
 
 
@@ -23,17 +24,36 @@ export default function MainPageReact({children}) {
   const { action, setAction } = useContext(ActionContext) || {};
   const [userprompts, setUserprompts] = useState([]);
   const [aimessage, setAimessage] = useState([]);
+  const {projectid} = useParams();
+  console.log(projectid);
+
+  let ProjectStructure;
 
   let parsedData;
-  useEffect(()=>{
-      const data = localStorage.getItem('firstprompt');
-      parsedData = JSON.parse(data);
+  useEffect(() => {
+    const data = localStorage.getItem('firstprompt');
+    
+    if (data) {
+      const parsedData = JSON.parse(data);
       console.log(parsedData);
-      const prompt_area = document.querySelector('#prompt-area')
-      prompt_area.innerHTML=parsedData.prompt;
-      setPrompt(parsedData.prompt);
-      setProjectID(parsedData.PID);
-  },[]);
+  
+      const prompt_area = document.querySelector('#prompt-area');
+      if (parsedData.prompt) {
+        prompt_area.innerHTML = parsedData.prompt;
+        console.log("Prompt taken from local storage");
+        setPrompt(parsedData.prompt);
+      }
+  
+      // Clear local storage after using the data
+      localStorage.removeItem('firstprompt');
+    } else {
+      // If no data is found, set prompt area to empty
+      const prompt_area = document.querySelector('#prompt-area');
+      prompt_area.innerHTML = '';
+      setPrompt('');
+    }
+  }, []);
+  
 
     // const previousPrompts = [
     //   {
@@ -51,72 +71,78 @@ export default function MainPageReact({children}) {
         }
       ]);
     const [prompt, setPrompt] = useState('');
-    const [projectID,setProjectID] = useState('');
     const [projectStructure, setProjectStructure] = useState({
-      "projectTitle": "React E-commerce Website",
-      "explanation": "A modern, responsive e-commerce website with product listing, cart functionality, and checkout process",
-      "entryFilePath": "/App.js",
+      "projectTitle": "Centered SVG Website",
+      "explanation": "This project creates a responsive website with a centered, blurred hexagon SVG. The SVG is positioned using CSS flexbox and maintains its aspect ratio while fitting the viewport. A subtle blur effect is applied using CSS filters.",
       "files": {
-          "/App.js": {
-              "code": "import React from 'react';\nimport { BrowserRouter as Router, Routes, Route } from 'react-router-dom';\nimport Navbar from './components/Navbar';\nimport Home from './pages/Home';\nimport Products from './pages/Products';\nimport Cart from './pages/Cart';\nimport ProductDetail from './pages/ProductDetail';\nimport './css/App.css';\n\nfunction App() {\n  return (\n    <Router>\n      <div className='App'>\n        <Navbar />\n        <Routes>\n          <Route path='/' element={<Home />} />\n          <Route path='/products' element={<Products />} />\n          <Route path='/product/:id' element={<ProductDetail />} />\n          <Route path='/cart' element={<Cart />} />\n        </Routes>\n      </div>\n    </Router>\n  );\n}\n\nexport default App;"
-          },
-          "/components/Navbar.js": {
-              "code": "import React from 'react';\nimport { Link } from 'react-router-dom';\nimport '../css/Navbar.css';\n\nconst Navbar = () => {\n  return (\n    <nav className='navbar draggable horizontal'>\n      <div className='nav-brand draggable'>\n        <Link to='/'>EShop</Link>\n      </div>\n      <div className='nav-links draggable horizontal'>\n        <Link to='/' className='nav-link draggable'>Home</Link>\n        <Link to='/products' className='nav-link draggable'>Products</Link>\n        <Link to='/cart' className='nav-link draggable'>Cart</Link>\n      </div>\n    </nav>\n  );\n};\n\nexport default Navbar;"
-          },
-          "/components/ProductCard.js": {
-              "code": "import React from 'react';\nimport { Link } from 'react-router-dom';\nimport '../css/ProductCard.css';\n\nconst ProductCard = ({ product }) => {\n  return (\n    <div className='product-card draggable vertical'>\n      <img src={product.image} alt={product.name} className='draggable'/>\n      <h3 className='draggable'>{product.name}</h3>\n      <p className='price draggable'>${product.price}</p>\n      <Link to={`/product/${product.id}`} className='view-btn draggable'>\n        View Details\n      </Link>\n    </div>\n  );\n};\n\nexport default ProductCard;"
-          },
-          "/pages/Home.js": {
-              "code": "import React from 'react';\nimport { Link } from 'react-router-dom';\nimport '../css/Home.css';\n\nconst Home = () => {\n  return (\n    <div className='home draggable vertical'>\n      <div className='hero draggable vertical'>\n        <h1 className='draggable'>Welcome to EShop</h1>\n        <p className='draggable'>Discover amazing products at great prices</p>\n        <Link to='/products' className='shop-now-btn draggable'>\n          Shop Now\n        </Link>\n      </div>\n      <div className='features draggable horizontal'>\n        <div className='feature draggable vertical'>\n          <h3 className='draggable'>Free Shipping</h3>\n          <p className='draggable'>On orders over $50</p>\n        </div>\n        <div className='feature draggable vertical'>\n          <h3 className='draggable'>24/7 Support</h3>\n          <p className='draggable'>Get help anytime</p>\n        </div>\n        <div className='feature draggable vertical'>\n          <h3 className='draggable'>Easy Returns</h3>\n          <p className='draggable'>30-day return policy</p>\n        </div>\n      </div>\n    </div>\n  );\n};\n\nexport default Home;"
-          },
-          "/pages/Products.js": {
-              "code": "import React from 'react';\nimport ProductCard from '../components/ProductCard';\nimport '../css/Products.css';\n\nconst Products = () => {\n  const products = [\n    { id: 1, name: 'Smartphone', price: 699.99, image: 'https://via.placeholder.com/200' },\n    { id: 2, name: 'Laptop', price: 999.99, image: 'https://via.placeholder.com/200' },\n    { id: 3, name: 'Headphones', price: 149.99, image: 'https://via.placeholder.com/200' },\n    { id: 4, name: 'Smartwatch', price: 299.99, image: 'https://via.placeholder.com/200' }\n  ];\n\n  return (\n    <div className='products-page draggable vertical'>\n      <h2 className='draggable'>Our Products</h2>\n      <div className='products-grid draggable horizontal'>\n        {products.map(product => (\n          <ProductCard key={product.id} product={product} />\n        ))}\n      </div>\n    </div>\n  );\n};\n\nexport default Products;"
-          },
-          "/pages/ProductDetail.js": {
-              "code": "import React from 'react';\nimport { useParams } from 'react-router-dom';\nimport '../css/ProductDetail.css';\n\nconst ProductDetail = () => {\n  const { id } = useParams();\n\n  const product = {\n    id: 1,\n    name: 'Smartphone',\n    price: 699.99,\n    image: 'https://via.placeholder.com/400',\n    description: 'A high-end smartphone with amazing features.'\n  };\n\n  return (\n    <div className='product-detail draggable vertical'>\n      <div className='product-info draggable horizontal'>\n        <img src={product.image} alt={product.name} className='draggable'/>\n        <div className='info-text draggable vertical'>\n          <h2 className='draggable'>{product.name}</h2>\n          <p className='price draggable'>${product.price}</p>\n          <p className='description draggable'>{product.description}</p>\n          <button className='add-to-cart-btn draggable'>Add to Cart</button>\n        </div>\n      </div>\n    </div>\n  );\n};\n\nexport default ProductDetail;"
-          },
-          "/pages/Cart.js": {
-              "code": "import React from 'react';\nimport '../css/Cart.css';\n\nconst Cart = () => {\n  const cartItems = [\n    { id: 1, name: 'Smartphone', price: 699.99, quantity: 1 }\n  ];\n\n  return (\n    <div className='cart-page draggable vertical'>\n      <h2 className='draggable'>Shopping Cart</h2>\n      <div className='cart-items draggable vertical'>\n        {cartItems.map(item => (\n          <div key={item.id} className='cart-item draggable horizontal'>\n            <h3 className='draggable'>{item.name}</h3>\n            <p className='draggable'>${item.price}</p>\n            <input type='number' value={item.quantity} min='1' className='draggable'/>\n            <button className='remove-btn draggable'>Remove</button>\n          </div>\n        ))}\n      </div>\n      <div className='cart-total draggable horizontal'>\n        <h3 className='draggable'>Total: $699.99</h3>\n        <button className='checkout-btn draggable'>Checkout</button>\n      </div>\n    </div>\n  );\n};\n\nexport default Cart;"
-          },
-          "/css/App.css": {
-              "code": "* {\n  margin: 0;\n  padding: 0;\n  box-sizing: border-box;\n}\n\n.App {\n  font-family: Arial, sans-serif;\n  min-height: 100vh;\n  background-color: #f5f5f5;\n}\n\na {\n  text-decoration: none;\n  color: inherit;\n}"
-          },
-          "/css/Navbar.css": {
-              "code": ".navbar {\n  background-color: #2c3e50;\n  padding: 1rem 2rem;\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  color: white;\n}\n\n.nav-brand a {\n  font-size: 1.5rem;\n  font-weight: bold;\n  color: #ecf0f1;\n}\n\n.nav-links {\n  display: flex;\n  gap: 2rem;\n}\n\n.nav-link {\n  color: #ecf0f1;\n  transition: color 0.3s;\n}\n\n.nav-link:hover {\n  color: #3498db;\n}\n\n@media (max-width: 768px) {\n  .navbar {\n    flex-direction: column;\n    gap: 1rem;\n    text-align: center;\n  }\n\n  .nav-links {\n    flex-direction: column;\n    gap: 1rem;\n  }\n}"
-          },
-          "/css/Home.css": {
-              "code": ".home {\n  min-height: 90vh;\n}\n\n.hero {\n  background: linear-gradient(135deg, #2c3e50, #3498db);\n  color: white;\n  padding: 4rem 2rem;\n  text-align: center;\n}\n\n.hero h1 {\n  font-size: 2.5rem;\n  margin-bottom: 1rem;\n}\n\n.hero p {\n  font-size: 1.2rem;\n  margin-bottom: 2rem;\n}\n\n.shop-now-btn {\n  background-color: #e74c3c;\n  color: white;\n  padding: 1rem 2rem;\n  border-radius: 5px;\n  display: inline-block;\n  transition: background-color 0.3s;\n}\n\n.shop-now-btn:hover {\n  background-color: #c0392b;\n}\n\n.features {\n  display: flex;\n  justify-content: space-around;\n  padding: 4rem 2rem;\n  background-color: white;\n}\n\n.feature {\n  text-align: center;\n  padding: 1rem;\n}\n\n.feature h3 {\n  color: #2c3e50;\n  margin-bottom: 0.5rem;\n}\n\n@media (max-width: 768px) {\n  .features {\n    flex-direction: column;\n    gap: 2rem;\n  }\n}"
-          },
-          "/css/Products.css": {
-              "code": ".products-page {\n  padding: 2rem;\n}\n\n.products-page h2 {\n  text-align: center;\n  color: #2c3e50;\n  margin-bottom: 2rem;\n}\n\n.products-grid {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));\n  gap: 2rem;\n  padding: 1rem;\n}\n\n@media (max-width: 768px) {\n  .products-grid {\n    grid-template-columns: 1fr;\n  }\n}"
-          },
-          "/css/ProductCard.css": {
-              "code": ".product-card {\n  background-color: white;\n  border-radius: 8px;\n  padding: 1rem;\n  box-shadow: 0 2px 5px rgba(0,0,0,0.1);\n  text-align: center;\n  transition: transform 0.3s;\n}\n\n.product-card:hover {\n  transform: translateY(-5px);\n}\n\n.product-card img {\n  width: 100%;\n  height: auto;\n  border-radius: 4px;\n  margin-bottom: 1rem;\n}\n\n.product-card h3 {\n  color: #2c3e50;\n  margin-bottom: 0.5rem;\n}\n\n.price {\n  color: #e74c3c;\n  font-weight: bold;\n  margin-bottom: 1rem;\n}\n\n.view-btn {\n  background-color: #3498db;\n  color: white;\n  padding: 0.5rem 1rem;\n  border-radius: 4px;\n  display: inline-block;\n  transition: background-color 0.3s;\n}\n\n.view-btn:hover {\n  background-color: #2980b9;\n}"
-          },
-          "/css/ProductDetail.css": {
-              "code": ".product-detail {\n  padding: 2rem;\n}\n\n.product-info {\n  display: flex;\n  gap: 2rem;\n  max-width: 1200px;\n  margin: 0 auto;\n  background-color: white;\n  padding: 2rem;\n  border-radius: 8px;\n  box-shadow: 0 2px 5px rgba(0,0,0,0.1);\n}\n\n.product-info img {\n  width: 50%;\n  height: auto;\n  border-radius: 8px;\n}\n\n.info-text {\n  flex: 1;\n}\n\n.info-text h2 {\n  color: #2c3e50;\n  margin-bottom: 1rem;\n}\n\n.info-text .price {\n  color: #e74c3c;\n  font-size: 1.5rem;\n  margin-bottom: 1rem;\n}\n\n.description {\n  color: #7f8c8d;\n  margin-bottom: 2rem;\n}\n\n.add-to-cart-btn {\n  background-color: #2ecc71;\n  color: white;\n  padding: 1rem 2rem;\n  border: none;\n  border-radius: 4px;\n  cursor: pointer;\n  transition: background-color 0.3s;\n}\n\n.add-to-cart-btn:hover {\n  background-color: #27ae60;\n}\n\n@media (max-width: 768px) {\n  .product-info {\n    flex-direction: column;\n  }\n\n  .product-info img {\n    width: 100%;\n  }\n}"
-          },
-          "/css/Cart.css": {
-              "code": ".cart-page {\n  padding: 2rem;\n  max-width: 1200px;\n  margin: 0 auto;\n}\n\n.cart-page h2 {\n  color: #2c3e50;\n  margin-bottom: 2rem;\n  text-align: center;\n}\n\n.cart-items {\n  background-color: white;\n  border-radius: 8px;\n  padding: 1rem;\n  box-shadow: 0 2px 5px rgba(0,0,0,0.1);\n}\n\n.cart-item {\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  padding: 1rem;\n  border-bottom: 1px solid #ecf0f1;\n}\n\n.cart-item:last-child {\n  border-bottom: none;\n}\n\n.cart-item input {\n  width: 60px;\n  padding: 0.5rem;\n  border: 1px solid #bdc3c7;\n  border-radius: 4px;\n}\n\n.remove-btn {\n  background-color: #e74c3c;\n  color: white;\n  border: none;\n  padding: 0.5rem 1rem;\n  border-radius: 4px;\n  cursor: pointer;\n  transition: background-color 0.3s;\n}\n\n.remove-btn:hover {\n  background-color: #c0392b;\n}\n\n.cart-total {\n  margin-top: 2rem;\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  padding: 1rem;\n  background-color: white;\n  border-radius: 8px;\n  box-shadow: 0 2px 5px rgba(0,0,0,0.1);\n}\n\n.checkout-btn {\n  background-color: #2ecc71;\n  color: white;\n  border: none;\n  padding: 1rem 2rem;\n  border-radius: 4px;\n  cursor: pointer;\n  transition: background-color 0.3s;\n}\n\n.checkout-btn:hover {\n  background-color: #27ae60;\n}\n\n@media (max-width: 768px) {\n  .cart-item {\n    flex-direction: column;\n    gap: 1rem;\n    text-align: center;\n  }\n\n  .cart-total {\n    flex-direction: column;\n    gap: 1rem;\n    text-align: center;\n  }\n}"
-          }
+        "/App.js": {
+          "code": "import React from 'react';\nimport { BrowserRouter as Router, Route, Routes } from 'react-router-dom';\nimport Home from './components/Home';\nimport './css/App.css';\n\nfunction App() {\n  return (\n    <Router>\n      <Routes>\n        <Route path=\"/\" element={<Home />} />\n      </Routes>\n    </Router>\n  );\n}\n\nexport default App;"
+        },
+        "/components/Home.js": {
+          "code": "import React from 'react';\nimport '../css/Home.css';\n\nconst Home = () => {\n  return (\n    <div className=\"container draggable\">\n      <div className=\"svg-container draggable\">\n        <svg\n          aria-hidden=\"true\"\n          focusable=\"false\"\n          data-prefix=\"fas\"\n          data-icon=\"hexagon-nodes\"\n          className=\"svg-inline--fa fa-hexagon-nodes draggable\"\n          role=\"img\"\n          xmlns=\"http://www.w3.org/2000/svg\"\n          viewBox=\"0 0 700 700\"\n        >\n          <style>\n            {`\n              path {\n                fill: #6366f1;\n              }\n            `}\n          </style>\n          <path\n            fill=\"currentColor\"\n            d=\"M248 106.6c18.9-9 32-28.3 32-50.6c0-30.9-25.1-56-56-56s-56 25.1-56 56c0 22.3 13.1 41.6 32 50.6l0 98.8c-2.8 1.3-5.5 2.9-8 4.7l-80.1-45.8c1.6-20.8-8.6-41.6-27.9-52.8C57.2 96 23 105.2 7.5 132S1.2 193 28 208.5c1.3 .8 2.6 1.5 4 2.1l0 90.8c-1.3 .6-2.7 1.3-4 2.1C1.2 319-8 353.2 7.5 380S57.2 416 84 400.5c19.3-11.1 29.4-32 27.8-52.8l50.5-28.9c-11.5-11.2-19.9-25.6-23.8-41.7L88 306.1c-2.6-1.8-5.2-3.3-8-4.7l0-90.8c2.8-1.3 5.5-2.9 8-4.7l80.1 45.8c-.1 1.4-.2 2.8-.2 4.3c0 22.3 13.1 41.6 32 50.6l0 98.8c-18.9 9-32 28.3-32 50.6c0 30.9 25.1 56 56 56s56-25.1 56-56c0-22.3-13.1-41.6-32-50.6l0-98.8c2.8-1.3 5.5-2.9 8-4.7l80.1 45.8c-1.6 20.8 8.6 41.6 27.8 52.8c26.8 15.5 61 6.3 76.5-20.5s6.3-61-20.5-76.5c-1.3-.8-2.7-1.5-4-2.1l0-90.8c1.4-.6 2.7-1.3 4-2.1c26.8-15.5 36-49.7 20.5-76.5S390.8 96 364 111.5c-19.3 11.1-29.4 32-27.8 52.8l-50.6 28.9c11.5 11.2 19.9 25.6 23.8 41.7L360 205.9c2.6 1.8 5.2 3.3 8 4.7l0 90.8c-2.8 1.3-5.5 2.9-8 4.6l-80.1-45.8c.1-1.4 .2-2.8 .2-4.3c0-22.3-13.1-41.6-32-50.6l0-98.8z\"\n          />\n        </svg>\n      </div>\n    </div>\n  );\n};\n\nexport default Home;"
+        },
+        "/css/App.css": {
+          "code": "* {\n  margin: 0;\n  padding: 0;\n  box-sizing: border-box;\n}\n\nbody {\n  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,\n    Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;\n  background-color: #f8f9fa;\n}"
+        },
+        "/css/Home.css": {
+          "code": ".container {\n  width: 100vw;\n  height: 100vh;\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  background-color: #ffffff;\n}\n\n.svg-container {\n  width: 50%;\n  max-width: 500px;\n  filter: blur(2px);\n  transition: filter 0.3s ease;\n}\n\n.svg-container:hover {\n  filter: blur(0);\n}\n\n.svg-inline--fa {\n  width: 100%;\n  height: auto;\n  opacity: 0.9;\n}\n\n@media (max-width: 768px) {\n  .svg-container {\n    width: 70%;\n  }\n}\n\n@media (max-width: 480px) {\n  .svg-container {\n    width: 90%;\n  }\n}"
+        },
+        "/index.js": {
+          "code": "import React from 'react';\nimport ReactDOM from 'react-dom/client';\nimport App from './App';\n\nconst root = ReactDOM.createRoot(document.getElementById('root'));\nroot.render(\n  <React.StrictMode>\n    <App />\n  </React.StrictMode>\n);"
+        },
+        "/index.html": {
+          "code": "<!DOCTYPE html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n    <meta name=\"theme-color\" content=\"#000000\" />\n    <meta\n      name=\"description\"\n      content=\"Centered SVG Website\"\n    />\n    <title>Centered SVG Website</title>\n  </head>\n  <body>\n    <noscript>You need to enable JavaScript to run this app.</noscript>\n    <div id=\"root\"></div>\n  </body>\n</html>"
+        }
       },
+      "entryFilePath": "/App.js",
       "generatedFiles": [
-          "/App.js",
-          "/components/Navbar.js",
-          "/components/ProductCard.js",
-          "/pages/Home.js",
-          "/pages/Products.js",
-          "/pages/ProductDetail.js",
-          "/pages/Cart.js",
-          "/css/App.css",
-          "/css/Navbar.css",
-          "/css/Home.css",
-          "/css/Products.css",
-          "/css/ProductCard.css",
-          "/css/ProductDetail.css",
-          "/css/Cart.css"
+        "/App.js",
+        "/components/Home.js",
+        "/css/App.css",
+        "/css/Home.css",
+        "/index.js",
+        "/index.html"
       ]
-  });
+    });
+  const getAIResponse = async ()=>{
+
+    const response = await fetch(`http://localhost:5000/chat/getchat/${projectid}`,{
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include", // Include credentials for session management
+    });
+
+    
+    try{
+
+      const data = await response.json();
+      console.log("Previous ai response from database:",data)
+      const chats = data.chats
+      console.log("Chat history of this project:",chats)
+      const latest_code_json_string = chats[chats.length - 1].airesponse
+      const latest_code = JSON.parse(latest_code_json_string)
+      console.log("latest code:",latest_code_json_string)
+      // ProjectStructure=latest_code;
+      setProjectStructure(latest_code);
+
+      chats.forEach((element)=>{
+        setUserprompts((prevPrompts) => [...prevPrompts, element.userprompt]);
+        setAimessage((prevMessages) => [...prevMessages, element.text]);
+      })
+
+    }catch(e){
+      console.log("there is no previous chat in backend",e)
+    }
+    
+  }
+  useEffect(() => {
+    getAIResponse();
+}, []); 
+  
+  // getAIResponse();
+
   // Define states
   const [showCode, setShowCode] = useState(false); // State for toggling between website/code views
   const [activeTab,setActiveTab] = useState("preview");
@@ -138,110 +164,16 @@ export default function MainPageReact({children}) {
     }
 };
 
-  // const handleClick = (type) => {
-  //   setFileName(type);
-  //   setTimeout(highlightCode, 0);
-  // };
-
-  const draggableScript = `   
-            const layout = document.getElementById('layout');
-            let dragline = 'vertical';
-    
-            function initializeDraggable(element) {
-                element.setAttribute('draggable', true);
-    
-                element.addEventListener('dragstart', (e) => {
-                    e.stopPropagation(); 
-                    e.dataTransfer.setData('text/plain', e.target.id);
-                    e.dataTransfer.effectAllowed = 'move';
-                    element.classList.add('dragging');
-                    dragline = element.classList.contains('horizontal') ? 'horizontal' : 'vertical';
-                });
-    
-                element.addEventListener('dragend', () => {
-                    element.classList.remove('dragging');
-                });
-    
-                element.addEventListener('dragover', (e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-    
-                    const draggingElement = document.querySelector('.dragging');
-                    if (!draggingElement || draggingElement === element) return;
-    
-                    const bounding = element.getBoundingClientRect();
-                    const offset = dragline === 'vertical'
-                        ? e.clientY - bounding.top
-                        : e.clientX - bounding.left;
-    
-                    if (offset > (dragline === 'vertical' ? bounding.height : bounding.width) / 2) {
-                        element.after(draggingElement);
-                    } else {
-                        element.before(draggingElement);
-                    }
-                });
-    
-                element.addEventListener('drop', (e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    const draggingElement = document.querySelector('.dragging');
-                    if (draggingElement) {
-                        element.appendChild(draggingElement);
-                        element.style.border = 'none';
-                    }
-                });
-    
-                element.addEventListener('dragleave', () => {
-                    element.style.border = 'none';
-                });
-            }
-    
-            function setupEmptyDivStyling() {
-                document.querySelectorAll('.draggable').forEach((element) => {
-                    if (element.childElementCount === 0) {
-                        element.style.minHeight = '50px';
-                        element.style.backgroundColor = '#e9ecef';
-                        element.style.border = '2px dashed #dee2e6';
-                    }
-    
-                    element.addEventListener('dragover', (e) => {
-                        e.preventDefault();
-                        const draggingElement = document.querySelector('.dragging');
-                        if (draggingElement && draggingElement !== element) {
-                            element.style.border = '2px dashed #007bff';
-                        }
-                    });
-    
-                    element.addEventListener('drop', (e) => {
-                        e.preventDefault();
-                        const draggingElement = document.querySelector('.dragging');
-                        if (draggingElement && draggingElement !== element) {
-                            element.appendChild(draggingElement);
-                            element.style.border = 'none';
-                            element.style.backgroundColor = 'transparent';
-                        }
-                    });
-    
-                    element.addEventListener('dragleave', () => {
-                        element.style.border = '2px dashed #dee2e6';
-                    });
-                });
-            }
-    
-            // Initialize all draggable elements
-            document.querySelectorAll('.draggable').forEach(initializeDraggable);
-            setupEmptyDivStyling();
-        `
-    
   // Function to handle prompt submission
   const handlePromptSubmit = async (e) => {
-    e.preventDefault(); // Prevents the default form submission behavior
+    e.preventDefault();
+    setPrompt(" ");// Prevents the default form submission behavior
     console.log("Form submitted with prompt:", prompt);
     setUserprompts((prevPrompts) => [...prevPrompts, prompt]);
     // Simulate fetching generated code from backend (replace this with your API call)
     try{
-      console.log(projectID);
-        const response = await fetch(`http://localhost:5000/chat/${projectID}`,{
+      console.log(projectid);
+        const response = await fetch(`http://localhost:5000/chat/${projectid}`,{
             method : 'POST',
             headers : {
                 'Content-Type': 'application/json'
@@ -261,38 +193,9 @@ export default function MainPageReact({children}) {
         setAimessage((prevMessages) => [...prevMessages, project_object.explanation]);
         console.log("Entry file path:",project_object.entryFilePath)
         console.log([userprompts,aimessage]);
-        // const something = {
-        //   PID:parsedData.PID,
-        //   prompt:'',
 
-        // }
-        // localStorage.setItem('firstprompt',JSON.stringify(something));
         setProjectStructure(project_object);
 
-//         let text = data.content[0].text;
-//         console.log("Raw text before parsing-",text)
-        
-//         const matches = text.match(/{\s*"html":\s*`([\s\S]*?)`\s*,\s*"css":\s*`([\s\S]*?)`\s*}/);
-
-// if (matches) {
-//     const [_, htmlContent, cssContent] = matches;
-    
-//     // Create a new object with properly escaped content
-//     var object_data = {
-//         html: htmlContent,
-//         css: cssContent
-//     };
-    
-//     // Now you can use the processed data directly without JSON.parse
-//     console.log("This is the object with html and css:", object_data);
-// } else {
-//     console.error("Could not extract HTML and CSS content");
-// }
-        
-//         setGeneratedHTML(object_data['html'])
-//         setGeneratedCSS(object_data['css'])
-//         setGeneratedJS(object_data['js'])
-        
     }catch(error){
         console.log('Error While fetching:',error);
     }
