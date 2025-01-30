@@ -1,7 +1,7 @@
 import { TemplateCard } from "../components/TemplateCard";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass, faRocket,faHexagonNodes } from "@fortawesome/free-solid-svg-icons";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import InfiniteScroll from "react-infinite-scroller";
 
 const templates = [
@@ -46,9 +46,38 @@ const templates = [
   
 export const UniversalPage = () => {
   const [hasMore, setHasMore] = useState(true);
-  const [visibleTemplates, setVisibleTemplates] = useState(templates.slice(0, 0
+  const [templates, setTemplates] = useState([]);
+  const [visibleTemplates, setVisibleTemplates] = useState(templates.slice(0, 0));
+  
+  const [error, setError] = useState(null);
+  const getAllProjects = async () => {
+    try {
+      const response = await fetch(`http://localhost:5000/project/visible`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        
+      });
 
-  ));
+      if (!response.ok) {
+        throw new Error("Failed to fetch projects");
+
+      }
+
+      const data = await response.json();
+      setTemplates(data); // Set the fetched projects
+    } catch (err) {
+      setError(err.message); // Capture and set the error
+      // console.log(error);
+    }
+  };
+  useEffect(()=>{
+    getAllProjects();
+  },[]);
+  useEffect(()=>{
+    setVisibleTemplates(templates.slice(0, 0));
+  },[templates]);
   const [page, setPage] = useState(1);
 
   const loadMoreTemplates = () => {
@@ -113,3 +142,6 @@ export const UniversalPage = () => {
     </div>
   );
 };
+
+
+/* */
