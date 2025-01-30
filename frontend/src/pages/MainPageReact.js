@@ -246,19 +246,19 @@ export default function MainPageReact({children}) {
             Response History
           </div>
         </div>
-        {previousPrompts.map((entry, index) => (
+        {userprompts.map((prompt, index) => (
           <div key={index} className="mb-3">
             {/* User Prompt */}
             <div className="flex justify-end">
               <div className="bg-indigo-500 text-white px-4 py-2 rounded-lg max-w-[80%]">
-                {entry.prompt}
+                {prompt}
               </div>
             </div>
             {/* AI Response */}
-            {entry.response && (
+            {aimessage[index] && (
               <div className="flex justify-start mt-1">
                 <div className="bg-gray-700 text-white px-4 py-2 rounded-lg max-w-[80%]">
-                  {entry.response}
+                  {aimessage[index]}
                 </div>
               </div>
             )}
@@ -395,13 +395,13 @@ export default function MainPageReact({children}) {
             main: projectStructure.entryFilePath,
           }}
         >
-          <SandpackLayout className="h-full bg-gray-900">
+          <SandpackLayout className="h-full bg-gray-900" >
             {activeTab === "preview" ? (
               <SandpackPreviewClient className="h-full"/>
             ) : (
               <div className="flex h-full">
-                <SandpackFileExplorer className="w-1/3 border-r border-gray-700" />
-                <SandpackCodeEditor className="w-2/3" />
+                <SandpackFileExplorer className=" border-r border-gray-700" style={{height:'857px'}} />
+                <SandpackCodeEditor className="" />
               </div>
             )}
           </SandpackLayout>

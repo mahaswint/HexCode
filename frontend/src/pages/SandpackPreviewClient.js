@@ -37,7 +37,7 @@ function SandpackPreviewClient() {
     }
     return (
 
-        <SandpackPreview ref={previewRef} style={{ height: '600px' }} showNavigator={true} />
+        <SandpackPreview ref={previewRef} style = {{height : "857px"}} showNavigator={true} />
 
     )
 }
