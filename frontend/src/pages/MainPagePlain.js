@@ -1,11 +1,12 @@
 import '../App.css';
 
-import React,{useState,useEffect,useRef,useContext} from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 import Prism from 'prismjs';
 import 'prismjs/themes/prism-okaidia.css';
 import 'prismjs/components/prism-markup';
 import 'prismjs/components/prism-css';
 import 'prismjs/components/prism-javascript';
+import { useParams } from 'react-router-dom';
 
 import Frame from 'react-frame-component';
 import { useSpring, animated } from "@react-spring/web";
@@ -18,16 +19,23 @@ import { Sandpack, SandpackProvider, useSandpack, SandpackLayout } from "@codesa
 import SandpackPreviewClient2 from './SandpackPreviewClient2';
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBarsStaggered, faCode, faWindowMaximize,faWandMagicSparkles,
-          faFileArrowDown, faRocket, faFloppyDisk,faUpRightAndDownLeftFromCenter } 
-        from "@fortawesome/free-solid-svg-icons";
-import { faReact, faHtml5, faCss3Alt, faSquareJs  } from "@fortawesome/free-brands-svg-icons";
+import {
+  faBarsStaggered, faCode, faWindowMaximize, faWandMagicSparkles,
+  faFileArrowDown, faRocket, faFloppyDisk, faUpRightAndDownLeftFromCenter
+}
+  from "@fortawesome/free-solid-svg-icons";
+import { faReact, faHtml5, faCss3Alt, faSquareJs } from "@fortawesome/free-brands-svg-icons";
 
 
 const MainPagePlain = () => {
   // Define states
   const [prompt, setPrompt] = useState(""); // State for user input
   const { action, setAction } = useContext(ActionContext) || {};
+  const { projectid } = useParams();
+  console.log(projectid);
+
+  const [userprompts, setUserprompts] = useState([]);
+  const [aimessage, setAimessage] = useState([]);
 
   const [generatedHTML, setGeneratedHTML] = useState(
     `<!DOCTYPE html><html>
@@ -68,36 +76,50 @@ const MainPagePlain = () => {
   ); // State for generated code
 
   const [showCode, setShowCode] = useState(false); // State for toggling between website/code views
-  const [fileName,setFileName] = useState("html");
+  const [fileName, setFileName] = useState("html");
   const [generatedCSS, setGeneratedCSS] = useState("");
   const [generatedJS, setGeneratedJS] = useState("");
-  const [generatedText,setGeneratedText] = useState("")
-  const [projectID,setProjectID] = useState('');
-  const [deployedCode,setDeployedCode] = useState('');
-  
-  
+  const [generatedText, setGeneratedText] = useState("")
+  const [projectID, setProjectID] = useState('');
+  const [deployedCode, setDeployedCode] = useState('');
+
+
   const previousPrompts = [
     {
-      prompt : "hi",
+      prompt: "hi",
       response: "hi"
     }
   ];
 
 
   let parsedData;
-    useEffect(()=>{
-        const data = localStorage.getItem('firstprompt');
-        parsedData = JSON.parse(data);
-        console.log(parsedData);
-        const prompt_area = document.querySelector('#prompt-area')
-        prompt_area.innerHTML=parsedData.prompt;
+  useEffect(() => {
+    const data = localStorage.getItem('firstprompt');
+
+    if (data) {
+      const parsedData = JSON.parse(data);
+      console.log(parsedData);
+
+      const prompt_area = document.querySelector('#prompt-area');
+      if (parsedData.prompt) {
+        prompt_area.innerHTML = parsedData.prompt;
+        console.log("Prompt taken from local storage");
         setPrompt(parsedData.prompt);
-        setProjectID(parsedData.PID);
-      },[]);
+      }
+
+      // Clear local storage after using the data
+      localStorage.removeItem('firstprompt');
+    } else {
+      // If no data is found, set prompt area to empty
+      const prompt_area = document.querySelector('#prompt-area');
+      prompt_area.innerHTML = '';
+      setPrompt('');
+    }
+  }, []);
 
   useEffect(() => {
     Prism.highlightAll(); // Applies syntax highlighting to all <code> elements
-  }, [generatedHTML, generatedCSS,generatedJS]);
+  }, [generatedHTML, generatedCSS, generatedJS]);
   const highlightCode = React.useCallback(() => {
     if (window.Prism) {
       window.Prism.highlightAll();
@@ -112,12 +134,12 @@ const MainPagePlain = () => {
   const downloadHtmlContent = () => {
     // Get the content of the iframe document
     const iframeDocument = iframeRef.current.contentDocument || iframeRef.current.contentWindow.document;
-  
+
     if (!iframeDocument) {
       console.error("Unable to access iframe content.");
       return;
     }
-  
+
     // Get the updated HTML content of the iframe
     const updatedHtml = `
       <!DOCTYPE html>
@@ -125,30 +147,30 @@ const MainPagePlain = () => {
         ${iframeDocument.documentElement.innerHTML}
       </html>
     `;
-  
+
     // Optionally clean the updated HTML (e.g., remove the script tag)
     const cleanedCode = updatedHtml.replace(
       /<script[^>]*id="draggable-script"[\s\S]*?<\/script>/s,
       ""
     );
-    
-  
+
+
     console.log("Cleaned code after removing the draggable script:", cleanedCode);
-  
+
     // Create a Blob with the HTML content
     const blob = new Blob([cleanedCode], { type: "text/html" });
-  
+
     // Create a download link
     const downloadLink = document.createElement("a");
     downloadLink.href = URL.createObjectURL(blob);
-  
+
     // Set a default filename
     downloadLink.download = "downloaded_page.html";
-  
+
     // Append to body and trigger download
     document.body.appendChild(downloadLink);
     downloadLink.click();
-  
+
     // Clean up
     document.body.removeChild(downloadLink);
     URL.revokeObjectURL(downloadLink.href);
@@ -167,12 +189,12 @@ const MainPagePlain = () => {
       console.error("setAction is not defined");
     }
     const iframeDocument = iframeRef.current.contentDocument || iframeRef.current.contentWindow.document;
-  
+
     if (!iframeDocument) {
       console.error("Unable to access iframe content.");
       return;
     }
-  
+
     // Get the updated HTML content of the iframe
     const updatedHtml = `
       <!DOCTYPE html>
@@ -180,7 +202,7 @@ const MainPagePlain = () => {
         ${iframeDocument.documentElement.innerHTML}
       </html>
     `;
-  
+
     // Optionally clean the updated HTML (e.g., remove the script tag)
     const cleanedCode = updatedHtml.replace(
       /<script[^>]*id="draggable-script"[\s\S]*?<\/script>/s,
@@ -189,7 +211,7 @@ const MainPagePlain = () => {
     console.log("Deployable code after removing the draggable script:", cleanedCode);
     setDeployedCode(cleanedCode);
   };
-  
+
   const draggableScript = `document.addEventListener('DOMContentLoaded', () => {
     const layout = document.getElementById('layout');
     let dragline = 'vertical';
@@ -287,104 +309,140 @@ const MainPagePlain = () => {
     document.querySelectorAll('.draggable').forEach(initializeDraggable);
     setupEmptyDivStyling();
 })`
-    function injectContentIntoHTML(htmlCode, cssCode, jsCode,draggableScript) {
-        // First, ensure we have a valid HTML structure
-        if (!htmlCode.includes('</head>') || !htmlCode.includes('</body>')) {
-          // Create basic HTML structure if missing
-          htmlCode = `
+  function injectContentIntoHTML(htmlCode, cssCode, jsCode, draggableScript) {
+    // First, ensure we have a valid HTML structure
+    if (!htmlCode.includes('</head>') || !htmlCode.includes('</body>')) {
+      // Create basic HTML structure if missing
+      htmlCode = `
       <!DOCTYPE html>
       <html>
       <head>
           <meta charset="UTF-8">
           <title>Generated Page</title>
+           <style>
+    ::-webkit-scrollbar {
+      width: 1px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #6366F1;
+      border-radius: 20px;
+    }
+  </style>
       </head>
       <body>
           ${htmlCode}
       </body>
       </html>`;
-        }
-      
-        // Inject CSS into head
-        const headCloseIndex = htmlCode.toLowerCase().indexOf('</head>');
-        const styleTag = `<style>\n${cssCode}\n</style>\n`;
-        htmlCode = htmlCode.slice(0, headCloseIndex) + styleTag + htmlCode.slice(headCloseIndex);
-      
-        // Inject JavaScript just before closing body tag
-        const bodyCloseIndex = htmlCode.toLowerCase().indexOf('</body>');
-        const scriptTag = `<script>\n${jsCode}\n</script>\n`;
-        const draggable = `<script id="draggable-script">\n${draggableScript}\n</script>\n`;
-        htmlCode = htmlCode.slice(0, bodyCloseIndex) + draggable + htmlCode.slice(bodyCloseIndex);
-        htmlCode = htmlCode.slice(0, bodyCloseIndex) + scriptTag + htmlCode.slice(bodyCloseIndex);
-      
-        return htmlCode;
-      }
+    }
+
+    // Inject CSS into head
+    const headCloseIndex = htmlCode.toLowerCase().indexOf('</head>');
+    const styleTag = `<style>\n${cssCode}\n</style>\n`;
+    htmlCode = htmlCode.slice(0, headCloseIndex) + styleTag + htmlCode.slice(headCloseIndex);
+
+    // Inject JavaScript just before closing body tag
+    const bodyCloseIndex = htmlCode.toLowerCase().indexOf('</body>');
+    const scriptTag = `<script>\n${jsCode}\n</script>\n`;
+    const draggable = `<script id="draggable-script">\n${draggableScript}\n</script>\n`;
+    htmlCode = htmlCode.slice(0, bodyCloseIndex) + draggable + htmlCode.slice(bodyCloseIndex);
+    htmlCode = htmlCode.slice(0, bodyCloseIndex) + scriptTag + htmlCode.slice(bodyCloseIndex);
+
+    return htmlCode;
+  }
   // Function to handle prompt submission
   const handlePromptSubmit = async (e) => {
     e.preventDefault(); // Prevents the default form submission behavior
+    setPrompt(" ");
     console.log("Form submitted with prompt:", prompt);
+    setUserprompts((prevPrompts) => [...prevPrompts, prompt]);
     // Simulate fetching generated code from backend (replace this with your API call)
-    try{
-        // console.log(parsedData.PID);
-        const response = await fetch(`http://localhost:5000/chat/${projectID}`,{
-            method : 'POST',
-            headers : {
-                'Content-Type': 'application/json'
-            },
-            credentials: "include",
-            body: JSON.stringify({
-                message: prompt,
-                route: window.location.pathname  // Add route to the body
-            })
+    try {
+      // console.log(parsedData.PID);
+      const response = await fetch(`http://localhost:5000/chat/${projectID}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        credentials: "include",
+        body: JSON.stringify({
+          message: prompt,
+          route: window.location.pathname  // Add route to the body
         })
-        
-        const data = await response.json();
-        console.log('Response from backend:', data);
+      })
 
-        let text = data.content[0].text;
-        console.log("Raw text before parsing-",text)
-        const object_data = JSON.parse(text)
-        /*
-        const matches = text.match(/{\s*"html":\s*`([\s\S]*?)`\s*,\s*"css":\s*`([\s\S]*?)`\s*,\s*"js":\s*`([\s\S]*?)`\s*,\s*"text":\s*`([\s\S]*?)`\s*}/);
+      const data = await response.json();
+      console.log('Response from backend:', data);
 
-        if (matches) {
-            const [_, htmlContent, cssContent,jsContent,textContent] = matches;
-            
-            // Create a new object with properly escaped content
-            var object_data = {
-                html: htmlContent,
-                css: cssContent,
-                js: jsContent,
-                text: textContent
-            };
-            
-            // Now you can use the processed data directly without JSON.parse
-            console.log("This is the object with html and css:", object_data);
-        } else {
-            console.error("Could not extract HTML and CSS content");
-        }
-        */   
-        setGeneratedText(object_data['text'])
-        setGeneratedHTML(object_data['html'])
-        setGeneratedCSS(object_data['css'])
-        setGeneratedJS(object_data['js'])
-        
-    }catch(error){
-        console.log('Error While fetching:',error);
+      let text = data.content[0].text;
+      console.log("Raw text before parsing-", text)
+      const object_data = JSON.parse(text)
+
+      setAimessage((prevMessages) => [...prevMessages, object_data.explanation]);
+
+      setGeneratedText(object_data['explanation'])
+      setGeneratedHTML(object_data['html'])
+      setGeneratedCSS(object_data['css'])
+      setGeneratedJS(object_data['js'])
+
+    } catch (error) {
+      console.log('Error While fetching:', error);
     }
 
   };
+
+  const getAIResponse = async () => {
+
+    const response = await fetch(`http://localhost:5000/chat/getchat/${projectid}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include", // Include credentials for session management
+    });
+
+
+    try {
+
+      const data = await response.json();
+      console.log("Previous ai response from database:", data)
+      const chats = data.chats
+      console.log("Chat history of this project:", chats)
+      const latest_code_json_string = chats[chats.length - 1].airesponse
+      const latest_code = JSON.parse(latest_code_json_string)
+      console.log("latest code:", latest_code_json_string)
+      // ProjectStructure=latest_code;
+      // setProjectStructure(latest_code);
+      setGeneratedText(latest_code['explanation'])
+      setGeneratedHTML(latest_code['html'])
+      setGeneratedCSS(latest_code['css'])
+      setGeneratedJS(latest_code['js'])
+
+      chats.forEach((element) => {
+        setUserprompts((prevPrompts) => [...prevPrompts, element.userprompt]);
+        setAimessage((prevMessages) => [...prevMessages, element.text]);
+      })
+
+    } catch (e) {
+      console.log("there is no previous chat in backend", e)
+    }
+
+  }
+  useEffect(() => {
+    getAIResponse();
+  }, []);
 
 
   const displayCode = injectContentIntoHTML(generatedHTML, generatedCSS, generatedJS, draggableScript);
   const displayCodedeploy = injectContentIntoHTML(generatedHTML, generatedCSS, generatedJS);
   const downloadableCode = injectContentIntoHTML(generatedHTML, generatedCSS, generatedJS, '');
-  console.log("This is the code that will be given to the iframe:",displayCode);
+  console.log("This is the code that will be given to the iframe:", displayCode);
 
-  const toggleView = ()=>{
-    if(showCode){
+  const toggleView = () => {
+    if (showCode) {
       setShowCode(false);
     }
-    else{
+    else {
       setShowCode(true);
       setTimeout(highlightCode, 0);
     }
@@ -406,8 +464,8 @@ const MainPagePlain = () => {
       immediate: dragging,
     });
   });
-  
-  
+
+
   const parentRef = useRef(null);
   const [parentSize, setParentSize] = useState({ width: 0, height: 0 });
   // Use ResizeObserver to track size changes of the parent container
@@ -435,39 +493,39 @@ const MainPagePlain = () => {
   }
 
   return (
-    <div ref={containerRef} 
+    <div ref={containerRef}
       className="flex h-screen w-full text-white bg-gray-900"
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
       {/* Left Panel */}
-      <animated.div 
+      <animated.div
         className="w-1/2 p-6 border-r border-gray-700 bg-gray-900 flex flex-col"
         style={{ width: rightWidth.to(rw => `${100 - rw}%`) }}>
         {/* Previous Prompts Section */}
         <div className="flex-grow h-[70%] overflow-y-auto p-3 mb-4 rounded-lg bg-gradient-to-br from-[#1A1A2E] to-[#0F3460] border border-indigo-400/20 shadow-2xl shadow-black/40">
           <div className="flex gap-2 text-xl font-semibold">
             <div>
-            <FontAwesomeIcon icon={faBarsStaggered} />
+              <FontAwesomeIcon icon={faBarsStaggered} />
             </div>
             <div>
               Response History
             </div>
           </div>
-          {previousPrompts.map((entry, index) => (
+          {userprompts.map((prompt, index) => (
             <div key={index} className="mb-3">
               {/* User Prompt */}
               <div className="flex justify-end">
                 <div className="bg-indigo-500 text-white px-4 py-2 rounded-lg max-w-[80%]">
-                  {entry.prompt}
+                  {prompt}
                 </div>
               </div>
 
               {/* AI Response */}
-              {entry.response && (
+              {aimessage[index] && (
                 <div className="flex justify-start mt-1">
                   <div className="bg-gray-700 text-white px-4 py-2 rounded-lg max-w-[80%]">
-                    {entry.response}
+                    {aimessage[index]}
                   </div>
                 </div>
               )}
@@ -482,7 +540,7 @@ const MainPagePlain = () => {
             onChange={(e) => setPrompt(e.target.value)}
             placeholder="Enter website description..."
           />
-          <button 
+          <button
             className="h-10 w-10 p-2 m-2 bg-indigo-500 hover:bg-indigo-600 text-white font-semibold rounded-full shadow-md transition"
             onClick={handlePromptSubmit}
           >
@@ -490,7 +548,7 @@ const MainPagePlain = () => {
           </button>
         </div>
       </animated.div>
-        
+
       {/* Draggable divider (visible only on hover) */}
       <animated.div
         {...bind()}
@@ -502,34 +560,32 @@ const MainPagePlain = () => {
       <animated.div className="w-1/2 flex flex-col bg-gray-900" style={{ width: rightWidth.to(rw => `${rw}%`) }}>
         {/* Navigation Tabs */}
         <nav className="flex flex-row justify-between p-2 border-b border-gray-700 h-[9%]">
-          <div 
+          <div
             className="bg-gray-900 inline-flex rounded-full p-1 transition-colors duration-300 border border-gray-200/50"
             role="group"
           >
             <button
               type="button"
-              className={`flex items-center rounded-full px-3 py-1 text-sm font-medium transition-all duration-300 ${
-                !showCode? "bg-white text-gray-900 shadow-lg" : "bg-gray-900 text-white"}`}
+              className={`flex items-center rounded-full px-3 py-1 text-sm font-medium transition-all duration-300 ${!showCode ? "bg-white text-gray-900 shadow-lg" : "bg-gray-900 text-white"}`}
               onClick={toggleView}
               aria-pressed={!showCode}
             >
-              <FontAwesomeIcon 
-                icon={faWindowMaximize} 
-                className="mr-2 mt-[0.2rem] text-xs md:text-sm" 
+              <FontAwesomeIcon
+                icon={faWindowMaximize}
+                className="mr-2 mt-[0.2rem] text-xs md:text-sm"
               />
               <span className="hidden sm:inline">Preview</span>
             </button>
 
             <button
               type="button"
-              className={`flex items-center rounded-full px-3 py-1 text-sm font-medium transition-all duration-300 ${
-                showCode ? "bg-white text-gray-900 shadow-lg" : "bg-gray-900 text-white"}`}
+              className={`flex items-center rounded-full px-3 py-1 text-sm font-medium transition-all duration-300 ${showCode ? "bg-white text-gray-900 shadow-lg" : "bg-gray-900 text-white"}`}
               onClick={toggleView}
               aria-pressed={showCode}
             >
-              <FontAwesomeIcon 
-                icon={faCode} 
-                className="mr-2 mt-[0.2rem] text-xs md:text-sm" 
+              <FontAwesomeIcon
+                icon={faCode}
+                className="mr-2 mt-[0.2rem] text-xs md:text-sm"
               />
               <span className="hidden sm:inline">Code</span>
             </button>
@@ -568,7 +624,7 @@ const MainPagePlain = () => {
             </button>
           </div>
         </nav>
-  
+
         {/* Generated Website or Code */}
         <div className="flex-grow  p-4 h-[90%] bg-white" ref={parentRef}>
           {showCode ? (
@@ -623,7 +679,7 @@ const MainPagePlain = () => {
             </ResizableBox>
           )}
 
-        <div  style={{ opacity: 0 }}>
+          <div style={{ opacity: 0 }}>
             <SandpackProvider
               template="react"
               files={{
@@ -631,17 +687,17 @@ const MainPagePlain = () => {
                   code: displayCodedeploy,
                   active: true
                 },
-                "/index.js":{
-                  code:"",
-                  active:true
+                "/index.js": {
+                  code: "",
+                  active: true
                 }
-               
+
               }}
               options={{
                 showNavigator: true,
                 showLineNumbers: true,
                 closableTabs: true,
-                activeFile:"/index.html",
+                activeFile: "/index.html",
               }}
             >
               <SandpackLayout className="h-full bg-gray-900">
@@ -655,6 +711,6 @@ const MainPagePlain = () => {
       </animated.div>
     </div>
   );
-  
+
 };
 export default MainPagePlain;

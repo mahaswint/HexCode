@@ -48,7 +48,7 @@ function App() {
                         <Route path="/profile" element={<Profile />} />
                         <Route path="/my" element={<Mypage/>} />
                         <Route path="/main/react/:projectid" element={<MainPageReact/>} />
-                        <Route path="/main/plain" element={<MainPagePlain/>} />
+                        <Route path="/main/plain/:projectid" element={<MainPagePlain/>} />
                     </Routes>
                     <Footer/>
                 </Router>
