@@ -135,7 +135,7 @@ const Prompt = () => {
                     // Clear the prompt after successful creation
                     setPrompt("");
                     
-                    window.location.href = `/main/${(formValues.projectType==='react')?'react':'plain'}`;
+                    window.location.href = `/main/${(formValues.projectType==='react')?'react':'plain'}/${data.PID}`;
                 }
             } catch (err) {
                 console.log(err);
