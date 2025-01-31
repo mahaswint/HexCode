@@ -11,6 +11,7 @@ const authRoutes = require('./routers/auth');
 const session = require('express-session');
 require('dotenv').config(); 
 const chatRoutes = require('./routers/chatRoutes')
+const User = require('./models/userModel');
 const app = express();
 
 // Middleware to parse JSON requests
@@ -54,6 +55,19 @@ app.use((req, res, next) => {
 app.use('/user', userRoutes);
 app.use('/project', projectRoutes);
 app.use('/chat',chatRoutes);
+
+app.get('/search',async (req,res)=>{
+  console.log("searching",req.user);
+  console.log("Fetching users for search...");
+    try {
+        const users = await User.find({}, "_id name email");
+        console.log("Users found:", users);
+        res.json(users);
+    } catch (error) {
+        console.error("Error fetching users:", error);
+        res.status(500).json({ error: "Failed to fetch users", details: error.message });
+    }
+})
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGODB_URI)

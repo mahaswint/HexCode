@@ -7,7 +7,7 @@ router.post('/add', projectController.addProject);
 
 // Route for editing an existing project
 router.put('/:pid/edit', projectController.editProject);
-
+router.get('/:pid',projectController.getOneProject);
 // Route for deleting a project
 router.delete('/:pid/delete', projectController.deleteProject);
 router.get('/visible',projectController.getAllProjects);
@@ -15,3 +15,4 @@ router.get('/visible',projectController.getAllProjects);
 // Route for voting project 
 router.post('/vote', projectController.voteProject)
 module.exports = router;
+

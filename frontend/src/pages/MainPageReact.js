@@ -12,7 +12,7 @@ import { Sandpack,
     SandpackLayout,
     SandpackCodeEditor,
     SandpackPreview,
-    SandpackFileExplorer,
+    SandpackFileExplorer,useSandpack
    } from "@codesandbox/sandpack-react";
 import { atomDark } from '@codesandbox/sandpack-themes';
 import SandpackPreviewClient from './SandpackPreviewClient';
@@ -32,7 +32,8 @@ export default function MainPageReact({children}) {
   const [aimessage, setAimessage] = useState([]);
   const {projectid} = useParams();
   console.log(projectid);
-
+  const [loading,setLoading] = useState(false);
+  // const {sandpack} = useSandpack();
   let ProjectStructure;
 
   let parsedData;
@@ -69,41 +70,10 @@ export default function MainPageReact({children}) {
         }
       ]);
     const [prompt, setPrompt] = useState('');
-    const [projectStructure, setProjectStructure] = useState({
-      "projectTitle": "Centered SVG Website",
-      "explanation": "This project creates a responsive website with a centered, blurred hexagon SVG. The SVG is positioned using CSS flexbox and maintains its aspect ratio while fitting the viewport. A subtle blur effect is applied using CSS filters.",
-      "files": {
-        "/App.js": {
-          "code": "import React from 'react';\nimport { BrowserRouter as Router, Route, Routes } from 'react-router-dom';\nimport Home from './components/Home';\nimport './css/App.css';\n\nfunction App() {\n  return (\n    <Router>\n      <Routes>\n        <Route path=\"/\" element={<Home />} />\n      </Routes>\n    </Router>\n  );\n}\n\nexport default App;"
-        },
-        "/components/Home.js": {
-          "code": "import React from 'react';\nimport '../css/Home.css';\n\nconst Home = () => {\n  return (\n    <div className=\"container draggable\">\n      <div className=\"svg-container draggable\">\n        <svg\n          aria-hidden=\"true\"\n          focusable=\"false\"\n          data-prefix=\"fas\"\n          data-icon=\"hexagon-nodes\"\n          className=\"svg-inline--fa fa-hexagon-nodes draggable\"\n          role=\"img\"\n          xmlns=\"http://www.w3.org/2000/svg\"\n          viewBox=\"0 0 700 700\"\n        >\n          <style>\n            {`\n              path {\n                fill: #6366f1;\n              }\n            `}\n          </style>\n          <path\n            fill=\"currentColor\"\n            d=\"M248 106.6c18.9-9 32-28.3 32-50.6c0-30.9-25.1-56-56-56s-56 25.1-56 56c0 22.3 13.1 41.6 32 50.6l0 98.8c-2.8 1.3-5.5 2.9-8 4.7l-80.1-45.8c1.6-20.8-8.6-41.6-27.9-52.8C57.2 96 23 105.2 7.5 132S1.2 193 28 208.5c1.3 .8 2.6 1.5 4 2.1l0 90.8c-1.3 .6-2.7 1.3-4 2.1C1.2 319-8 353.2 7.5 380S57.2 416 84 400.5c19.3-11.1 29.4-32 27.8-52.8l50.5-28.9c-11.5-11.2-19.9-25.6-23.8-41.7L88 306.1c-2.6-1.8-5.2-3.3-8-4.7l0-90.8c2.8-1.3 5.5-2.9 8-4.7l80.1 45.8c-.1 1.4-.2 2.8-.2 4.3c0 22.3 13.1 41.6 32 50.6l0 98.8c-18.9 9-32 28.3-32 50.6c0 30.9 25.1 56 56 56s56-25.1 56-56c0-22.3-13.1-41.6-32-50.6l0-98.8c2.8-1.3 5.5-2.9 8-4.7l80.1 45.8c-1.6 20.8 8.6 41.6 27.8 52.8c26.8 15.5 61 6.3 76.5-20.5s6.3-61-20.5-76.5c-1.3-.8-2.7-1.5-4-2.1l0-90.8c1.4-.6 2.7-1.3 4-2.1c26.8-15.5 36-49.7 20.5-76.5S390.8 96 364 111.5c-19.3 11.1-29.4 32-27.8 52.8l-50.6 28.9c11.5 11.2 19.9 25.6 23.8 41.7L360 205.9c2.6 1.8 5.2 3.3 8 4.7l0 90.8c-2.8 1.3-5.5 2.9-8 4.6l-80.1-45.8c.1-1.4 .2-2.8 .2-4.3c0-22.3-13.1-41.6-32-50.6l0-98.8z\"\n          />\n        </svg>\n      </div>\n    </div>\n  );\n};\n\nexport default Home;"
-        },
-        "/css/App.css": {
-          "code": "* {\n  margin: 0;\n  padding: 0;\n  box-sizing: border-box;\n}\n\nbody {\n  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,\n    Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;\n  background-color: #f8f9fa;\n}"
-        },
-        "/css/Home.css": {
-          "code": ".container {\n  width: 100vw;\n  height: 100vh;\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  background-color: #ffffff;\n}\n\n.svg-container {\n  width: 50%;\n  max-width: 500px;\n  filter: blur(2px);\n  transition: filter 0.3s ease;\n}\n\n.svg-container:hover {\n  filter: blur(0);\n}\n\n.svg-inline--fa {\n  width: 100%;\n  height: auto;\n  opacity: 0.9;\n}\n\n@media (max-width: 768px) {\n  .svg-container {\n    width: 70%;\n  }\n}\n\n@media (max-width: 480px) {\n  .svg-container {\n    width: 90%;\n  }\n}"
-        },
-        "/index.js": {
-          "code": "import React from 'react';\nimport ReactDOM from 'react-dom/client';\nimport App from './App';\n\nconst root = ReactDOM.createRoot(document.getElementById('root'));\nroot.render(\n  <React.StrictMode>\n    <App />\n  </React.StrictMode>\n);"
-        },
-        "/index.html": {
-          "code": "<!DOCTYPE html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n    <meta name=\"theme-color\" content=\"#000000\" />\n    <meta\n      name=\"description\"\n      content=\"Centered SVG Website\"\n    />\n    <title>Centered SVG Website</title>\n  </head>\n  <body>\n    <noscript>You need to enable JavaScript to run this app.</noscript>\n    <div id=\"root\"></div>\n  </body>\n</html>"
-        }
-      },
-      "entryFilePath": "/App.js",
-      "generatedFiles": [
-        "/App.js",
-        "/components/Home.js",
-        "/css/App.css",
-        "/css/Home.css",
-        "/index.js",
-        "/index.html"
-      ]
-    });
+    const [projectStructure, setProjectStructure] = useState();
   const getAIResponse = async ()=>{
-
+    setLoading(true)
+    console.log("Loading state:", loading);
     const response = await fetch(`http://localhost:5000/chat/getchat/${projectid}`,{
       method: "GET",
       headers: {
@@ -122,6 +92,7 @@ export default function MainPageReact({children}) {
       const latest_code_json_string = chats[chats.length - 1].airesponse
       const latest_code = JSON.parse(latest_code_json_string)
       console.log("latest code:",latest_code_json_string)
+      
       // ProjectStructure=latest_code;
       setProjectStructure(latest_code);
 
@@ -132,18 +103,25 @@ export default function MainPageReact({children}) {
 
     }catch(e){
       console.log("there is no previous chat in backend",e)
+    }finally{
+      setLoading(false)
     }
     
   }
   useEffect(() => {
     getAIResponse();
 }, []); 
+
+  useEffect(() =>{
+    console.log("After setting projectStructure in getAIResponse:",projectStructure);
+  },[projectStructure])
   
   // getAIResponse();
 
   // Define states
   const [showCode, setShowCode] = useState(false); // State for toggling between website/code views
   const [activeTab,setActiveTab] = useState("preview");
+  const prevTabRef = useRef();
 
   const highlightCode = React.useCallback(() => {
     if (window.Prism) {
@@ -162,6 +140,24 @@ export default function MainPageReact({children}) {
     }
 };
 
+const handleOnClick = () => {
+  console.log("Before update:", activeTab);
+  setActiveTab("preview");
+};
+
+useEffect(() => {
+  if (prevTabRef.current === "code" && activeTab === "preview") {
+    // Trigger reload only when activeTab changes from "code" to "preview"
+    window.location.reload();
+  }
+
+  // Update previous tab reference
+  prevTabRef.current = activeTab;
+}, [activeTab]);
+
+useEffect(() => {
+  console.log("Updated activeTab:", activeTab);
+}, [activeTab]);
   // Function to handle prompt submission
   const handlePromptSubmit = async (e) => {
     e.preventDefault();
@@ -169,6 +165,7 @@ export default function MainPageReact({children}) {
     console.log("Form submitted with prompt:", prompt);
     setUserprompts((prevPrompts) => [...prevPrompts, prompt]);
     // Simulate fetching generated code from backend (replace this with your API call)
+    setLoading(true)
     try{
       console.log(projectid);
         const response = await fetch(`http://localhost:5000/chat/${projectid}`,{
@@ -191,11 +188,14 @@ export default function MainPageReact({children}) {
         setAimessage((prevMessages) => [...prevMessages, project_object.explanation]);
         console.log("Entry file path:",project_object.entryFilePath)
         console.log([userprompts,aimessage]);
+        
 
         setProjectStructure(project_object);
 
     }catch(error){
         console.log('Error While fetching:',error);
+    }finally{
+      setLoading(false)
     }
 
   };
@@ -301,7 +301,7 @@ export default function MainPageReact({children}) {
             type="button"
             className={`flex items-center rounded-full px-3 py-1 text-sm font-medium transition-all duration-300 
               ${activeTab === "preview" ? "bg-white text-gray-900 shadow-lg" : "bg-gray-900 text-white"}`}
-            onClick={() => setActiveTab("preview")}
+              onClick={handleOnClick}
           >
             <FontAwesomeIcon 
               icon={faWindowMaximize} 
@@ -396,14 +396,19 @@ export default function MainPageReact({children}) {
           }}
         >
           <SandpackLayout className="h-full bg-gray-900" >
-            {activeTab === "preview" ? (
-              <SandpackPreviewClient className="h-full"/>
-            ) : (
-              <div className="flex h-full">
-                <SandpackFileExplorer className=" border-r border-gray-700" style={{height:'857px'}} />
-                <SandpackCodeEditor className="" />
-              </div>
-            )}
+          {loading ? (
+            <div className="loader">Loading...</div>
+          ) : activeTab === "code" ? (
+            <div className="flex h-full">
+              <SandpackFileExplorer className="border-r border-gray-700" style={{ height: "857px" }} />
+              <SandpackCodeEditor />
+            </div>
+          ) : (
+            <SandpackPreviewClient className="h-full" showNavigator={true} />
+          )}
+
+          
+
           </SandpackLayout>
         </SandpackProvider>
       )}
