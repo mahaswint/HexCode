@@ -121,4 +121,15 @@ exports.voteProject = async (req, res) => {
 
 }
 
-
+exports.getOneProject = async (req, res) => {
+    try {
+        console.log(req);
+        const project = await Project.findById(req.params.pid);
+        if (!project) {
+            return res.status(404).json({ message: 'Project not found' });
+        }
+        res.status(200).json(project);
+    } catch (error) {
+        res.status(500).json({ message: 'Server error', error: error.message });
+    }
+};

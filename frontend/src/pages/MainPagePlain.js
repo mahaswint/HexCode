@@ -80,7 +80,6 @@ const MainPagePlain = () => {
   const [generatedCSS, setGeneratedCSS] = useState("");
   const [generatedJS, setGeneratedJS] = useState("");
   const [generatedText, setGeneratedText] = useState("")
-  const [projectID, setProjectID] = useState('');
   const [deployedCode, setDeployedCode] = useState('');
 
 
@@ -359,7 +358,7 @@ const MainPagePlain = () => {
     // Simulate fetching generated code from backend (replace this with your API call)
     try {
       // console.log(parsedData.PID);
-      const response = await fetch(`http://localhost:5000/chat/${projectID}`, {
+      const response = await fetch(`http://localhost:5000/chat/${projectid}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
