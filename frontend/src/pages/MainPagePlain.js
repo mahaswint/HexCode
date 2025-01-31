@@ -447,24 +447,6 @@ const MainPagePlain = () => {
     }
   };
 
-  const minLeftWidth = 55;
-  const [hovered, setHovered] = useState(false);
-  const containerRef = useRef(null);
-  const [isDragging, setIsDragging] = useState(false);
-
-  const [{ rightWidth }, api] = useSpring(() => ({ rightWidth: minLeftWidth }));
-  const bind = useDrag(({ movement: [mx], offset: [ox], dragging }) => {
-    setIsDragging(dragging);
-    const containerWidth = containerRef.current?.clientWidth || window.innerWidth;
-    const newRightWidth = minLeftWidth - (ox / containerWidth) * 100;
-    const clampedRightWidth = Math.max(minLeftWidth, Math.min(70, newRightWidth));
-    api.start({
-      rightWidth: clampedRightWidth,
-      immediate: dragging,
-    });
-  });
-
-
   const parentRef = useRef(null);
   const [parentSize, setParentSize] = useState({ width: 0, height: 0 });
   // Use ResizeObserver to track size changes of the parent container
@@ -492,38 +474,30 @@ const MainPagePlain = () => {
   }
 
   return (
-    <div ref={containerRef}
-      className="flex h-screen w-full text-white bg-gray-900"
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-    >
-      {/* Left Panel */}
-      <animated.div
-        className="w-1/2 p-6 border-r border-gray-700 bg-gray-900 flex flex-col"
-        style={{ width: rightWidth.to(rw => `${100 - rw}%`) }}>
-        {/* Previous Prompts Section */}
-        <div className="flex-grow h-[70%] overflow-y-auto p-3 mb-4 rounded-lg bg-gradient-to-br from-[#1A1A2E] to-[#0F3460] border border-indigo-400/20 shadow-2xl shadow-black/40">
-          <div className="flex gap-2 text-xl font-semibold">
+    <div className="flex flex-col-reverse md:flex-row h-screen w-full text-white bg-gray-900">
+      {/* Left Panel - Full width on mobile, half on desktop */}
+      <div className="w-full md:w-1/2 h-[50vh] md:h-screen p-4 md:p-6 border-b md:border-r border-gray-700 bg-gray-900 flex flex-col">
+        {/* Previous Prompts Section - Adjusted height for mobile */}
+        <div className="flex-grow h-[65%] md:h-[70%] overflow-y-scroll p-2 md:p-3 mb-4 rounded-lg bg-gradient-to-br from-[#1A1A2E] to-[#0F3460] border border-indigo-400/20 shadow-2xl shadow-black/40">
+          <div className="flex gap-2 text-lg md:text-xl font-semibold">
             <div>
               <FontAwesomeIcon icon={faBarsStaggered} />
             </div>
-            <div>
-              Response History
-            </div>
+            <div>Response History</div>
           </div>
           {userprompts.map((prompt, index) => (
             <div key={index} className="mb-3">
-              {/* User Prompt */}
-              <div className="flex justify-end">
-                <div className="bg-indigo-500 text-white px-4 py-2 rounded-lg max-w-[80%]">
+              {/* User Prompt - Adjusted for better mobile display */}
+              <div className="flex justify-end max-h-40 md:max-h-52 mt-3">
+                <div className="bg-indigo-500 text-white px-3 md:px-4 py-2 rounded-lg max-w-[90%] md:max-w-[80%] overflow-y-auto text-sm md:text-base">
                   {prompt}
                 </div>
               </div>
 
-              {/* AI Response */}
+              {/* AI Response - Adjusted for better mobile display */}
               {aimessage[index] && (
-                <div className="flex justify-start mt-1">
-                  <div className="bg-gray-700 text-white px-4 py-2 rounded-lg max-w-[80%]">
+                <div className="flex justify-start max-h-40 md:max-h-52 mt-3">
+                  <div className="bg-gray-700 text-white px-3 md:px-4 py-2 rounded-lg max-w-[90%] md:max-w-[80%] overflow-y-auto text-sm md:text-base">
                     {aimessage[index]}
                   </div>
                 </div>
@@ -531,126 +505,111 @@ const MainPagePlain = () => {
             </div>
           ))}
         </div>
-        <div className='flex flex-col items-end w-full h-[30%]  bg-gray-800 border border-gray-600 rounded-lg'>
+
+        {/* Input Area - Adjusted for mobile */}
+        <div className="flex flex-col items-end w-full h-[35%] md:h-[30%] bg-gray-800 border border-gray-600 rounded-lg">
           <textarea
             id="prompt-area"
-            className="w-full h-[80%] p-3 bg-gray-800 rounded-lg text-white placeholder-gray-400 focus:outline-none resize-none"
+            className="w-full h-[75%] md:h-[80%] p-2 md:p-3 bg-gray-800 rounded-lg text-white placeholder-gray-400 focus:outline-none resize-none text-sm md:text-base"
             value={prompt}
             onChange={(e) => setPrompt(e.target.value)}
             placeholder="Enter website description..."
           />
           <button
-            className="h-10 w-10 p-2 m-2 bg-indigo-500 hover:bg-indigo-600 text-white font-semibold rounded-full shadow-md transition"
+            className="h-8 w-8 md:h-10 md:w-10 p-1.5 md:p-2 m-2 bg-indigo-500 hover:bg-indigo-600 text-white font-semibold rounded-full shadow-md transition"
             onClick={handlePromptSubmit}
           >
             <FontAwesomeIcon icon={faWandMagicSparkles} />
           </button>
         </div>
-      </animated.div>
+      </div>
 
-      {/* Draggable divider (visible only on hover) */}
-      <animated.div
-        {...bind()}
-        className="w-2 bg-slate-600 cursor-ew-resize transition-opacity duration-300"
-        style={{ opacity: isDragging || hovered ? 1 : 0 }}
-      />
-
-      {/* Right Panel */}
-      <animated.div className="w-1/2 flex flex-col bg-gray-900" style={{ width: rightWidth.to(rw => `${rw}%`) }}>
-        {/* Navigation Tabs */}
-        <nav className="flex flex-row justify-between p-2 border-b border-gray-700 h-[9%]">
-          <div
-            className="bg-gray-900 inline-flex rounded-full p-1 transition-colors duration-300 border border-gray-200/50"
-            role="group"
-          >
+      {/* Right Panel - Full width on mobile, half on desktop */}
+      <div className="w-full md:w-1/2 h-[50vh] md:h-screen flex flex-col bg-gray-900">
+        {/* Navigation Tabs - Adjusted for mobile */}
+        <nav className="flex flex-row justify-between p-1 md:p-2 border-b border-gray-700 h-[12%] md:h-[9%]">
+          <div className="bg-gray-900 inline-flex rounded-full p-1 transition-colors duration-300 border border-gray-200/50">
             <button
               type="button"
-              className={`flex items-center rounded-full px-3 py-1 text-sm font-medium transition-all duration-300 ${!showCode ? "bg-white text-gray-900 shadow-lg" : "bg-gray-900 text-white"}`}
+              className={`flex items-center rounded-full px-2 md:px-3 py-1 text-xs md:text-sm font-medium transition-all duration-300 ${!showCode ? "bg-white text-gray-900 shadow-lg" : "bg-gray-900 text-white"}`}
               onClick={toggleView}
               aria-pressed={!showCode}
             >
               <FontAwesomeIcon
                 icon={faWindowMaximize}
-                className="mr-2 mt-[0.2rem] text-xs md:text-sm"
+                className="mr-1 md:mr-2 text-xs md:text-sm"
               />
-              <span className="hidden sm:inline">Preview</span>
+              Preview
             </button>
 
             <button
               type="button"
-              className={`flex items-center rounded-full px-3 py-1 text-sm font-medium transition-all duration-300 ${showCode ? "bg-white text-gray-900 shadow-lg" : "bg-gray-900 text-white"}`}
+              className={`flex items-center rounded-full px-2 md:px-3 py-1 text-xs md:text-sm font-medium transition-all duration-300 ${showCode ? "bg-white text-gray-900 shadow-lg" : "bg-gray-900 text-white"}`}
               onClick={toggleView}
               aria-pressed={showCode}
             >
               <FontAwesomeIcon
                 icon={faCode}
-                className="mr-2 mt-[0.2rem] text-xs md:text-sm"
+                className="mr-1 md:mr-2 text-xs md:text-sm"
               />
-              <span className="hidden sm:inline">Code</span>
+              Code
             </button>
           </div>
-          <div className='flex flex-row gap-3'>
-            <button className="relative group p-2 h-10 w-10 mt-1 rounded-full text-white ring-1 ring-slate-100/60"
+
+          {/* Action Buttons - Adjusted for mobile */}
+          <div className="flex flex-row gap-2 md:gap-3">
+            <button className="relative group p-1.5 md:p-2 h-8 w-8 md:h-10 md:w-10 mt-1 rounded-full text-white ring-1 ring-slate-100/60"
               onClick={downloadHtmlContent}
             >
-              <FontAwesomeIcon icon={faFileArrowDown} className="text-xl" />
-              <span className="absolute z-50 left-1/2 bottom-full mb-2 w-max -translate-x-1/2 
-                       scale-0 rounded bg-gray-700 text-white text-xs px-2 py-1 
-                       opacity-0 transition-all group-hover:scale-100 group-hover:opacity-100">
+              <FontAwesomeIcon icon={faFileArrowDown} className="text-lg md:text-xl" />
+              <span className="absolute z-50 left-1/2 bottom-full mb-2 w-max -translate-x-1/2 scale-0 rounded bg-gray-700 text-white text-xs px-2 py-1 opacity-0 transition-all group-hover:scale-100 group-hover:opacity-100">
                 Download
               </span>
             </button>
 
-            <button className="relative group p-2 h-10 w-10 mt-1 rounded-full text-white ring-1 ring-slate-100/60"
-            >
-              <FontAwesomeIcon icon={faFloppyDisk} className="text-xl" />
-              <span className="absolute z-50 left-1/2 bottom-full mb-2 w-max -translate-x-1/2 
-                       scale-0 rounded bg-gray-700 text-white text-xs px-2 py-1 
-                       opacity-0 transition-all group-hover:scale-100 group-hover:opacity-100">
+            <button className="relative group p-1.5 md:p-2 h-8 w-8 md:h-10 md:w-10 mt-1 rounded-full text-white ring-1 ring-slate-100/60">
+              <FontAwesomeIcon icon={faFloppyDisk} className="text-lg md:text-xl" />
+              <span className="absolute z-50 left-1/2 bottom-full mb-2 w-max -translate-x-1/2 scale-0 rounded bg-gray-700 text-white text-xs px-2 py-1 opacity-0 transition-all group-hover:scale-100 group-hover:opacity-100">
                 Save Changes
               </span>
             </button>
 
-            <button className="relative group p-2 h-10 w-10 mt-[0.35rem] rounded-full text-white ring-1 ring-slate-100/60"
+            <button className="relative group p-1.5 md:p-2 h-8 w-8 md:h-10 md:w-10 mt-1 rounded-full text-white ring-1 ring-slate-100/60"
               onClick={() => onActionBtn("deploy")}
             >
-              <FontAwesomeIcon icon={faRocket} className="text-xl" />
-              <span className="absolute z-50 left-1/2 bottom-full mb-2 w-max -translate-x-1/2 
-                       scale-0 rounded bg-gray-700 text-white text-xs px-2 py-1 
-                       opacity-0 transition-all group-hover:scale-100 group-hover:opacity-100">
+              <FontAwesomeIcon icon={faRocket} className="text-lg md:text-xl" />
+              <span className="absolute z-50 left-1/2 bottom-full mb-2 w-max -translate-x-1/2 scale-0 rounded bg-gray-700 text-white text-xs px-2 py-1 opacity-0 transition-all group-hover:scale-100 group-hover:opacity-100">
                 Deploy
               </span>
             </button>
           </div>
         </nav>
 
-        {/* Generated Website or Code */}
-        <div className="flex-grow  p-4 h-[90%] bg-white" ref={parentRef}>
+        {/* Content Area - Adjusted for mobile */}
+        <div className="flex-grow p-2 md:p-4 h-[88%] md:h-[90%] bg-white" ref={parentRef}>
           {showCode ? (
-            <div className="box-border overflow-hidden h-full">
-
-              <nav className="flex justify-start items-center space-x-2 mb-2">
+            <div className="box-border h-full">
+              <nav className="flex justify-start items-center space-x-1 md:space-x-2 mb-2">
                 <button
-                  className={`font-semibold inline-flex items-center justify-center p-2  border-transparent rounded-t-lg hover:border-gray-300 min-w-12 group ${fileName === "html" ? "bg-orange-600 text-whit" : "text-orange-600"} border border-blue-600`}
+                  className={`font-semibold inline-flex items-center justify-center p-1 md:p-2 border-transparent rounded-t-lg hover:border-gray-300 min-w-8 md:min-w-12 group text-xs md:text-base ${fileName === "html" ? "bg-orange-600 text-white" : "text-orange-600"} border border-blue-600`}
                   onClick={() => handleClick("html")}
                 >
-                  <FontAwesomeIcon icon={faHtml5} className='h-7 w-7 mx-2' /> HTML
+                  <FontAwesomeIcon icon={faHtml5} className="h-5 w-5 md:h-7 md:w-7 mx-1 md:mx-2" /> HTML
                 </button>
                 <button
-                  className={`font-semibold inline-flex items-center justify-center p-2  border-transparent rounded-t-lg hover:border-gray-300 min-w-12 group ${fileName === "css" ? "bg-[#2965f1] text-white" : "text-[#2965f1]"} border border-blue-600`}
+                  className={`font-semibold inline-flex items-center justify-center p-1 md:p-2 border-transparent rounded-t-lg hover:border-gray-300 min-w-8 md:min-w-12 group text-xs md:text-base ${fileName === "css" ? "bg-[#2965f1] text-white" : "text-[#2965f1]"} border border-blue-600`}
                   onClick={() => handleClick("css")}
                 >
-                  <FontAwesomeIcon icon={faCss3Alt} className='h-7 w-7 mx-2' />
-                  CSS
+                  <FontAwesomeIcon icon={faCss3Alt} className="h-5 w-5 md:h-7 md:w-7 mx-1 md:mx-2" /> CSS
                 </button>
                 <button
-                  className={`font-semibold inline-flex items-center justify-center p-2  border-transparent rounded-t-lg hover:border-gray-300 min-w-12 group ${fileName === "js" ? "bg-[#f2db3d] text-white" : "text-[#f2db3d]"} border border-blue-600`}
+                  className={`font-semibold inline-flex items-center justify-center p-1 md:p-2 border-transparent rounded-t-lg hover:border-gray-300 min-w-8 md:min-w-12 group text-xs md:text-base ${fileName === "js" ? "bg-[#f2db3d] text-white" : "text-[#f2db3d]"} border border-blue-600`}
                   onClick={() => handleClick("js")}
                 >
-                  <FontAwesomeIcon icon={faSquareJs} className='h-7 w-7 mx-2' />Javascript
+                  <FontAwesomeIcon icon={faSquareJs} className="h-5 w-5 md:h-7 md:w-7 mx-1 md:mx-2" /> JS
                 </button>
               </nav>
-              <pre className="w-full h-[92%] p-2 m-0 border border-gray-600 rounded-lg bg-gray-800 text-white overflow-scroll">
+              <pre className="w-full h-[90%] p-2 m-0 border border-gray-600 rounded-lg bg-gray-800 text-white overflow-scroll text-sm md:text-base">
                 <code className={`language-${fileName === "html" ? "markup" : "css"}`}>
                   {fileName === "html" ? generatedHTML : fileName === "css" ? generatedCSS : generatedJS}
                 </code>
@@ -659,14 +618,14 @@ const MainPagePlain = () => {
           ) : (
             <ResizableBox
               className="relative w-full h-full border-[1.5px] border-zinc-600 border-solid bg-white rounded-md"
-              width={parentSize.width * 0.95}  // Add a starting width
-              height={parentSize.height * 0.95} // Add a starting height
+              width={parentSize.width * 0.95}
+              height={parentSize.height * 0.95}
               minConstraints={[parentSize.width * 0.5, parentSize.height * 0.5]}
               maxConstraints={[parentSize.width, parentSize.height]}
               resizeHandles={["se"]}
               handle={
-                <div className="absolute w-7 h-7 pl-2 pt-1 bg-gray-800 bottom-0 right-0 cursor-se-resize rounded-ee-sm">
-                  <FontAwesomeIcon icon={faUpRightAndDownLeftFromCenter} className='rotate-90' />
+                <div className="absolute w-6 h-6 md:w-7 md:h-7 pl-1.5 md:pl-2 pt-1 bg-gray-800 bottom-0 right-0 cursor-se-resize rounded-ee-sm">
+                  <FontAwesomeIcon icon={faUpRightAndDownLeftFromCenter} className="rotate-90 text-sm md:text-base" />
                 </div>
               }
             >
@@ -677,37 +636,8 @@ const MainPagePlain = () => {
               />
             </ResizableBox>
           )}
-
-          <div style={{ opacity: 0 }}>
-            <SandpackProvider
-              template="react"
-              files={{
-                "public/index.html": {
-                  code: displayCodedeploy,
-                  active: true
-                },
-                "/index.js": {
-                  code: "",
-                  active: true
-                }
-
-              }}
-              options={{
-                showNavigator: true,
-                showLineNumbers: true,
-                closableTabs: true,
-                activeFile: "/index.html",
-              }}
-            >
-              <SandpackLayout className="h-full bg-gray-900">
-                <SandpackPreviewClient2 />
-              </SandpackLayout>
-            </SandpackProvider>
-          </div>
-
-
         </div>
-      </animated.div>
+      </div>
     </div>
   );
 
