@@ -21,7 +21,8 @@ import SandpackPreviewClient2 from './SandpackPreviewClient2';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faBarsStaggered, faCode, faWindowMaximize, faWandMagicSparkles,
-  faFileArrowDown, faRocket, faFloppyDisk, faUpRightAndDownLeftFromCenter
+  faFileArrowDown, faRocket, faFloppyDisk, faUpRightAndDownLeftFromCenter,
+  faHexagonNodes
 }
   from "@fortawesome/free-solid-svg-icons";
 import { faReact, faHtml5, faCss3Alt, faSquareJs } from "@fortawesome/free-brands-svg-icons";
@@ -351,8 +352,12 @@ const MainPagePlain = () => {
 
     return htmlCode;
   }
+
+  const [loading, setLoading] = useState(false);
+
   // Function to handle prompt submission
   const handlePromptSubmit = async (e) => {
+    setLoading(true);
     e.preventDefault(); // Prevents the default form submission behavior
     setPrompt(" ");
     console.log("Form submitted with prompt:", prompt);
@@ -379,6 +384,7 @@ const MainPagePlain = () => {
       console.log("Raw text before parsing-", text)
       const object_data = JSON.parse(text)
 
+      
       setAimessage((prevMessages) => [...prevMessages, object_data.explanation]);
 
       setGeneratedText(object_data['explanation'])
@@ -388,12 +394,14 @@ const MainPagePlain = () => {
 
     } catch (error) {
       console.log('Error While fetching:', error);
+    } finally{
+      setLoading(false)
     }
 
   };
 
   const getAIResponse = async () => {
-
+    setLoading(true);
     const response = await fetch(`${BACKEND_URL}chat/getchat/${projectid}`, {
       method: "GET",
       headers: {
@@ -414,6 +422,7 @@ const MainPagePlain = () => {
       console.log("latest code:", latest_code_json_string)
       // ProjectStructure=latest_code;
       // setProjectStructure(latest_code);
+      setLoading(false);
       setGeneratedText(latest_code['explanation'])
       setGeneratedHTML(latest_code['html'])
       setGeneratedCSS(latest_code['css'])
@@ -426,6 +435,8 @@ const MainPagePlain = () => {
 
     } catch (e) {
       console.log("there is no previous chat in backend", e)
+    } finally{
+      setLoading(false);
     }
 
   }
@@ -506,6 +517,15 @@ const MainPagePlain = () => {
               )}
             </div>
           ))}
+          {loading && 
+            <div className="flex justify-center my-4">
+            <FontAwesomeIcon 
+              icon={faHexagonNodes} 
+              className="w-10 h-10 text-indigo-500 animate-spin"
+              style={{ animationDuration: '1s' }}
+            />
+            </div>
+          }
         </div>
 
         {/* Input Area - Adjusted for mobile */}
