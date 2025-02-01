@@ -52,7 +52,7 @@ export const UniversalPage = () => {
     // console.log("searching....")
     setSearchResult([]);
     if(searchTerm.length===0)return;
-    visibleTemplates.map((template,index)=>{
+    templates.map((template,index)=>{
         const tosearch = template.name.trim().toLowerCase();
         const search = searchTerm.trim().toLowerCase();
         if(tosearch.includes(search)){
@@ -131,7 +131,14 @@ export const UniversalPage = () => {
             placeholder="Search projects..."
             value={searchTerm}
           />
-          <button onClick={()=>setSearchResult([])} className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-blue-500 transition">
+          <button onClick={()=>{
+            if(searchResult.length===0){
+              setVisibleTemplates(templates);
+              return;
+            }
+            setVisibleTemplates(searchResult);
+            setSearchResult([]);
+          }} className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-blue-500 transition">
             <FontAwesomeIcon icon={faMagnifyingGlass} />
           </button>
         </div>
