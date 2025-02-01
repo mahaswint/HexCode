@@ -549,7 +549,7 @@ const MainPagePlain = () => {
       {/* Right Panel - Full width on mobile, half on desktop */}
       <div className="w-full md:w-1/2 h-[50vh] md:h-screen flex flex-col bg-gray-900">
         {/* Navigation Tabs - Adjusted for mobile */}
-        <nav className="flex flex-row justify-between p-1 md:p-2 border-b border-gray-700 h-[12%] md:h-[9%]">
+        <nav className="flex flex-row justify-between p-1 md:p-2 border-b border-gray-700 h-[13%] md:h-[9%]">
           <div className="bg-gray-900 inline-flex rounded-full p-1 transition-colors duration-300 border border-gray-200/50">
             <button
               type="button"
@@ -561,7 +561,7 @@ const MainPagePlain = () => {
                 icon={faWindowMaximize}
                 className="mr-1 md:mr-2 text-xs md:text-sm"
               />
-              Preview
+              <span className="hidden sm:inline">Preview</span>
             </button>
 
             <button
@@ -574,32 +574,32 @@ const MainPagePlain = () => {
                 icon={faCode}
                 className="mr-1 md:mr-2 text-xs md:text-sm"
               />
-              Code
+              <span className="hidden sm:inline">Code</span>
             </button>
           </div>
 
           {/* Action Buttons - Adjusted for mobile */}
           <div className="flex flex-row gap-2 md:gap-3">
-            <button className="relative group p-1.5 md:p-2 h-8 w-8 md:h-10 md:w-10 mt-1 rounded-full text-white ring-1 ring-slate-100/60"
+            <button className="relative group p-1 md:p-2 h-7 w-7 md:h-10 md:w-10 mt-1 rounded-full text-white ring-1 ring-slate-100/60"
               onClick={downloadHtmlContent}
             >
-              <FontAwesomeIcon icon={faFileArrowDown} className="text-lg md:text-xl" />
+              <FontAwesomeIcon icon={faFileArrowDown} className="text-md md:text-xl" />
               <span className="absolute z-50 left-1/2 bottom-full mb-2 w-max -translate-x-1/2 scale-0 rounded bg-gray-700 text-white text-xs px-2 py-1 opacity-0 transition-all group-hover:scale-100 group-hover:opacity-100">
                 Download
               </span>
             </button>
 
-            <button className="relative group p-1.5 md:p-2 h-8 w-8 md:h-10 md:w-10 mt-1 rounded-full text-white ring-1 ring-slate-100/60">
-              <FontAwesomeIcon icon={faFloppyDisk} className="text-lg md:text-xl" />
+            <button className="relative group p-1 md:p-2 h-7 w-7 md:h-10 md:w-10 mt-1 rounded-full text-white ring-1 ring-slate-100/60">
+              <FontAwesomeIcon icon={faFloppyDisk} className="text-md md:text-xl" />
               <span className="absolute z-50 left-1/2 bottom-full mb-2 w-max -translate-x-1/2 scale-0 rounded bg-gray-700 text-white text-xs px-2 py-1 opacity-0 transition-all group-hover:scale-100 group-hover:opacity-100">
                 Save Changes
               </span>
             </button>
 
-            <button className="relative group p-1.5 md:p-2 h-8 w-8 md:h-10 md:w-10 mt-1 rounded-full text-white ring-1 ring-slate-100/60"
+            <button className="relative group p-1 md:p-2 h-7 w-7 md:h-10 md:w-10 mt-1 rounded-full text-white ring-1 ring-slate-100/60"
               onClick={() => onActionBtn("deploy")}
             >
-              <FontAwesomeIcon icon={faRocket} className="text-lg md:text-xl" />
+              <FontAwesomeIcon icon={faRocket} className="text-md md:text-xl" />
               <span className="absolute z-50 left-1/2 bottom-full mb-2 w-max -translate-x-1/2 scale-0 rounded bg-gray-700 text-white text-xs px-2 py-1 opacity-0 transition-all group-hover:scale-100 group-hover:opacity-100">
                 Deploy
               </span>

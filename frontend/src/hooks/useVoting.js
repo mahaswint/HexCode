@@ -4,7 +4,6 @@ const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "http://localhost:5000/
 // const API_URL = 'http://localhost:5000';
 
 export const useVoting = (projectId, initialVotes = { upvotes: [], downvotes: [] }, user) => {
-    console.log(`useVoting:${user?.name} ${projectId}`);
     const [votes, setVotes] = useState(initialVotes);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);

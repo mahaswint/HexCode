@@ -83,8 +83,7 @@ export const UniversalPage = () => {
 
       const data = await response.json();
       setTemplates(data);
-      console.log(data);
-      
+      // console.log(data);
     } catch (err) {
       setError(err.message);
       console.log(error);
@@ -191,6 +190,7 @@ export const UniversalPage = () => {
                   title={template.name} 
                   description={template.messages}
                   initialVotes={template.votes}
+                  projectType={template.projectType}
                   user={user}
                 />
               </div>
