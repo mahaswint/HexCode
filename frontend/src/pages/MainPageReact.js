@@ -23,7 +23,7 @@ import { useSpring, animated } from "@react-spring/web";
 import { useDrag } from "@use-gesture/react";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBarsStaggered, faCode, faWindowMaximize,faWandMagicSparkles,faFileExport, faRocket, faFloppyDisk } from "@fortawesome/free-solid-svg-icons";
+import { faBarsStaggered, faCode, faWindowMaximize,faWandMagicSparkles,faFileExport, faRocket, faFloppyDisk, faHexagonNodes } from "@fortawesome/free-solid-svg-icons";
 import { faReact, faHtml5, faCss3Alt, faSquareJs  } from "@fortawesome/free-brands-svg-icons";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "http://localhost:5000/";
@@ -280,6 +280,15 @@ useEffect(() => {
             )}
           </div>
         ))}
+        {loading && 
+          <div className="flex justify-center my-4">
+          <FontAwesomeIcon 
+            icon={faHexagonNodes} 
+            className="w-10 h-10 text-indigo-500 animate-spin"
+            style={{ animationDuration: '1s' }}
+          />
+          </div>
+        }
       </div>
       <div className='flex flex-col items-end w-full h-[30%] bg-gray-800 border border-gray-600 rounded-lg'>
         <textarea
