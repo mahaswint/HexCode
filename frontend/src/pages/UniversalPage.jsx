@@ -1,5 +1,5 @@
 import React from 'react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { TemplateCard } from "../components/TemplateCard";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass, faRocket, faHexagonNodes } from "@fortawesome/free-solid-svg-icons";
@@ -27,8 +27,46 @@ export const UniversalPage = () => {
   const [page, setPage] = useState(1);
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [searchTerm, setSearchTerm] = useState(""); // Search term for filtering users
+  const [searchResult, setSearchResult]= useState([]);
+  const [mount, setMount] = useState(false);    // to prevent useEffect from being called on loading
 
   const { user, setUser } = useUser();
+
+  const searchRef = useRef(null);
+  // Click outside handler
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (searchRef.current && !searchRef.current.contains(event.target)) {
+        setSearchResult([]); // Clear search results if clicked outside
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  });
+
+  const handleSearch = ()=>{
+    // console.log("searching....")
+    setSearchResult([]);
+    if(searchTerm.length===0)return;
+    visibleTemplates.map((template,index)=>{
+        const tosearch = template.name.trim().toLowerCase();
+        const search = searchTerm.trim().toLowerCase();
+        if(tosearch.includes(search)){
+            setSearchResult((old)=>[...old,template]);
+        }
+    });
+    // console.log(searchResult);
+  };
+
+  useEffect(()=>{
+    if(mount)handleSearch();
+    else setMount(true);
+  },[searchTerm]);
+
   const getAllProjects = async () => {
     try {
       setIsLoading(true);
@@ -84,7 +122,34 @@ export const UniversalPage = () => {
             <FontAwesomeIcon icon={faRocket} /> Public Projects
           </h2>
         </div>
-        <SearchBar />
+        {/* <SearchBar /> */}
+        {/* Searchbar */}
+        <div ref={searchRef} className="w-full md:w-[25rem]">
+        <div className="relative w-full max-w-lg mt-3 mb-1">
+          <input
+            onChange={(e)=>{setSearchTerm(e.target.value)}}
+            className="w-full px-5 py-3 text-sm rounded-full bg-gray-800 border border-gray-600 text-white outline-none focus:ring-2 focus:ring-blue-500 transition"
+            placeholder="Search projects..."
+            value={searchTerm}
+          />
+          <button onClick={()=>setSearchResult([])} className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-blue-500 transition">
+            <FontAwesomeIcon icon={faMagnifyingGlass} />
+          </button>
+        </div>
+        {/* Search Results Dropdown */}
+        {searchResult.length > 0 && (
+            <div className="absolute bg-gray-800 border border-gray-600 rounded-lg shadow-lg z-10 w-[25rem]">
+              {searchResult.map((project, index) => (
+                <div 
+                  key={index}
+                  className="px-4 py-2 hover:bg-gray-700 cursor-pointer transition"
+                >
+                  {project.name}
+                </div>
+              ))}
+            </div>
+        )}
+        </div>
       </div>
 
       <div className="text-gray-400 mb-8 text-lg max-w-2xl">
