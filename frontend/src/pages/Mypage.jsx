@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from "react";
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "http://localhost:5000/";
 
 const Mypage = () => {
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
+  
   // Function to fetch user data
   const fetchUserData = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/user/my", {
+      const response = await fetch(`${BACKEND_URL}api/user/my`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",

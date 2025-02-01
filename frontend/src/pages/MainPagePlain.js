@@ -26,9 +26,11 @@ import {
   from "@fortawesome/free-solid-svg-icons";
 import { faReact, faHtml5, faCss3Alt, faSquareJs } from "@fortawesome/free-brands-svg-icons";
 
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "http://localhost:5000/";
 
 const MainPagePlain = () => {
   // Define states
+  
   const [prompt, setPrompt] = useState(""); // State for user input
   const { action, setAction } = useContext(ActionContext) || {};
   const { projectid } = useParams();
@@ -358,7 +360,7 @@ const MainPagePlain = () => {
     // Simulate fetching generated code from backend (replace this with your API call)
     try {
       // console.log(parsedData.PID);
-      const response = await fetch(`http://localhost:5000/chat/${projectid}`, {
+      const response = await fetch(`${BACKEND_URL}chat/${projectid}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -392,7 +394,7 @@ const MainPagePlain = () => {
 
   const getAIResponse = async () => {
 
-    const response = await fetch(`http://localhost:5000/chat/getchat/${projectid}`, {
+    const response = await fetch(`${BACKEND_URL}chat/getchat/${projectid}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

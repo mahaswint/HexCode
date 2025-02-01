@@ -10,15 +10,17 @@ import {
 import { useState } from "react";
 import Swal from 'sweetalert2';
 import { useUser } from "../hooks/userContext";
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "http://localhost:5000/";
 
 const Prompt = () => {
+    
     const { user, setUser } = useUser();
     
     const [prompt, setPrompt] = useState("");
 
     const handleCreateProject = async () => {
         if(!user){
-            window.location.href = "http://localhost:5000/auth/google";
+            window.location.href = `${BACKEND_URL}auth/google`;
             return;
         }
         if(!prompt.trim()) return;
@@ -93,7 +95,7 @@ const Prompt = () => {
         if (formValues) {
             try {
                 // Send the data to the backend
-                const response = await fetch("http://localhost:5000/project/add", { 
+                const response = await fetch(`${BACKEND_URL}project/add`, { 
                     method: "POST", 
                     headers: { 
                         "Content-Type": "application/json", 

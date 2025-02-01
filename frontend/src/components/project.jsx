@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "http://localhost:5000/";
 
 const ProjectList = (props) => {
+    
+
     const projects = props.projects;
     const [showPopup, setShowPopup] = useState(false); // Track if popup is visible
     const [selectedUsers, setSelectedUsers] = useState([]); // Track selected users
@@ -19,7 +22,7 @@ const ProjectList = (props) => {
     const getProjectData = async (projectid) => {
         try {
             console.log(projectid);
-            const response = await fetch(`http://localhost:5000/project/${projectid}`, {
+            const response = await fetch(`${BACKEND_URL}project/${projectid}`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
@@ -85,7 +88,7 @@ const ProjectList = (props) => {
             console.log("Selected Users Before Deduplication:", allReadySelected);
             console.log("currentuser:", user);
 
-            const response = await fetch(`http://localhost:5000/project/${project._id}/edit`, {
+            const response = await fetch(`${BACKEND_URL}project/${project._id}/edit`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",

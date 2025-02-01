@@ -16,12 +16,13 @@ import { UniversalPage } from "./pages/UniversalPage";
 import { ActionContext } from './pages/ActionContext';
 import { useState } from "react";
 
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "http://localhost:5000/";
 
 function ProtectedRoute({ children }) {
     const { user } = useUser();  // Get user context
-  
+    
     if (!user) {
-        window.location.href = "http://localhost:5000/auth/google";
+        window.location.href = `${BACKEND_URL}auth/google`;
         return null;
     }
   

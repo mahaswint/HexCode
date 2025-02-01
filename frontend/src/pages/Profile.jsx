@@ -3,8 +3,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUserPen } from "@fortawesome/free-solid-svg-icons";
 import Swal from 'sweetalert2';
 import Projectlist from "../components/project"; // Adjusted path if needed
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "http://localhost:5000/";
 
 const Profile = () => {
+  
   const [user, setUser] = useState(null); // State to hold authenticated user data
   const [projects, setProjects] = useState([]); // State to hold projects data
   const [users, setUsers] = useState([]); // State to hold all users
@@ -14,7 +16,7 @@ const Profile = () => {
   // Function to fetch user data
   const fetchUserData = async () => {
     try {
-      const response = await fetch("http://localhost:5000/user/my", {
+      const response = await fetch(`${BACKEND_URL}user/my`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -38,7 +40,7 @@ const Profile = () => {
   // Function to fetch all users from the backend
   const getAllUsers = async () => {
     try {
-      const response = await fetch("http://localhost:5000/search", {
+      const response = await fetch(`${BACKEND_URL}search`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -60,7 +62,7 @@ const Profile = () => {
   // Function to fetch projects for the authenticated user
   const getAllProjects = async () => {
     try {
-      const response = await fetch("http://localhost:5000/user/my/project", {
+      const response = await fetch(`${BACKEND_URL}user/my/project`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",

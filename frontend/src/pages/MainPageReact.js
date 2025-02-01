@@ -26,7 +26,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBarsStaggered, faCode, faWindowMaximize,faWandMagicSparkles,faFileExport, faRocket, faFloppyDisk } from "@fortawesome/free-solid-svg-icons";
 import { faReact, faHtml5, faCss3Alt, faSquareJs  } from "@fortawesome/free-brands-svg-icons";
 
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "http://localhost:5000/";
+
 export default function MainPageReact({children}) {
+  
   const { action, setAction } = useContext(ActionContext) || {};
   const [userprompts, setUserprompts] = useState([]);
   const [aimessage, setAimessage] = useState([]);
@@ -108,7 +111,7 @@ export default function MainPageReact({children}) {
   const getAIResponse = async ()=>{
     setLoading(true)
     console.log("Loading state:", loading);
-    const response = await fetch(`http://localhost:5000/chat/getchat/${projectid}`,{
+    const response = await fetch(`${BACKEND_URL}chat/getchat/${projectid}`,{
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -202,7 +205,7 @@ useEffect(() => {
     setLoading(true)
     try{
       console.log(projectid);
-        const response = await fetch(`http://localhost:5000/chat/${projectid}`,{
+        const response = await fetch(`${BACKEND_URL}chat/${projectid}`,{
             method : 'POST',
             headers : {
                 'Content-Type': 'application/json'
