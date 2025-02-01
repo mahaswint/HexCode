@@ -126,7 +126,7 @@ const Navbar = () => {
 
                             <div className="border-t pt-4">
                                 {!user ? (
-                                    <a href={`${BACKEND_URL}/auth/google`}>
+                                    <a href={`${BACKEND_URL}auth/google`}>
                                         <button className="w-full border-solid rounded-md px-4 py-2 bg-indigo-500 hover:bg-indigo-600 text-white" onClick={ closeMobileMenu }>
                                             Log-In
                                         </button>

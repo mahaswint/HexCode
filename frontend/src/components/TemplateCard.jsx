@@ -2,20 +2,20 @@ import { useVoting } from '../hooks/useVoting';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faReact, faHtml5, faCss3Alt, faSquareJs  } from "@fortawesome/free-brands-svg-icons";
 
-export const TemplateCard = ({ id, title, description, initialVotes, user }) => {
+export const TemplateCard = ({ id, title, description, initialVotes, projectType, user }) => {
     const { votes, loading, error, handleVote } = useVoting(id, initialVotes, user);
-    let type = false;
+    let type = projectType;
     return (
       <div className="bg-slate-700 rounded-xl p-6 hover:scale-105 transition-transform duration-300 ease-out">
         {/* Header Section */}
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-xl font-semibold text-white">{title}</h3>
-          <button className="px-4 py-1.5 bg-blue-500/10 text-blue-400 rounded-full 
+          {/* <button className="px-4 py-1.5 bg-blue-500/10 text-blue-400 rounded-full 
             border border-blue-500/20 hover:bg-indigo-600 hover:border-indigo-600/20 hover:text-white transition-all 
             text-sm font-medium"
             >
             Preview
-          </button>
+          </button> */}
         </div>
         
         {/* Description */}

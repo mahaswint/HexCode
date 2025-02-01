@@ -25,7 +25,7 @@ const projectSchema = new Schema(
         },
         // Visibility of the project
         visibility: {
-            type: Boolean,
+            type: Boolean, // true for public
             default: false
         },
         // Description
@@ -35,7 +35,7 @@ const projectSchema = new Schema(
         },
         // Project Type
         projectType: {
-            type: Boolean,
+            type: Boolean, // true for react
             required: true
         },
         // chat associated with the project

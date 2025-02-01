@@ -309,22 +309,22 @@ useEffect(() => {
     
     
     {/* Right Panel */}
-    <div className="w-full md:w-1/2 flex flex-col bg-gray-900">
+    <div className="w-[98%] m-1 md:m-0 md:w-1/2 flex flex-col bg-gray-900">
       {/* Navigation Tabs */}
-      <nav className="flex flex-row justify-between p-2 bg-gray-900 border-b border-gray-700 h-[9%] mb-4">
+      <nav className="flex flex-row justify-between p-1 md:p-2 bg-gray-900 border-b border-gray-700 h-[9%] mb-4">
         <div 
           className="bg-gray-900 inline-flex rounded-full p-1 transition-colors duration-300 border border-gray-200/50"
           role="group"
         >
           <button
             type="button"
-            className={`flex items-center rounded-full px-3 py-1 text-sm font-medium transition-all duration-300 
+            className={`flex items-center rounded-full px-2 md:px-3 py-1 text-xs md:text-sm font-medium transition-all duration-300 
               ${activeTab === "preview" ? "bg-white text-gray-900 shadow-lg" : "bg-gray-900 text-white"}`}
               onClick={handleOnClick}
           >
             <FontAwesomeIcon 
               icon={faWindowMaximize} 
-              className="mr-2 mt-[0.2rem] text-xs md:text-sm" 
+              className="mx-2 mt-[0.2rem] text-xs md:text-sm" 
             />
             <span className="hidden sm:inline">Preview</span>
           </button>
@@ -337,7 +337,7 @@ useEffect(() => {
           >
             <FontAwesomeIcon 
               icon={faCode} 
-              className="mr-2 mt-[0.2rem] text-xs md:text-sm" 
+              className="mx-1 md:mr-2 mt-[0.2rem] text-xs md:text-sm" 
             />
             <span className="hidden sm:inline">Code</span>
           </button>
@@ -345,11 +345,11 @@ useEffect(() => {
 
           <div className='flex flex-row gap-3'>
           <button
-            className={"relative group p-2 h-10 w-10 mt-1 rounded-full text-white ring-1 ring-slate-100/60" }
+            className={"relative group p-1 md:p-2 h-8 w-8 md:h-10 md:w-10 mt-1 rounded-full text-white ring-1 ring-slate-100/60" }
             onClick={() => onActionBtn("export")}
           
           >
-            <FontAwesomeIcon icon={faFileExport} className="text-xl" />
+            <FontAwesomeIcon icon={faFileExport} className="text-md md:text-xl" />
             <span className="absolute z-50 left-1/2 bottom-full mb-2 w-max -translate-x-1/2 
                      scale-0 rounded bg-gray-700 text-white text-xs px-2 py-1 
                      opacity-0 transition-all group-hover:scale-100 group-hover:opacity-100">
@@ -357,9 +357,9 @@ useEffect(() => {
             </span>
           </button>
           
-          <button className="relative group p-2 h-10 w-10 mt-1 rounded-full text-white ring-1 ring-slate-100/60"
+          <button className="relative group p-1 md:p-2 h-8 w-8 md:h-10 md:w-10 mt-1 rounded-full text-white ring-1 ring-slate-100/60"
           >
-            <FontAwesomeIcon icon={faFloppyDisk} className="text-xl" />
+            <FontAwesomeIcon icon={faFloppyDisk} className="text-md md:text-xl" />
             <span className="absolute z-50 left-1/2 bottom-full mb-2 w-max -translate-x-1/2 
                      scale-0 rounded bg-gray-700 text-white text-xs px-2 py-1 
                      opacity-0 transition-all group-hover:scale-100 group-hover:opacity-100">
@@ -368,10 +368,10 @@ useEffect(() => {
           </button>
         
           <button
-            className="relative group p-2 h-10 w-10 mt-1 rounded-full text-white ring-1 ring-slate-100/60"
+            className="relative group p-1 md:p-2 h-8 w-8 md:h-10 md:w-10 mt-1 rounded-full text-white ring-1 ring-slate-100/60"
             onClick={() => onActionBtn("deploy")}
           >
-            <FontAwesomeIcon icon={faRocket} className="text-xl" />
+            <FontAwesomeIcon icon={faRocket} className="text-md md:text-xl" />
             <span className="absolute z-50 left-1/2 bottom-full mb-2 w-max -translate-x-1/2 
                      scale-0 rounded bg-gray-700 text-white text-xs px-2 py-1 
                      opacity-0 transition-all group-hover:scale-100 group-hover:opacity-100">
@@ -420,7 +420,7 @@ useEffect(() => {
               <SandpackPreviewClient className="flex h-full w-full"/>
             ) : (
               <div className="flex h-full overflow-scroll">
-                <SandpackFileExplorer className=" border-r border-gray-700 overflow-scroll" style={{height:'600px', width:'200px'}} />
+                <SandpackFileExplorer className="overflow-scroll border-r border-gray-700 " style={{height:'600px', width:'200px'}} />
                 <SandpackCodeEditor className=" overflow-scroll" style={{height:'600px', width:'700px'}} />
               </div>
             )}
