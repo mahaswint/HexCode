@@ -45,9 +45,7 @@ function App() {
                         <Route path="/" element={<Landing/>} />
                         <Route path="/universal" element={<UniversalPage />} />
                         <Route path="/login" element={<Login />} />
-                        {/* {<ProtectedRoute><Profile /></ProtectedRoute>} */}
-                        <Route path="/profile" element={<Profile />} />
-                        <Route path="/my" element={<Mypage/>} />
+                        <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
                         <Route path="/main/react/:projectid" element={<MainPageReact/>} />
                         <Route path="/main/plain/:projectid" element={<MainPagePlain/>} />
                     </Routes>

@@ -7,6 +7,7 @@ const authController = require("../controllers/authController")
 router.get(
   "/google/callback",
   passport.authenticate("google", {
+    prompt:'select_account',
     successRedirect: process.env.CLIENT_URL || "http://localhost:3000/",
     failureRedirect: "/login/failed",
   })

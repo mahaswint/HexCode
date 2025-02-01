@@ -16,7 +16,7 @@ export const Footer = () => {
             initial={{ opacity: 0, y: 50 }} 
             animate={isInView ? { opacity: 1, y: 0 } : {}} 
             transition={{ duration: 0.6, ease: "easeOut" }}
-            className="w-full bg-zinc-900 py-2 px-7 flex md:flex-row justify-between items-center border-gray-600 border-t"
+            className="w-full bg-zinc-900 py-2 px-7 flex md:flex-row justify-between items-center border-gray-600 border-t z-40"
         >
             <div className="flex flex-col items-start mb-4 md:mb-0 gap-2">
                 <div className="text-white font-semibold text-xl">

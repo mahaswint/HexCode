@@ -193,7 +193,7 @@ const Prompt = () => {
 
             {/* Input Section */}
             <div className="relative z-10 flex justify-center mt-auto p-4">
-                <div className="bg-zinc-900 flex items-center w-full md:w-[600px] px-4 py-3 rounded-xl border border-gray-700 shadow-inner">
+                <div className="bg-zinc-900 flex items-end w-full md:w-[600px] px-4 py-3 rounded-xl border border-gray-700 shadow-inner">
                     <textarea 
                         placeholder="Type your prompt..."
                         className="flex-1 bg-transparent text-white outline-none border-none px-2 placeholder-gray-400 text-md resize-none max-h-100 h-20 overflow-y-scroll"

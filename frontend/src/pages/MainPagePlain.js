@@ -322,14 +322,6 @@ const MainPagePlain = () => {
           <meta charset="UTF-8">
           <title>Generated Page</title>
            <style>
-    ::-webkit-scrollbar {
-      width: 1px;
-    }
-
-    ::-webkit-scrollbar-thumb {
-      background: #6366F1;
-      border-radius: 20px;
-    }
   </style>
       </head>
       <body>
@@ -600,9 +592,6 @@ const MainPagePlain = () => {
               onClick={() => onActionBtn("deploy")}
             >
               <FontAwesomeIcon icon={faRocket} className="text-md md:text-xl" />
-              <span className="absolute z-50 left-1/2 bottom-full mb-2 w-max -translate-x-1/2 scale-0 rounded bg-gray-700 text-white text-xs px-2 py-1 opacity-0 transition-all group-hover:scale-100 group-hover:opacity-100">
-                Deploy
-              </span>
             </button>
           </div>
         </nav>
