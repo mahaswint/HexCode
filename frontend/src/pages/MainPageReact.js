@@ -23,8 +23,9 @@ import { useSpring, animated } from "@react-spring/web";
 import { useDrag } from "@use-gesture/react";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBarsStaggered, faCode, faWindowMaximize,faWandMagicSparkles,faFileExport, faRocket, faFloppyDisk, faHexagonNodes } from "@fortawesome/free-solid-svg-icons";
+import { faBarsStaggered, faCode, faWindowMaximize,faWandMagicSparkles,faFileExport, faRocket, faFloppyDisk, faHexagonNodes, faCopy, faLock} from "@fortawesome/free-solid-svg-icons";
 import { faReact, faHtml5, faCss3Alt, faSquareJs  } from "@fortawesome/free-brands-svg-icons";
+import { useUser } from '../hooks/userContext';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "http://localhost:5000/";
 
@@ -34,9 +35,33 @@ export default function MainPageReact({children}) {
   const [userprompts, setUserprompts] = useState([]);
   const [aimessage, setAimessage] = useState([]);
   const {projectid} = useParams();
-  console.log(projectid);
   const [loading,setLoading] = useState(false);
-  // const {sandpack} = useSandpack();
+  const { user, setUser } = useUser();
+  const [userIsOwner, setUserIsOwner] = useState(false);
+  
+  const getProjectData = async (projectid) => {
+    try {
+        const response = await fetch(`${BACKEND_URL}project/${projectid}`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            credentials: "include", // Include credentials for session management
+        });
+        
+        if (!response.ok) {
+            throw new Error("Failed to fetch projects");
+        }
+        
+        const data = await response.json();
+        setUserIsOwner(data.owner === user._id)
+        console.log(userIsOwner)
+    } catch (err) {
+        console.log(err); // Capture and set the error
+    }
+  };
+  getProjectData(projectid);
+
   let ProjectStructure;
 
   let parsedData;
@@ -298,12 +323,13 @@ useEffect(() => {
           onChange={(e) => setPrompt(e.target.value)}
           placeholder="Enter website description..."
         />
+        { userIsOwner&&
         <button 
           className="h-10 w-10 p-2 m-2 bg-indigo-500 hover:bg-indigo-600 text-white font-semibold rounded-full shadow-md transition"
           onClick={handlePromptSubmit}
         >
           <FontAwesomeIcon icon={faWandMagicSparkles} />
-        </button>
+        </button>}
       </div>
     </div>
     
@@ -321,12 +347,14 @@ useEffect(() => {
             className={`flex items-center rounded-full px-2 md:px-3 py-1 text-xs md:text-sm font-medium transition-all duration-300 
               ${activeTab === "preview" ? "bg-white text-gray-900 shadow-lg" : "bg-gray-900 text-white"}`}
               onClick={handleOnClick}
+              disabled={!userIsOwner}
           >
             <FontAwesomeIcon 
               icon={faWindowMaximize} 
               className="mx-2 mt-[0.2rem] text-xs md:text-sm" 
             />
             <span className="hidden sm:inline">Preview</span>
+            {!userIsOwner && <FontAwesomeIcon icon={faLock} className="ml-1 text-xs md:text-sm" />}
           </button>
 
           <button
@@ -334,15 +362,19 @@ useEffect(() => {
             className={`flex items-center rounded-full px-3 py-1 text-sm font-medium transition-all duration-300 
               ${activeTab === "code" ? "bg-white text-gray-900 shadow-lg" : "bg-gray-900 text-white"}`}
             onClick={() => setActiveTab("code")}
+            disabled={!userIsOwner}
           >
             <FontAwesomeIcon 
               icon={faCode} 
               className="mx-1 md:mr-2 mt-[0.2rem] text-xs md:text-sm" 
             />
             <span className="hidden sm:inline">Code</span>
+            {!userIsOwner && <FontAwesomeIcon icon={faLock} className="ml-1 text-xs md:text-sm" />}
           </button>
           </div>
-
+          
+          {
+            userIsOwner?(
           <div className='flex flex-row gap-3'>
           <button
             className={"relative group p-1 md:p-2 h-8 w-8 md:h-10 md:w-10 mt-1 rounded-full text-white ring-1 ring-slate-100/60" }
@@ -379,6 +411,16 @@ useEffect(() => {
             </span>
           </button>
           </div>
+          ):(
+              <div className="flex flex-row gap-2 md:gap-3">
+                <button className="relative group p-1 md:p-2 h-7 w-7 md:h-10 md:w-10 mt-1 rounded-full text-white ring-1 ring-slate-100/60"
+                  onClick={null}
+                >
+                  <FontAwesomeIcon icon={faCopy} className="text-md md:text-xl" />
+                </button>
+              </div>
+            )
+          }
       </nav>
 
       {/* Sandpack Editor */}

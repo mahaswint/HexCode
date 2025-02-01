@@ -14,6 +14,7 @@ import { useDrag } from "@use-gesture/react";
 import { ResizableBox } from 'react-resizable';
 import 'react-resizable/css/styles.css';
 import { ActionContext } from './ActionContext'; // Updated import path
+import { useUser } from "../hooks/userContext";
 
 import { Sandpack, SandpackProvider, useSandpack, SandpackLayout } from "@codesandbox/sandpack-react";
 import SandpackPreviewClient2 from './SandpackPreviewClient2';
@@ -22,12 +23,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faBarsStaggered, faCode, faWindowMaximize, faWandMagicSparkles,
   faFileArrowDown, faRocket, faFloppyDisk, faUpRightAndDownLeftFromCenter,
-  faHexagonNodes
+  faHexagonNodes, faCopy, faLock
 }
   from "@fortawesome/free-solid-svg-icons";
 import { faReact, faHtml5, faCss3Alt, faSquareJs } from "@fortawesome/free-brands-svg-icons";
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "http://localhost:5000/";
+export const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "http://localhost:5000/";
 
 const MainPagePlain = () => {
   // Define states
@@ -35,7 +36,31 @@ const MainPagePlain = () => {
   const [prompt, setPrompt] = useState(""); // State for user input
   const { action, setAction } = useContext(ActionContext) || {};
   const { projectid } = useParams();
-  console.log(projectid);
+  const { user, setUser } = useUser();
+  const [userIsOwner, setUserIsOwner] = useState(false);
+  
+  const getProjectData = async (projectid) => {
+    try {
+        const response = await fetch(`${BACKEND_URL}project/${projectid}`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            credentials: "include", // Include credentials for session management
+        });
+        
+        if (!response.ok) {
+            throw new Error("Failed to fetch projects");
+        }
+        
+        const data = await response.json();
+        setUserIsOwner(data.owner === user._id)
+        console.log(userIsOwner)
+    } catch (err) {
+        console.log(err); // Capture and set the error
+    }
+  };
+  getProjectData(projectid);
 
   const [userprompts, setUserprompts] = useState([]);
   const [aimessage, setAimessage] = useState([]);
@@ -529,12 +554,14 @@ const MainPagePlain = () => {
             onChange={(e) => setPrompt(e.target.value)}
             placeholder="Enter website description..."
           />
-          <button
+          
+          { userIsOwner&&
+            <button
             className="h-8 w-8 md:h-10 md:w-10 p-1.5 md:p-2 m-2 bg-indigo-500 hover:bg-indigo-600 text-white font-semibold rounded-full shadow-md transition"
             onClick={handlePromptSubmit}
           >
             <FontAwesomeIcon icon={faWandMagicSparkles} />
-          </button>
+          </button>}
         </div>
       </div>
 
@@ -548,12 +575,14 @@ const MainPagePlain = () => {
               className={`flex items-center rounded-full px-2 md:px-3 py-1 text-xs md:text-sm font-medium transition-all duration-300 ${!showCode ? "bg-white text-gray-900 shadow-lg" : "bg-gray-900 text-white"}`}
               onClick={toggleView}
               aria-pressed={!showCode}
+              disabled={!userIsOwner}
             >
               <FontAwesomeIcon
                 icon={faWindowMaximize}
                 className="mr-1 md:mr-2 text-xs md:text-sm"
               />
               <span className="hidden sm:inline">Preview</span>
+              {!userIsOwner && <FontAwesomeIcon icon={faLock} className="ml-1 text-xs md:text-sm" />}
             </button>
 
             <button
@@ -561,39 +590,53 @@ const MainPagePlain = () => {
               className={`flex items-center rounded-full px-2 md:px-3 py-1 text-xs md:text-sm font-medium transition-all duration-300 ${showCode ? "bg-white text-gray-900 shadow-lg" : "bg-gray-900 text-white"}`}
               onClick={toggleView}
               aria-pressed={showCode}
+              disabled={!userIsOwner}
             >
               <FontAwesomeIcon
                 icon={faCode}
                 className="mr-1 md:mr-2 text-xs md:text-sm"
               />
               <span className="hidden sm:inline">Code</span>
+              {!userIsOwner && <FontAwesomeIcon icon={faLock} className="ml-1 text-xs md:text-sm" />}
             </button>
           </div>
 
           {/* Action Buttons - Adjusted for mobile */}
-          <div className="flex flex-row gap-2 md:gap-3">
-            <button className="relative group p-1 md:p-2 h-7 w-7 md:h-10 md:w-10 mt-1 rounded-full text-white ring-1 ring-slate-100/60"
-              onClick={downloadHtmlContent}
-            >
-              <FontAwesomeIcon icon={faFileArrowDown} className="text-md md:text-xl" />
-              <span className="absolute z-50 left-1/2 bottom-full mb-2 w-max -translate-x-1/2 scale-0 rounded bg-gray-700 text-white text-xs px-2 py-1 opacity-0 transition-all group-hover:scale-100 group-hover:opacity-100">
-                Download
-              </span>
-            </button>
+          {
+            userIsOwner?(
+            <div className="flex flex-row gap-2 md:gap-3">
+              <button className="relative group p-1 md:p-2 h-7 w-7 md:h-10 md:w-10 mt-1 rounded-full text-white ring-1 ring-slate-100/60"
+                onClick={downloadHtmlContent}
+              >
+                <FontAwesomeIcon icon={faFileArrowDown} className="text-md md:text-xl" />
+                <span className="absolute z-50 left-1/2 bottom-full mb-2 w-max -translate-x-1/2 scale-0 rounded bg-gray-700 text-white text-xs px-2 py-1 opacity-0 transition-all group-hover:scale-100 group-hover:opacity-100">
+                  Download
+                </span>
+              </button>
 
-            <button className="relative group p-1 md:p-2 h-7 w-7 md:h-10 md:w-10 mt-1 rounded-full text-white ring-1 ring-slate-100/60">
-              <FontAwesomeIcon icon={faFloppyDisk} className="text-md md:text-xl" />
-              <span className="absolute z-50 left-1/2 bottom-full mb-2 w-max -translate-x-1/2 scale-0 rounded bg-gray-700 text-white text-xs px-2 py-1 opacity-0 transition-all group-hover:scale-100 group-hover:opacity-100">
-                Save Changes
-              </span>
-            </button>
+              <button className="relative group p-1 md:p-2 h-7 w-7 md:h-10 md:w-10 mt-1 rounded-full text-white ring-1 ring-slate-100/60">
+                <FontAwesomeIcon icon={faFloppyDisk} className="text-md md:text-xl" />
+                <span className="absolute z-50 left-1/2 bottom-full mb-2 w-max -translate-x-1/2 scale-0 rounded bg-gray-700 text-white text-xs px-2 py-1 opacity-0 transition-all group-hover:scale-100 group-hover:opacity-100">
+                  Save Changes
+                </span>
+              </button>
 
-            <button className="relative group p-1 md:p-2 h-7 w-7 md:h-10 md:w-10 mt-1 rounded-full text-white ring-1 ring-slate-100/60"
-              onClick={() => onActionBtn("deploy")}
-            >
-              <FontAwesomeIcon icon={faRocket} className="text-md md:text-xl" />
-            </button>
-          </div>
+              <button className="relative group p-1 md:p-2 h-7 w-7 md:h-10 md:w-10 mt-1 rounded-full text-white ring-1 ring-slate-100/60"
+                onClick={() => onActionBtn("deploy")}
+              >
+                <FontAwesomeIcon icon={faRocket} className="text-md md:text-xl" />
+              </button>
+            </div>
+            ):(
+              <div className="flex flex-row gap-2 md:gap-3">
+                <button className="relative group p-1 md:p-2 h-7 w-7 md:h-10 md:w-10 mt-1 rounded-full text-white ring-1 ring-slate-100/60"
+                  onClick={null}
+                >
+                  <FontAwesomeIcon icon={faCopy} className="text-md md:text-xl" />
+                </button>
+              </div>
+            )
+          }
         </nav>
 
         {/* Content Area - Adjusted for mobile */}

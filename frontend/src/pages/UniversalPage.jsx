@@ -113,6 +113,13 @@ export const UniversalPage = () => {
     }
   };
 
+  const handleRedirect = (project) => {
+    if (project.projectType) {
+        window.location.href = '/main/react/' + project._id;
+    } else {
+        window.location.href = '/main/plain/' + project._id;
+    }
+};
   return (
     <div className="min-h-screen w-full text-white px-8 py-12">
       <div className="flex flex-col md:flex-row justify-between items-center mb-6">
@@ -191,6 +198,7 @@ export const UniversalPage = () => {
               <div 
                 key={index} 
                 className="transform hover:scale-105 transition-all duration-300 shadow-md hover:shadow-xl rounded-xl overflow-hidden bg-gray-800 hover:bg-gray-700"
+                onClick={()=>{handleRedirect(template)}}
               >
                 <TemplateCard 
                   id={template._id}
