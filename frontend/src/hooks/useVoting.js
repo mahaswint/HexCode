@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import axios from 'axios';
-
-const API_URL = 'http://localhost:5000';
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "http://localhost:5000/";
+// const API_URL = 'http://localhost:5000';
 
 export const useVoting = (projectId, initialVotes = { upvotes: [], downvotes: [] }, user) => {
     console.log(`useVoting:${user?.name} ${projectId}`);
@@ -10,7 +10,7 @@ export const useVoting = (projectId, initialVotes = { upvotes: [], downvotes: []
     const [error, setError] = useState(null);
 
     if (!user) {
-        window.location.href = `${API_URL}/auth/google?redirect=${window.location.href}`;
+        window.location.href = `${BACKEND_URL}auth/google?redirect=${window.location.href}`;
         return { votes, loading, error, handleVote: () => {} };
     }
 
@@ -19,7 +19,7 @@ export const useVoting = (projectId, initialVotes = { upvotes: [], downvotes: []
         setError(null);
         
         try {
-            const response = await axios.post(`${API_URL}/project/vote`, {
+            const response = await axios.post(`${BACKEND_URL}project/vote`, {
                 projectId,
                 voteType,
                 userId: user?._id // Replace with actual user ID

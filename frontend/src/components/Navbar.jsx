@@ -4,19 +4,20 @@ import { useUser } from "../hooks/userContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHexagonNodes, faUser, faBars, faArrowLeft, faSignOutAlt } from "@fortawesome/free-solid-svg-icons";
 import { Popover, PopoverButton, PopoverPanel } from "@headlessui/react";
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "http://localhost:5000/";
 
 const Navbar = () => {
     const { user, setUser } = useUser();
     const navigate = useNavigate();
     const location = useLocation();
-
+    
     const isUniversal = location.pathname === '/universal';
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
     const closeMobileMenu = () => setIsMobileMenuOpen(false);
     const logout = async () => {
         try {
-          const response = await fetch("http://localhost:5000/auth/logout", {
+          const response = await fetch(`${BACKEND_URL}auth/logout`, {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
@@ -70,7 +71,7 @@ const Navbar = () => {
 
                 <div className="hidden md:flex items-center flex-1 justify-end">
                     {!user && (
-                        <a href="http://localhost:5000/auth/google">
+                        <a href={`${BACKEND_URL}auth/google`}>
                             <button className="border-solid rounded-md px-4 py-2 mr-2 bg-indigo-500 hover:bg-indigo-600 focus:ring-2 focus:outline-none focus:ring-indigo-300 text-white">
                                 Log-In
                             </button>
@@ -125,7 +126,7 @@ const Navbar = () => {
 
                             <div className="border-t pt-4">
                                 {!user ? (
-                                    <a href="http://localhost:5000/auth/google">
+                                    <a href={`${BACKEND_URL}/auth/google`}>
                                         <button className="w-full border-solid rounded-md px-4 py-2 bg-indigo-500 hover:bg-indigo-600 text-white" onClick={ closeMobileMenu }>
                                             Log-In
                                         </button>

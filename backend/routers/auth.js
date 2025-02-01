@@ -1,12 +1,13 @@
 const router = require("express").Router();
 const passport = require("passport");
+require('dotenv').config(); 
 const authController = require("../controllers/authController")
 
 // Google OAuth callback route
 router.get(
   "/google/callback",
   passport.authenticate("google", {
-    successRedirect: "http://localhost:3000/",
+    successRedirect: process.env.CLIENT_URL || "http://localhost:3000/",
     failureRedirect: "/login/failed",
   })
 );

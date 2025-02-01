@@ -1,3 +1,4 @@
+import { useEffect } from "react"
 import Introduction from "../components/Introduction"
 import Prompt from "../components/Prompt"
 

@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass, faRocket, faHexagonNodes } from "@fortawesome/free-solid-svg-icons";
 import InfiniteScroll from "react-infinite-scroller";
 import { useUser } from "../hooks/userContext";
-
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "http://localhost:5000/";
 
 const SearchBar = () => (
   <div className="relative w-full max-w-sm my-3">
@@ -20,6 +20,7 @@ const SearchBar = () => (
 );
 
 export const UniversalPage = () => {
+  
   const [hasMore, setHasMore] = useState(true);
   const [templates, setTemplates] = useState([]);
   const [visibleTemplates, setVisibleTemplates] = useState([]);
@@ -31,7 +32,7 @@ export const UniversalPage = () => {
   const getAllProjects = async () => {
     try {
       setIsLoading(true);
-      const response = await fetch(`http://localhost:5000/project/visible`, {
+      const response = await fetch(`${BACKEND_URL}project/visible`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -44,7 +45,7 @@ export const UniversalPage = () => {
 
       const data = await response.json();
       setTemplates(data);
-      // console.log(data);
+      console.log(data);
       
     } catch (err) {
       setError(err.message);
