@@ -6,16 +6,10 @@ export const TemplateCard = ({ id, title, description, initialVotes, projectType
     const { votes, loading, error, handleVote } = useVoting(id, initialVotes, user);
     let type = projectType;
     return (
-      <div className="bg-slate-700 rounded-xl p-6 hover:scale-105 transition-transform duration-300 ease-out">
+      <div className="bg-slate-800 rounded-xl p-6 hover:scale-105 transition-transform duration-300 ease-out">
         {/* Header Section */}
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-xl font-semibold text-white">{title}</h3>
-          {/* <button className="px-4 py-1.5 bg-blue-500/10 text-blue-400 rounded-full 
-            border border-blue-500/20 hover:bg-indigo-600 hover:border-indigo-600/20 hover:text-white transition-all 
-            text-sm font-medium"
-            >
-            Preview
-          </button> */}
         </div>
         
         {/* Description */}
@@ -29,7 +23,7 @@ export const TemplateCard = ({ id, title, description, initialVotes, projectType
               onClick={() =>{if(user) handleVote('up')}}
               disabled={loading}
               className="group flex items-center gap-2 px-3 py-2 rounded-lg 
-                hover:bg-slate-700 transition-colors disabled:opacity-50"
+                hover:bg-slate-800 transition-colors disabled:opacity-50"
               aria-label="Upvote"
             >
               <svg 
@@ -55,7 +49,7 @@ export const TemplateCard = ({ id, title, description, initialVotes, projectType
               onClick={() => {if(user) handleVote('down')}}
               disabled={loading}
               className="group flex items-center gap-2 px-3 py-2 rounded-lg 
-                hover:bg-slate-700 transition-colors disabled:opacity-50"
+                hover:bg-slate-800 transition-colors disabled:opacity-50"
               aria-label="Downvote"
             >
               <svg 

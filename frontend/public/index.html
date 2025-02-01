@@ -15,13 +15,36 @@
   <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
   <style>
     ::-webkit-scrollbar {
-      width: 4px;
+        width: 5px;
+        height: 5px;
     }
 
     ::-webkit-scrollbar-thumb {
-      background: #6366F1;
-      border-radius: 20px;
+        background: #c3c0ed;
+        border-radius: 6px;
     }
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: #6e68ba;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    ::-webkit-scrollbar-corner {
+        background: transparent;
+    }
+    .scrollable-content {
+        scrollbar-width: thin;
+        scrollbar-color: transparent transparent;
+    }
+
+    .scrollable-content:hover {
+        scrollbar-width: thin;
+        scrollbar-color: #667eea transparent;
+    }
+
   </style>
   <!--
       Notice the use of %PUBLIC_URL% in the tags above.

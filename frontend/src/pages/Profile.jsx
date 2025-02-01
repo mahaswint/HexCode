@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUserPen } from "@fortawesome/free-solid-svg-icons";
+import { faHexagonNodes } from "@fortawesome/free-solid-svg-icons";
 import Swal from 'sweetalert2';
 import Projectlist from "../components/project"; // Adjusted path if needed
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "http://localhost:5000/";
@@ -145,55 +145,48 @@ const Profile = () => {
     });
   };
 
+  
   return (
-    <div className="bg-[#0f172a] text-white p-8 h-full w-full">
-      <div className="max-w-7xl mx-auto h-screen">
-        {/* Profile Section */}
-        <div className="flex gap-8">
-          {/* Profile Info */}
-          <div className="bg-[#1e293b] p-6 rounded-lg fixed h-[75vh] shadow-md w-1/4">
-            {user && (
-              <div className="bg-gray-700 w-[20vw] h-[40vh] mx-auto rounded-lg shadow-lg flex items-center justify-center">
-                <img src={user.imageURL} alt="" />
+      <div className="flex flex-col md:flex-row m-4 items-center md:items-start justify-between w-full h-screen">
+        {/* Profile Info */}
+          {user? (<div className="w-[90%] md:w-[25%]  md:m-4 rounded-full md:rounded-md p-2 md:p-4 bg-gray-900 h-[7%] md:h-[55%] flex items-center md:block">
+              <div className="w-20 h-16 md:w-[80%] md:h-[80%] mx-auto mb-0 md:mb-3">
+                <img src={user.imageURL} alt="User Profile Image" className="h-full w-full rounded-full md:rounded-md" />
               </div>
-            )}
-
-            {user && (
-              <div className="flex justify-end mx-2 my-2">
-                <button onClick={() => handleShowEditDialog(user)}>
-                  <FontAwesomeIcon icon={faUserPen} />
-                </button>
+              <div className="w-full">
+                <h2 className="text-xl ml-4 md:ml-0 text-left md:text-center text-gray-200 font-semibold">{user.name}</h2>
+                <p className="hidden md:block text-md text-center text-gray-500">{user.email}</p>
               </div>
-            )}
-            <h2 className="text-xl text-center mt-4 font-bold">
-              {user ? user.name : "Loading..."}
-            </h2>
-            <p className="text-center text-[#94a3b8]">
-              {user ? `@${user.email}` : ""}
-            </p>
-            <h3 className="text-lg font-semibold mt-6">Skills</h3>
-            <div className="flex flex-wrap gap-2 mt-2">
-              {user?.skills?.split(",").map((skill, index) => (
-                <span key={index} className="bg-blue-500 text-sm px-3 py-1 rounded-full text-white">
-                  {skill}
-                </span>
-              ))}
-            </div>
-          </div>
-
-          {/* Projects Section */}
-          <div className="ml-[26vw] w-full">
-            {loading ? (
-              <p className="text-center">Loading projects...</p>
-            ) : error ? (
-              <p className="text-center text-red-500">{error}</p>
-            ) : (
-              <Projectlist projects={projects} users={users} getAllUsers={getAllUsers} user={user} />
-            )}
-          </div>
+            </div>)
+            :
+            (<div className="w-[90%] md:w-[25%] m-4 pl-8 bg-gray-900 h-[55%] flex items-center justify-center">
+              <FontAwesomeIcon 
+                icon={faHexagonNodes} 
+                className="w-10 h-10 text-indigo-500 animate-spin"
+                style={{ animationDuration: '1s' }}
+              />
+            </div>)
+          }
+          
+      {loading?(
+        <div className="text-center w-[95%] md:w-[75%] h-[100%] text-white text-4xl mx-5 p-2 md:p-5 animate-pulse">
+          <h1 className="mt-5 font-mono">
+            Loading Projects...
+          </h1>
         </div>
+       ):
+      error ? (
+        <div className="text-center w-[95%] md:w-[75%] h-[100%] text-red-500 text-4xl mx-5 p-2 md:p-5">
+         <h1 className="mt-5 font-mono">
+            {error}
+          </h1>
+        </div>
+      ) : (
+        <div className="text-center w-[90%] h-[92%] md:w-[75%] md:h-[100%] mx-4 md:mx-10">
+          <Projectlist projects={projects} users={users} getAllUsers={getAllUsers} user={user} />
+        </div>
+      )}
       </div>
-    </div>
   );
 };
 
