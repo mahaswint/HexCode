@@ -40,6 +40,7 @@ const MainPagePlain = () => {
   const [userIsOwner, setUserIsOwner] = useState(false);
   
   const getProjectData = async (projectid) => {
+    console.log("hereyeyeyegbe");
     try {
         const response = await fetch(`${BACKEND_URL}project/${projectid}`, {
             method: "GET",
@@ -53,14 +54,17 @@ const MainPagePlain = () => {
             throw new Error("Failed to fetch projects");
         }
         
-        const data = await response.json();
-        setUserIsOwner(data.owner === user._id)
+        const data = await response.json(); 
+        setUserIsOwner(data.owner === user._id || data.users.includes(user._id))
         console.log(userIsOwner)
     } catch (err) {
         console.log(err); // Capture and set the error
     }
   };
-  getProjectData(projectid);
+  
+    getProjectData(projectid);
+  
+ 
 
   const [userprompts, setUserprompts] = useState([]);
   const [aimessage, setAimessage] = useState([]);
@@ -503,6 +507,43 @@ const MainPagePlain = () => {
     console.log("Browser Minimized");
   }
 
+  const copyProject = async () => {
+    console.log("copy is hit");
+    console.log(user);
+    console.log(projectid);
+    console.log(typeof projectid);  // Logs the type of projectid
+
+    
+    try {
+      const response = await fetch(`${BACKEND_URL}project/copy/`+projectid, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ user }), // Fixed typo and stringified body
+        credentials: "include", // Include credentials for session management
+      });
+  
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+  
+      const data = await response.json();
+      console.log("Project copied:", data);
+  
+      // Redirect to /main/react/{project_id} if response contains a valid ID
+      if (data.project && data.project._id) {
+        window.location.href = `/main/react/${data.project._id}`;
+      } else {
+        console.error("Project ID missing in response");
+      }
+  
+    } catch (error) {
+      console.error("Error copying project:", error);
+    }
+  };
+  
+
   return (
     <div className="flex flex-col-reverse md:flex-row h-screen w-full text-white bg-gray-900">
       {/* Left Panel - Full width on mobile, half on desktop */}
@@ -630,7 +671,7 @@ const MainPagePlain = () => {
             ):(
               <div className="flex flex-row gap-2 md:gap-3">
                 <button className="relative group p-1 md:p-2 h-7 w-7 md:h-10 md:w-10 mt-1 rounded-full text-white ring-1 ring-slate-100/60"
-                  onClick={null}
+                  onClick={copyProject}
                 >
                   <FontAwesomeIcon icon={faCopy} className="text-md md:text-xl" />
                 </button>
@@ -672,8 +713,8 @@ const MainPagePlain = () => {
           ) : (
             <ResizableBox
               className="relative w-full h-full border-[1.5px] border-zinc-600 border-solid bg-white rounded-md"
-              width={parentSize.width * 0.95}
-              height={parentSize.height * 0.95}
+              width={parentSize.width}
+              height={parentSize.height}
               minConstraints={[parentSize.width * 0.5, parentSize.height * 0.5]}
               maxConstraints={[parentSize.width, parentSize.height]}
               resizeHandles={["se"]}

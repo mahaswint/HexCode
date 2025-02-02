@@ -2,18 +2,28 @@ import { useVoting } from '../hooks/useVoting';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faReact, faHtml5, faCss3Alt, faSquareJs  } from "@fortawesome/free-brands-svg-icons";
 
+const handleRedirect = (projectType, id) => {
+  if (projectType) {
+      window.location.href = '/main/react/' + id;
+  } else {
+      window.location.href = '/main/plain/' + id;
+  }
+};
+
 export const TemplateCard = ({ id, title, description, initialVotes, projectType, user }) => {
     const { votes, loading, error, handleVote } = useVoting(id, initialVotes, user);
     let type = projectType;
     return (
       <div className="bg-slate-800 rounded-xl p-6 hover:scale-105 transition-transform duration-300 ease-out">
         {/* Header Section */}
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center justify-between mb-4" onClick={()=>{handleRedirect(projectType, id)}}>
           <h3 className="text-xl font-semibold text-white">{title}</h3>
         </div>
         
         {/* Description */}
-        <div className="text-slate-300 text-sm leading-relaxed mb-4 h-28 overflow-hidden text-ellipsis line-clamp-5">{description}</div>
+        <div className="text-slate-300 text-sm leading-relaxed mb-4 h-28 overflow-hidden text-ellipsis line-clamp-5"
+        onClick={()=>{handleRedirect(projectType, id)}}
+        >{description}</div>
         
         {/* Footer with Voting */}
         <div className="flex items-center justify-between w-full">

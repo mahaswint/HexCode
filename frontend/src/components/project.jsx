@@ -176,11 +176,12 @@ const ProjectList = (props) => {
     };
 
     return (
-        <div className="h-full w-full overflow-scroll">
-            <div className="sticky top-0 z-20 border border-gray-400 text-2xl md:text-4xl font-semibold mb-2 p-4 bg-gray-800 rounded-lg">
-                Projects
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-2 md:gap-6 p-2">
+        <>
+        <div className="sticky top-0 z-20 text-2xl md:text-4xl font-medium mb-4 mt-4 px-2 rounded-lg text-left">
+            My Projects
+        </div>
+        <div className="h-[90%] w-full overflow-scroll">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-2 md:gap-4 p-2">
                 {projects.map((project, index) => (
                     <div
                         key={index}
@@ -367,6 +368,7 @@ const ProjectList = (props) => {
 
             )}
         </div>
+        </>
     );
 };
 

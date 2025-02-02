@@ -14,6 +14,7 @@ router.get('/visible',projectController.getAllProjects);
 
 router.get('/:pid',projectController.getOneProject);
 // Route for voting project 
-router.post('/vote', projectController.voteProject)
+router.post('/vote', projectController.voteProject);
+router.post('/copy/:pid',projectController.copyProject);
 module.exports = router;
 
