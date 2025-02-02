@@ -7,7 +7,7 @@ import {
     faUsers, 
     faArrowUp,
 } from "@fortawesome/free-solid-svg-icons";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Swal from 'sweetalert2';
 import { useUser } from "../hooks/userContext";
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "http://localhost:5000/";
@@ -17,6 +17,12 @@ const Prompt = () => {
     const { user, setUser } = useUser();
     
     const [prompt, setPrompt] = useState("");
+
+    const [callCreatePrject, setCallCreateProject] = useState(false);
+
+    useEffect(()=>{
+        if(callCreatePrject)handleCreateProject();
+    },[callCreatePrject])
 
     const handleCreateProject = async () => {
         if(!user){
@@ -183,6 +189,10 @@ const Prompt = () => {
                         <button 
                             key={index} 
                             className="px-4 py-2 text-sm md:text-base text-white bg-indigo-500 hover:bg-indigo-600 rounded-xl hover:scale-105 transition-transform hover:shadow-lg whitespace-nowrap"
+                            onClick={()=>{
+                                setPrompt(`Make me a website for my ${item.label}`);
+                                setCallCreateProject(true);
+                            }}
                         >
                             <FontAwesomeIcon icon={item.icon} className="mr-2" />
                             {item.label}
