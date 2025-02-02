@@ -1,5 +1,7 @@
 const Project = require('../models/projectModel');
 const Anthropic = require('@anthropic-ai/sdk');
+const OpenAI = require('openai');
+const openai = new OpenAI({apiKey : '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'});
 
 const CLAUDE_API_KEY = process.env.CLAUDE_API_KEY
 
@@ -132,6 +134,8 @@ exports.chat = async (req,res)=> {
   
       const message = await stream.finalMessage();
       console.log("Model Response:-",message);
+
+    
 
 
       const project = await Project.findById(projectId);
