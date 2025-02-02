@@ -1,7 +1,6 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-// Define the schema
 const userSchema = new Schema(
     {
         name: {
@@ -11,7 +10,6 @@ const userSchema = new Schema(
         },
         email: {
             type: String,
-            // required: [true, "Email is required"],
             unique: [true, "Email already taken"]
         },
         imageURL: {
@@ -25,10 +23,9 @@ const userSchema = new Schema(
         ]
     },
     {
-        timestamps: true // Automatically adds `createdAt` and `updatedAt` fields
+        timestamps: true
     }
 );
 
-// Export the model
 const User = mongoose.model("User", userSchema);
 module.exports = User;

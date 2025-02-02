@@ -2,10 +2,7 @@ const User = require('../models/userModel');
 const Project = require('../models/projectModel');
 exports.addProject = async (req, res) => {
     try {
-        // The parent ID (if applicable) from request params
         const { userId, name, description, visibility, projectType, prompt } = req.body
-    
-        // Create a new project instance with the incoming data
         const project = new Project({
             name:name,
             users:[],
@@ -15,13 +12,11 @@ exports.addProject = async (req, res) => {
             projectType: (projectType==='react'),
             chats:[]
         });
-
-        // Save the new project to the database
         await project.save();
         res.status(201).json({
             PID:project._id,
             prompt:prompt
-        }); // Return the created project in the response
+        });
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Internal server error' });
@@ -30,17 +25,16 @@ exports.addProject = async (req, res) => {
 
 exports.editProject = async (req, res) => {
     try {
-        const { pid } = req.params; // The project ID from request params
+        const { pid } = req.params;
         const updates = req.body;
 
-        // Find and update the project
         const project = await Project.findByIdAndUpdate(pid, updates, { new: true });
 
         if (!project) {
             return res.status(404).json({ error: 'Project not found' });
         }
 
-        res.status(200).json(project); // Return the updated project
+        res.status(200).json(project);
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Internal server error' });
@@ -49,9 +43,8 @@ exports.editProject = async (req, res) => {
 
 exports.deleteProject = async (req, res) => {
     try {
-        const { pid } = req.params; // The project ID from request params
+        const { pid } = req.params;
 
-        // Find and delete the project
         const project = await Project.findByIdAndDelete(pid);
 
         if (!project) {
@@ -67,7 +60,6 @@ exports.deleteProject = async (req, res) => {
 
 exports.getAllProjects = async (req, res) => {
     try {
-        console.log("hit aagaya ");
         const projects = await Project.find({ visibility: true });
 
         if (!projects || projects.length === 0) {
@@ -83,18 +75,15 @@ exports.getAllProjects = async (req, res) => {
 
 exports.voteProject = async (req, res) => {
     try {
-        console.log("YAHA AAYA");
         
         const { projectId, voteType, userId } = req.body;
         
-        
         const project = await Project.findById(projectId);
-        console.log(project);
         
         if (!project) {
             return res.status(404).json({ error: 'Project not found' });
         }
-        // Remove existing votes
+        
         let prev_project = project.toObject();
 
         project.votes.upvotes = project.votes.upvotes.filter(id => 
@@ -104,7 +93,6 @@ exports.voteProject = async (req, res) => {
             id.toString() !== userId
         );
         
-        // Add new vote
         if (voteType) {
             if(!prev_project.votes[`${voteType}votes`].map(id => id.toString()).includes(userId.toString())){
                 project.votes[`${voteType}votes`].push(userId);
@@ -135,14 +123,9 @@ exports.getOneProject = async (req, res) => {
 };
 
 exports.copyProject = async (req, res) => {
-    console.log("final route i made is hit ");
     try {
         const { user } = req.body; 
         const { pid } = req.params; 
-        
-        console.log(user);
-        console.log(pid);
-
         
         const projectToCopy = await Project.findById(pid);
         if (!projectToCopy) {

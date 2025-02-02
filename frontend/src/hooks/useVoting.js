@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import axios from 'axios';
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "http://localhost:5000/";
-// const API_URL = 'http://localhost:5000';
 
 export const useVoting = (projectId, initialVotes = { upvotes: [], downvotes: [] }, user) => {
     const [votes, setVotes] = useState(initialVotes);
@@ -21,7 +20,7 @@ export const useVoting = (projectId, initialVotes = { upvotes: [], downvotes: []
             const response = await axios.post(`${BACKEND_URL}project/vote`, {
                 projectId,
                 voteType,
-                userId: user?._id // Replace with actual user ID
+                userId: user?._id
             });
 
             setVotes(response.data.votes);

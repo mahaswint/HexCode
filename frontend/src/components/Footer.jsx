@@ -8,7 +8,7 @@ export const Footer = () => {
     const [numProjects, setNumProjects] = useState(200);
     const [displayCount, setDisplayCount] = useState(0);
     const ref = useRef(null);
-    const isInView = useInView(ref, { once: true }); // Animates only once when it comes into view
+    const isInView = useInView(ref, { once: true });
 
     return (
         <motion.footer 
@@ -24,10 +24,6 @@ export const Footer = () => {
                 </div>
                 <div className="hidden text-sm md:flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-6 justify-center md:justify-end w-full md:w-auto">
                     <span>&copy;2025 HexCode. All Rights Reserved</span>
-                    <Link to="/faqs" className="hover:text-gray-400 transition-colors duration-300">Licensing</Link>
-                    <Link to="/privacy" className="hover:text-gray-400 transition-colors duration-300">Privacy</Link>
-                    {/* <Link to="/about" className="hover:text-gray-600 transition-colors duration-300">About</Link>
-                     */}
                 </div>
             </div>
             <div className="flex flex-col items-start gap-3">

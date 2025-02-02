@@ -15,20 +15,16 @@ export const TemplateCard = ({ id, title, description, initialVotes, projectType
     let type = projectType;
     return (
       <div className="bg-slate-800 rounded-xl p-6 hover:scale-105 transition-transform duration-300 ease-out">
-        {/* Header Section */}
         <div className="flex items-center justify-between mb-4" onClick={()=>{handleRedirect(projectType, id)}}>
           <h3 className="text-xl font-semibold text-white">{title}</h3>
         </div>
-        
-        {/* Description */}
+
         <div className="text-slate-300 text-sm leading-relaxed mb-4 h-28 overflow-hidden text-ellipsis line-clamp-5"
         onClick={()=>{handleRedirect(projectType, id)}}
         >{description}</div>
         
-        {/* Footer with Voting */}
         <div className="flex items-center justify-between w-full">
           <div className="flex items-center">
-            {/* Upvote Button */}
             <button 
               onClick={() =>{if(user) handleVote('up')}}
               disabled={loading}
@@ -53,8 +49,6 @@ export const TemplateCard = ({ id, title, description, initialVotes, projectType
                 {votes.upvotes.length}
               </span>
             </button>
-
-            {/* Downvote Button */}
             <button 
               onClick={() => {if(user) handleVote('down')}}
               disabled={loading}
@@ -80,8 +74,6 @@ export const TemplateCard = ({ id, title, description, initialVotes, projectType
               </span>
             </button>
           </div>
-
-          {/* React Tag - Aligned to the End */}
           <div className="rounded-lg">
           {type? (<FontAwesomeIcon icon={faReact} className='h-8 w-8' />):(
             <div>
