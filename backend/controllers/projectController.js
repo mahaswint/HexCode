@@ -123,7 +123,7 @@ exports.voteProject = async (req, res) => {
 
 exports.getOneProject = async (req, res) => {
     try {
-        console.log(req);
+        // console.log(req);
         const project = await Project.findById(req.params.pid);
         if (!project) {
             return res.status(404).json({ message: 'Project not found' });
