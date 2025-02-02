@@ -30,6 +30,7 @@ export const UniversalPage = () => {
   const [searchTerm, setSearchTerm] = useState(""); // Search term for filtering users
   const [searchResult, setSearchResult]= useState([]);
   const [mount, setMount] = useState(false);    // to prevent useEffect from being called on loading
+  const [showSearchResult, setShowSearchResult] = useState(false); // to control when to see the search results
 
   const { user, setUser } = useUser();
 
@@ -38,7 +39,7 @@ export const UniversalPage = () => {
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (searchRef.current && !searchRef.current.contains(event.target)) {
-        setSearchResult([]); // Clear search results if clicked outside
+        setShowSearchResult(false); // Clear search results if clicked outside
       }
     };
 
@@ -50,15 +51,16 @@ export const UniversalPage = () => {
 
   const handleSearch = ()=>{
     // console.log("searching....")
-    setSearchResult([]);
-    if(searchTerm.length===0)return;
+    setVisibleTemplates([]);
+    // if(searchTerm.length===0)return;
     templates.map((template,index)=>{
         const tosearch = template.name.trim().toLowerCase();
         const search = searchTerm.trim().toLowerCase();
         if(tosearch.includes(search)){
-            setSearchResult((old)=>[...old,template]);
+            setVisibleTemplates((old)=>[...old,template]);
         }
     });
+    setShowSearchResult(true);
     // console.log(searchResult);
   };
 
@@ -139,25 +141,27 @@ export const UniversalPage = () => {
             value={searchTerm}
           />
           <button onClick={()=>{
-            if(searchResult.length===0){
-              setVisibleTemplates(templates);
-              return;
-            }
-            setVisibleTemplates(searchResult);
-            setSearchResult([]);
+            // if(searchResult.length===0){
+            //   setVisibleTemplates(templates);
+            //   return;
+            // }
+            setShowSearchResult(false);
+            // setVisibleTemplates(searchResult);
+            // setSearchResult([]);
           }} className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-blue-500 transition">
             <FontAwesomeIcon icon={faMagnifyingGlass} />
           </button>
         </div>
         {/* Search Results Dropdown */}
-        {searchResult.length > 0 && (
+        {showSearchResult && (
             <div className="absolute bg-gray-800 border border-gray-600 rounded-lg shadow-lg z-10 w-[25rem]">
-              {searchResult.map((project, index) => (
+              {visibleTemplates.map((template, index) => (
                 <div 
                   key={index}
                   className="px-4 py-2 hover:bg-gray-700 cursor-pointer transition"
+                  onClick={() => {handleRedirect(template)}}
                 >
-                  {project.name}
+                  {template.name}
                 </div>
               ))}
             </div>
