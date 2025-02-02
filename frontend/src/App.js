@@ -18,17 +18,6 @@ import { useState } from "react";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "http://localhost:5000/";
 
-function ProtectedRoute({ children }) {
-    const { user } = useUser();  // Get user context
-    
-    if (!user) {
-        window.location.href = `${BACKEND_URL}auth/google`;
-        return null;
-    }
-  
-    return children;  // Return children (Profile page) if user is authenticated
-}
-
 function App() {
     const [action, setAction] = useState();
 
@@ -45,7 +34,7 @@ function App() {
                         <Route path="/" element={<Landing/>} />
                         <Route path="/universal" element={<UniversalPage />} />
                         <Route path="/login" element={<Login />} />
-                        <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+                        <Route path="/profile" element={<Profile />} />
                         <Route path="/main/react/:projectid" element={<MainPageReact/>} />
                         <Route path="/main/plain/:projectid" element={<MainPagePlain/>} />
                     </Routes>
