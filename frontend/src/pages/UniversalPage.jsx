@@ -114,12 +114,18 @@ export const UniversalPage = () => {
       setHasMore(nextItems.length < templates.length);
     }
   };
-
+  const handleRedirect = (project) => {
+    if (project.projectType) {
+        window.location.href = '/main/react/' + project._id;
+    } else {
+        window.location.href = '/main/plain/' + project._id;
+    }
+  };
   return (
     <div className="min-h-screen w-full text-white px-8 py-12">
-      <div className="flex flex-col md:flex-row justify-between items-center mb-6">
+      <div className="flex flex-col md:flex-row justify-between items-center mb-2">
         <div>
-          <h2 className="text-4xl font-semibold tracking-wide">
+          <h2 className="text-3xl font-medium tracking-light">
             <FontAwesomeIcon icon={faRocket} /> Public Projects
           </h2>
         </div>
@@ -149,21 +155,28 @@ export const UniversalPage = () => {
         {/* Search Results Dropdown */}
         {showSearchResult && (
             <div className="absolute bg-gray-800 border border-gray-600 rounded-lg shadow-lg z-10 w-[25rem]">
-              {visibleTemplates.map((template, index) => (
-                <div 
-                  key={index}
-                  className="px-4 py-2 hover:bg-gray-700 cursor-pointer transition"
-                >
-                  {template.name}
+            {visibleTemplates.length === 0 ? (
+                <div className="px-4 text-gray-400">
+                  No results found..
                 </div>
-              ))}
-            </div>
+              ) : (
+                visibleTemplates.map((template, index) => (
+                  <div 
+                    key={index}
+                    className="px-4 py-2 hover:bg-gray-700 cursor-pointer transition"
+                    onClick={() => {handleRedirect(template)}}
+                  >
+                    {template.name}
+                  </div>
+                ))
+              )}
+          </div>
         )}
         </div>
       </div>
 
-      <div className="text-gray-400 mb-8 text-lg max-w-2xl">
-        Train your chatbot with data, use our ready-to-use templates, or start from scratch.
+      <div className="text-gray-400 mb-8 text-lg ">
+      Discover our open-source projects, built for innovation, collaboration, and real-world impact. 
       </div>
 
       {isLoading && visibleTemplates.length === 0 ? (

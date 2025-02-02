@@ -54,11 +54,8 @@ const MainPagePlain = () => {
             throw new Error("Failed to fetch projects");
         }
         
-        const data = await response.json();
-        console.log(user);
-        console.log(data);
-        // const exists = data.users.find( => user_.id === user_.id) !== undefined;
-        setUserIsOwner(data.owner === user._id )
+        const data = await response.json(); 
+        setUserIsOwner(data.owner === user._id || data.users.includes(user._id))
         console.log(userIsOwner)
     } catch (err) {
         console.log(err); // Capture and set the error
