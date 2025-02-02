@@ -672,8 +672,8 @@ const MainPagePlain = () => {
           ) : (
             <ResizableBox
               className="relative w-full h-full border-[1.5px] border-zinc-600 border-solid bg-white rounded-md"
-              width={parentSize.width * 0.95}
-              height={parentSize.height * 0.95}
+              width={parentSize.width}
+              height={parentSize.height}
               minConstraints={[parentSize.width * 0.5, parentSize.height * 0.5]}
               maxConstraints={[parentSize.width, parentSize.height]}
               resizeHandles={["se"]}
