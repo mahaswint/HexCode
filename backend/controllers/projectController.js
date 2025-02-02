@@ -122,8 +122,10 @@ exports.voteProject = async (req, res) => {
 }
 
 exports.getOneProject = async (req, res) => {
+
     try {
-        console.log(req);
+        // console.log(req);
+        console.log("ueueeyegednckjqewcv hq");
         const project = await Project.findById(req.params.pid);
         if (!project) {
             return res.status(404).json({ message: 'Project not found' });
@@ -133,3 +135,42 @@ exports.getOneProject = async (req, res) => {
         res.status(500).json({ message: 'Server error', error: error.message });
     }
 };
+
+exports.copyProject = async (req, res) => {
+    console.log("final route i made is hit ");
+    try {
+        const { user } = req.body; 
+        const { pid } = req.params; 
+        
+        console.log(user);
+        console.log(pid);
+
+        
+        const projectToCopy = await Project.findById(pid);
+        if (!projectToCopy) {
+            return res.status(404).json({ error: 'Project not found' });
+        }
+
+        
+        const copiedProject = new Project({
+            name: projectToCopy.name,
+            description: projectToCopy.description,
+            visibility: projectToCopy.visibility,
+            projectType: projectToCopy.projectType,
+            owner: user, 
+            users: [], 
+            chats: [], 
+            votes: { upvotes: [], downvotes: [] }, 
+            voteCount: 0, 
+        });
+
+        
+        await copiedProject.save();
+
+        res.status(201).json({ message: 'Project copied successfully', project: copiedProject });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
+

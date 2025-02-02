@@ -1,5 +1,7 @@
 const Project = require('../models/projectModel');
 const Anthropic = require('@anthropic-ai/sdk');
+const OpenAI = require('openai');
+const openai = new OpenAI({apiKey : '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'});
 
 const CLAUDE_API_KEY = process.env.CLAUDE_API_KEY
 
@@ -72,9 +74,9 @@ exports.chat = async (req,res)=> {
     }
     else if(frontendRoute === `/main/plain/${projectId}`){
       defaultPrompt = `
-      Your task is to create a one-page website based on the given specifications, delivered as an HTML file , CSS file and javascript file. The website should incorporate a variety of engaging and interactive design features, such as drop-down menus, dynamic text and content, clickable buttons, and more. Ensure that the design is visually appealing, responsive, and user-friendly. The HTML, CSS, and JavaScript code should be well-structured, efficiently organized, and properly commented for readability and maintainability.Do not include any text excluding the code.If you want to give any text or explanation or anything relation to conversation give it in the json string as value of key 'text'
-    Ensure that every element in the HTML, including sections, divs, project cards, price cards, and any other components, has both the draggable class and either horizontal or vertical class. Assign horizontal to headers, footers, and navigation elements, while all other elements should have vertical. No element should be left without these classes.DO NOT GIVE ME A SCRIPT FOR draggable class as i am implementing my own script for drag and drop which will use the draggable class.Inside body there should be a div with id 'layout' as root element and what ever html you are generated for the page should be placed inside this layout div
-    Generate a JSON object with four keys: 'html' containing the HTML code and 'css' containing the CSS code and 'js' containing the javascript code and 'explanation' containing relevant explanation or implementation for a simple website. Do not include additional text outside the JSON object.Do not enclose the value of the keys in backticks, enclose in double quotes and escape all the double quotes and newline characters inside the values of html,css and js .Don't forget to add the newline characters in the code and escape them as they are crutial for indentation.
+      Your task is to create a one-page website based on the given specifications, delivered as an HTML file, CSS file, and JavaScript file. The website should incorporate a variety of engaging and interactive design features, such as drop-down menus, dynamic text and content, clickable buttons, and more. Ensure that the design is visually appealing, responsive, and user-friendly. The HTML, CSS, and JavaScript code should be well-structured, efficiently organized, and properly commented for readability and maintainability. Do not include any text excluding the code. If you want to give any text or explanation or anything related to the conversation, give it in the JSON string as the value of the key 'text'. Ensure that every element in the HTML, including sections, divs, project cards, price cards, and any other components, has both the draggable class and either horizontal or vertical class. Assign horizontal to headers, footers, and navigation elements, while all other elements should have vertical. No element should be left without these classes. DO NOT GIVE ME A SCRIPT FOR THE draggable CLASS as I am implementing my own script for drag and drop which will use the draggable class. Inside the body, there should be a div with id 'layout' as the root element, and whatever HTML you generate for the page should be placed inside this layout div. Additionally, incorporate a color palette selector that is hidden by default and can be toggled on click of a three-dot button. When the button is clicked, the palette should open, displaying predefined themes: Light (#f4f4f4), Dark (#333), Blue (#87ceeb), and Green (#98fb98). Clicking on a color should dynamically update the CSS variables (--primary-color, --secondary-color, --background-color) in the :root selector, ensuring a smooth transition across all website elements. The three-dot button should be fixed in the UI, allowing users to toggle the palette at any time. Generate a JSON object with four keys: 'html' containing the HTML code, 'css' containing the CSS code, 'js' containing the JavaScript code, and 'explanation' containing relevant explanations or implementations for a simple website. Do not include additional text outside the JSON object. Do not enclose the value of the keys in backticks; enclose them in double quotes and escape all double quotes and newline characters inside the values of html, css, and js. Don't forget to add the newline characters in the code and escape them properly, as they are crucial for indentation.;
+
+
     `
     }
     
@@ -113,6 +115,8 @@ exports.chat = async (req,res)=> {
   
       const message = await stream.finalMessage();
       console.log("Model Response:-",message);
+
+    
 
 
       const project = await Project.findById(projectId);
