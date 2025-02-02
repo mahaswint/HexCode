@@ -105,7 +105,6 @@ const Prompt = () => {
             focusConfirm: false,
             preConfirm: () => {
                 const name = document.getElementById('projectName').value.trim();
-                // const description = document?.getElementById('description')?.value.trim();
                 const visibility = document.getElementById('visibility').value;
                 const projectType = document.getElementById('projectType').value;
                 const description = document.getElementById('projectDescription').value;
@@ -121,7 +120,6 @@ const Prompt = () => {
 
         if (formValues) {
             try {
-                // Send the data to the backend
                 const response = await fetch(`${BACKEND_URL}project/add`, { 
                     method: "POST", 
                     headers: { 
@@ -161,15 +159,13 @@ const Prompt = () => {
                         backdrop: 'backdrop-filter: blur(12px);',
                     });
                     
-                    // Clear the prompt after successful creation
                     setPrompt("");
                     
                     window.location.href = `/main/${(formValues.projectType==='react')?'react':'plain'}/${data.PID}`;
                 }
             } catch (err) {
                 console.log(err);
-                
-                // Handle errors (e.g., network issues or server errors)
+
                 await Swal.fire({
                     icon: 'error',
                     title: 'Oops!',
@@ -190,15 +186,13 @@ const Prompt = () => {
 
     return ( 
         <div className="relative w-[90vw] mb-28 md:w-[50vw] mt-20 min-h-[50vh] bg-gradient-to-br from-[#1A1A2E] to-[#0F3460] backdrop-blur-lg rounded-2xl border border-indigo-400/60 shadow-2xl shadow-black/40 p-6 mx-auto flex flex-col my-10">
-            
-            {/* Title Section */}
+
             <div className="relative z-10 flex flex-col items-center mt-16">
                 <h3 className="text-[25px] font-light text-white mb-4 tracking-wide">
                     <FontAwesomeIcon icon={faRobot} className="mr-2"/> AI Powered Development
                 </h3>
             </div>
 
-            {/* Buttons Section */}
             <div className="relative z-10 flex justify-center mb-4 ">
                 <div className="flex flex-wrap md:flex-nowrap justify-center gap-3 px-2">
                     {[
@@ -211,7 +205,6 @@ const Prompt = () => {
                             key={index} 
                             className="px-4 py-2 text-sm md:text-base text-white bg-indigo-500 hover:bg-indigo-600 rounded-xl hover:scale-105 transition-transform hover:shadow-lg whitespace-nowrap"
                             onClick={()=>{
-                                // setPrompt(`Make me a website for my ${item.label}`);
                                 setPrompt(HardPrompts[index]);
                                 setCallCreateProject(true);
                                 
@@ -223,8 +216,6 @@ const Prompt = () => {
                     ))}
                 </div>
             </div>
-
-            {/* Input Section */}
             <div className="relative z-10 flex justify-center mt-auto p-4">
                 <div className="bg-zinc-900 flex items-end w-full md:w-[600px] px-4 py-3 rounded-xl border border-gray-700 shadow-inner">
                     <textarea 
@@ -239,8 +230,7 @@ const Prompt = () => {
                             e.target.style.height = `${e.target.scrollHeight}px`;
                         }} 
                     />
-                    
-                    {/* Scrollbar Styling */}
+
                     <style>
                         {`
                             textarea::-webkit-scrollbar {
@@ -259,8 +249,6 @@ const Prompt = () => {
                             }
                         `}
                     </style>
-
-                    {/* Microphone / Submit Button */}
                     <button 
                         className="ml-3 hover:text-gray-300 px-3 transform hover:scale-110 transition-transform" 
                         onClick={handleCreateProject}

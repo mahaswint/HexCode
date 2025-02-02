@@ -21,8 +21,6 @@ exports.LoginSuccess = (req, res)=> {
 }
 
 exports.LogOut = (req, res)=> {
-  console.log("Logout route hit");
-
   req.logout((err) => {
       if (err) {
           console.error("Error during logout:", err);
@@ -36,7 +34,7 @@ exports.LogOut = (req, res)=> {
           }
 
           console.log("Session destroyed successfully");
-          res.clearCookie("connect.sid", { path: "/" }); // Ensure cookie is cleared
+          res.clearCookie("connect.sid", { path: "/" });
           res.status(200).json({ success: true, message: "Logout successful" });
       });
   });

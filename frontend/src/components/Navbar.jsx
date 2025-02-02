@@ -22,7 +22,7 @@ const Navbar = () => {
             headers: {
               "Content-Type": "application/json",
             },
-            credentials: "include", // Include credentials for session management
+            credentials: "include",
           });
             console.log("Logout request sent.");
         
@@ -42,8 +42,6 @@ const Navbar = () => {
         <>
             <nav className="flex w-full z-30 items-center justify-between py-2 px-7 border-gray-600 border-b bg-opacity-50 backdrop-blur-sm md:sticky md:top-0 relative">
 
-                
-                {/* Mobile Menu Button */}
                 <button 
                     className="md:hidden text-2xl"
                     onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -60,14 +58,10 @@ const Navbar = () => {
                     </Link>
                 </div>
 
-                {/* Desktop Navigation */}
                 <div className="hidden md:flex space-x-6 flex-1 justify-center font-light tracking-normal">
                     <Link to="/" className="hover:text-indigo-400 transition-colors duration-300">Home</Link>
                     <Link to="/universal" className="hover:text-indigo-400 transition-colors duration-300">Explore</Link>
                     <Link to="/about" className="hover:text-indigo-400 transition-colors duration-300">About</Link>
-                    {/* <Link to="/faqs" className="hover:text-gray-600 transition-colors duration-300">Services</Link>
-                    <Link to="/roadmap" className="hover:text-gray-600 transition-colors duration-300">Contacts</Link>
-                    <Link to="/privacy" className="hover:text-gray-600 transition-colors duration-300">Privacy</Link> */}
                 </div>
 
                 <div className="hidden md:flex items-center flex-1 justify-end">
@@ -106,7 +100,6 @@ const Navbar = () => {
                 </div>
             </nav>
 
-            {/* Mobile Sidebar */}
             {isMobileMenuOpen && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden" onClick={closeMobileMenu}>
                     <div className="fixed left-0 top-0 h-full w-64 bg-black shadow-lg z-50 p-4" onClick={(e) => e.stopPropagation()}>
@@ -119,10 +112,8 @@ const Navbar = () => {
                         <div className="flex flex-col mt-6 h-[90%]">
                             <div className="flex flex-col space-y-4 flex-grow">
                                 <Link to="/" className="p-2 hover:bg-gray-100 rounded hover:text-gray-700 transition-all duration-300" onClick={closeMobileMenu}>Home</Link>
+                                <Link to="/universal" className="p-2 hover:bg-gray-100 rounded hover:text-gray-700 transition-all duration-300" onClick={closeMobileMenu}>Explore</Link>
                                 <Link to="/about" className="p-2 hover:bg-gray-100 rounded hover:text-gray-700 transition-all duration-300" onClick={closeMobileMenu}>About</Link>
-                                {/* <Link to="/faqs" className="p-2 hover:bg-gray-100 rounded hover:text-gray-700 transition-all duration-300" onClick={closeMobileMenu}>Services</Link>
-                                <Link to="/roadmap" className="p-2 hover:bg-gray-100 rounded hover:text-gray-700 transition-all duration-300" onClick={closeMobileMenu}>Contacts</Link>
-                                <Link to="/privacy" className="p-2 hover:bg-gray-100 rounded hover:text-gray-700 transition-all duration-300" onClick={closeMobileMenu}>Privacy</Link> */}
                             </div>
 
                             <div className="border-t pt-4">

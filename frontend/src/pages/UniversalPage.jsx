@@ -27,19 +27,18 @@ export const UniversalPage = () => {
   const [page, setPage] = useState(1);
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [searchTerm, setSearchTerm] = useState(""); // Search term for filtering users
+  const [searchTerm, setSearchTerm] = useState("");
   const [searchResult, setSearchResult]= useState([]);
-  const [mount, setMount] = useState(false);    // to prevent useEffect from being called on loading
-  const [showSearchResult, setShowSearchResult] = useState(false); // to control when to see the search results
+  const [mount, setMount] = useState(false);
+  const [showSearchResult, setShowSearchResult] = useState(false);
 
   const { user, setUser } = useUser();
 
   const searchRef = useRef(null);
-  // Click outside handler
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (searchRef.current && !searchRef.current.contains(event.target)) {
-        setShowSearchResult(false); // Clear search results if clicked outside
+        setShowSearchResult(false);
       }
     };
 
@@ -50,9 +49,7 @@ export const UniversalPage = () => {
   });
 
   const handleSearch = ()=>{
-    // console.log("searching....")
     setVisibleTemplates([]);
-    // if(searchTerm.length===0)return;
     templates.map((template,index)=>{
         const tosearch = template.name.trim().toLowerCase();
         const search = searchTerm.trim().toLowerCase();
@@ -61,7 +58,6 @@ export const UniversalPage = () => {
         }
     });
     setShowSearchResult(true);
-    // console.log(searchResult);
   };
 
   useEffect(()=>{
@@ -134,8 +130,6 @@ export const UniversalPage = () => {
             <FontAwesomeIcon icon={faRocket} /> Public Projects
           </h2>
         </div>
-        {/* <SearchBar /> */}
-        {/* Searchbar */}
         <div ref={searchRef} className="w-full md:w-[25rem]">
         <div className="relative w-full max-w-lg mt-3 mb-1">
           <input
@@ -146,18 +140,11 @@ export const UniversalPage = () => {
             onClick={()=>setShowSearchResult(true)}
           />
           <button onClick={()=>{
-            // if(searchResult.length===0){
-            //   setVisibleTemplates(templates);
-            //   return;
-            // }
             setShowSearchResult(false);
-            // setVisibleTemplates(searchResult);
-            // setSearchResult([]);
           }} className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-blue-500 transition">
             <FontAwesomeIcon icon={faMagnifyingGlass} />
           </button>
         </div>
-        {/* Search Results Dropdown */}
         {showSearchResult && (
             <div className="absolute bg-gray-800 border border-gray-600 rounded-lg shadow-lg z-10 w-[25rem]">
             {visibleTemplates.length === 0 ? (
