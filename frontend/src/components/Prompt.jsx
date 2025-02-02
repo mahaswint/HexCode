@@ -22,6 +22,7 @@ const Prompt = () => {
 
     useEffect(()=>{
         if(callCreatePrject)handleCreateProject();
+        setCallCreateProject(false);
     },[callCreatePrject])
 
     const handleCreateProject = async () => {
@@ -192,6 +193,7 @@ const Prompt = () => {
                             onClick={()=>{
                                 setPrompt(`Make me a website for my ${item.label}`);
                                 setCallCreateProject(true);
+                                
                             }}
                         >
                             <FontAwesomeIcon icon={item.icon} className="mr-2" />
