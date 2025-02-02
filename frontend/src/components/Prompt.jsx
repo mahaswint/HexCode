@@ -71,6 +71,17 @@ const Prompt = () => {
                             <option value="html-css-js">HTML CSS JS</option>
                         </select>
                     </div>
+                    <div class="flex flex-col space-y-2">
+                        <label class="text-left tracking-wide text-sm font-medium text-slate-200" for="projectName">
+                            Project Description:
+                        </label>
+                        <textarea
+                            id="projectDescription"
+                            class="w-full px-3 py-2 bg-slate-600 text-gray-50 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                            placeholder="Enter project description"
+                            rows="4"
+                        ></textarea>
+                    </div>
                 </div>
             `,
             showCancelButton: true,
@@ -89,13 +100,14 @@ const Prompt = () => {
                 // const description = document?.getElementById('description')?.value.trim();
                 const visibility = document.getElementById('visibility').value;
                 const projectType = document.getElementById('projectType').value;
+                const description = document.getElementById('projectDescription').value;
 
                 if (!name) {
                     Swal.showValidationMessage('Project Name is required!');
                     return false;
                 }
 
-                return { name, visibility, projectType };
+                return { name, visibility, projectType, description };
             }
         });
 

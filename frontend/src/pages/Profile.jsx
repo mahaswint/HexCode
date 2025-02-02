@@ -84,6 +84,7 @@ const Profile = () => {
   // Fetch user data and projects when component mounts
   useEffect(() => {
     fetchUserData();
+    getAllUsers();
   }, []);
 
   useEffect(() => {
@@ -183,7 +184,11 @@ const Profile = () => {
         </div>
       ) : (
         <div className="text-center w-[90%] h-[92%] md:w-[75%] md:h-[100%] mx-4 md:mx-10">
-          <Projectlist projects={projects} users={users} getAllUsers={getAllUsers} user={user} />
+          <Projectlist 
+          projects={projects} 
+          users={users} 
+          // getAllUsers={getAllUsers} 
+          user={user} />
         </div>
       )}
       </div>

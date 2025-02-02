@@ -139,6 +139,7 @@ export const UniversalPage = () => {
             className="w-full px-5 py-3 text-sm rounded-full bg-gray-800 border border-gray-600 text-white outline-none focus:ring-2 focus:ring-blue-500 transition"
             placeholder="Search projects..."
             value={searchTerm}
+            onClick={()=>setShowSearchResult(true)}
           />
           <button onClick={()=>{
             // if(searchResult.length===0){
