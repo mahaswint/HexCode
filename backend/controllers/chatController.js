@@ -73,11 +73,30 @@ exports.chat = async (req,res)=> {
     `;
     }
     else if(frontendRoute === `/main/plain/${projectId}`){
-      defaultPrompt = `
-      Your task is to create a one-page website based on the given specifications, delivered as an HTML file, CSS file, and JavaScript file. The website should incorporate a variety of engaging and interactive design features, such as drop-down menus, dynamic text and content, clickable buttons, and more. Ensure that the design is visually appealing, responsive, and user-friendly. The HTML, CSS, and JavaScript code should be well-structured, efficiently organized, and properly commented for readability and maintainability. Do not include any text excluding the code. If you want to give any text or explanation or anything related to the conversation, give it in the JSON string as the value of the key 'text'. Ensure that every element in the HTML, including sections, divs, project cards, price cards, and any other components, has both the draggable class and either horizontal or vertical class. Assign horizontal to headers, footers, and navigation elements, while all other elements should have vertical. No element should be left without these classes. DO NOT GIVE ME A SCRIPT FOR THE draggable CLASS as I am implementing my own script for drag and drop which will use the draggable class. Inside the body, there should be a div with id 'layout' as the root element, and whatever HTML you generate for the page should be placed inside this layout div. Additionally, incorporate a color palette selector that is hidden by default and can be toggled on click of a three-dot button. When the button is clicked, the palette should open, displaying predefined themes: Light (#f4f4f4), Dark (#333), Blue (#87ceeb), and Green (#98fb98). Clicking on a color should dynamically update the CSS variables (--primary-color, --secondary-color, --background-color) in the :root selector, ensuring a smooth transition across all website elements. The three-dot button should be fixed in the UI, allowing users to toggle the palette at any time. Generate a JSON object with four keys: 'html' containing the HTML code, 'css' containing the CSS code, 'js' containing the JavaScript code, and 'explanation' containing relevant explanations or implementations for a simple website. Do not include additional text outside the JSON object. Do not enclose the value of the keys in backticks; enclose them in double quotes and escape all double quotes and newline characters inside the values of html, css, and js. Don't forget to add the newline characters in the code and escape them properly, as they are crucial for indentation.;
-
-
-    `
+      defaultPrompt = `Your task is to create a one-page website based on the given specifications, delivered as 
+      an HTML file, CSS file, and JavaScript file. The website should incorporate a variety of engaging and 
+      interactive design features, such as drop-down menus, dynamic text and content, clickable buttons, and more. 
+      Ensure that the design is visually appealing, responsive, and user-friendly. The HTML, CSS, and JavaScript 
+      code should be well-structured, efficiently organized, and properly commented for readability and maintainability. 
+      Do not include any text excluding the code. If you want to give any text or explanation or anything related to 
+      the conversation, give it in the JSON string as the value of the key 'text'. Ensure that every element in the 
+      HTML, including sections, divs, project cards, price cards, and any other components, has both the draggable 
+      class and either horizontal or vertical class. Assign horizontal to headers, footers, and navigation elements, 
+      while all other elements should have vertical. No element should be left without these classes. DO NOT GIVE ME A 
+      SCRIPT FOR THE draggable CLASS as I am implementing my own script for drag and drop which will use the draggable 
+      class. Inside the body, there should be a div with id 'layout' as the root element, and whatever HTML you 
+      generate for the page should be placed inside this layout div. Additionally, incorporate a color palette 
+      selector that is hidden by default and can be toggled on click of a three-dot button. When the button is 
+      clicked, the palette should open, displaying predefined themes: Light (#f4f4f4), Dark (#333), Blue (#87ceeb), 
+      and Green (#98fb98). Clicking on a color should dynamically update the CSS variables 
+      (--primary-color, --secondary-color, --background-color) in the :root selector, ensuring a smooth transition 
+      across all website elements. The three-dot button should be fixed in the UI, allowing users to toggle the 
+      palette at any time. Generate a JSON object with four keys: 'html' containing the HTML code, 'css' containing 
+      the CSS code, 'js' containing the JavaScript code, and 'explanation' containing relevant explanations or 
+      implementations for a simple website. Do not include additional text outside the JSON object. Do not enclose 
+      the value of the keys in backticks; enclose them in double quotes and escape all double quotes and newline 
+      characters inside the values of html, css, and js. Don't forget to add the newline characters in the code and 
+      escape them properly, as they are crucial for indentation.`
     }
     
   

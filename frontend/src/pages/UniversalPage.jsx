@@ -115,13 +115,6 @@ export const UniversalPage = () => {
     }
   };
 
-  const handleRedirect = (project) => {
-    if (project.projectType) {
-        window.location.href = '/main/react/' + project._id;
-    } else {
-        window.location.href = '/main/plain/' + project._id;
-    }
-};
   return (
     <div className="min-h-screen w-full text-white px-8 py-12">
       <div className="flex flex-col md:flex-row justify-between items-center mb-6">
@@ -139,6 +132,7 @@ export const UniversalPage = () => {
             className="w-full px-5 py-3 text-sm rounded-full bg-gray-800 border border-gray-600 text-white outline-none focus:ring-2 focus:ring-blue-500 transition"
             placeholder="Search projects..."
             value={searchTerm}
+            onClick={()=>setShowSearchResult(true)}
           />
           <button onClick={()=>{
             // if(searchResult.length===0){
@@ -159,7 +153,6 @@ export const UniversalPage = () => {
                 <div 
                   key={index}
                   className="px-4 py-2 hover:bg-gray-700 cursor-pointer transition"
-                  onClick={() => {handleRedirect(template)}}
                 >
                   {template.name}
                 </div>
@@ -201,9 +194,7 @@ export const UniversalPage = () => {
             {visibleTemplates.map((template, index) => (
               <div 
                 key={index} 
-                className="transform hover:scale-105 transition-all duration-300 shadow-md hover:shadow-xl rounded-xl overflow-hidden bg-gray-800 hover:bg-gray-700"
-                onClick={()=>{handleRedirect(template)}}
-              >
+                className="transform hover:scale-105 transition-all duration-300 shadow-md hover:shadow-xl rounded-xl overflow-hidden bg-gray-800 hover:bg-gray-700">
                 <TemplateCard 
                   id={template._id}
                   title={template.name} 

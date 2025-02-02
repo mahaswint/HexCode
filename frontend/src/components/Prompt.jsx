@@ -13,6 +13,14 @@ import { useUser } from "../hooks/userContext";
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "http://localhost:5000/";
 
 const Prompt = () => {
+
+    const HardPrompts = [
+        `"Generate a modern, responsive portfolio website to showcase projects, skills, and experience. Include a Home page (bio, photo), Projects page (demos, descriptions), Skills page, About page, and Contact page (form, social links). Features: sticky header, downloadable resume, testimonials, dark mode, and SEO optimization."`,
+        `"Create a clean, responsive multi-page blog website with a Home page (recent posts), Blog Listing (pagination, filters), Single Post (title, author, comments), About, Contact, and an Admin Dashboard (create/edit/delete posts). Features: Markdown support, API/JSON data, category sidebar, SEO optimization, and dark mode."`,
+        `"Build a modern, fully responsive e-commerce website with a Home page (featured products), Product Listing (filters), Single Product (details, reviews, cart), Cart, Checkout, and Order Confirmation. Features: user authentication, admin dashboard, secure payments, wishlist, and fast loading times."`,
+        `"Develop a responsive task management web app with a Dashboard (To-Do, In Progress, Completed), Task List (filters), Single Task View (details, subtasks), Add/Edit Task, and Settings. Features: drag-and-drop, reminders, user authentication, dark mode, and API/local storage integration."`
+    
+    ];
     
     const { user, setUser } = useUser();
     
@@ -71,6 +79,17 @@ const Prompt = () => {
                             <option value="html-css-js">HTML CSS JS</option>
                         </select>
                     </div>
+                    <div class="flex flex-col space-y-2">
+                        <label class="text-left tracking-wide text-sm font-medium text-slate-200" for="projectName">
+                            Project Description:
+                        </label>
+                        <textarea
+                            id="projectDescription"
+                            class="w-full px-3 py-2 bg-slate-600 text-gray-50 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                            placeholder="Enter project description"
+                            rows="4"
+                        ></textarea>
+                    </div>
                 </div>
             `,
             showCancelButton: true,
@@ -89,13 +108,14 @@ const Prompt = () => {
                 // const description = document?.getElementById('description')?.value.trim();
                 const visibility = document.getElementById('visibility').value;
                 const projectType = document.getElementById('projectType').value;
+                const description = document.getElementById('projectDescription').value;
 
                 if (!name) {
                     Swal.showValidationMessage('Project Name is required!');
                     return false;
                 }
 
-                return { name, visibility, projectType };
+                return { name, visibility, projectType, description };
             }
         });
 
@@ -191,7 +211,8 @@ const Prompt = () => {
                             key={index} 
                             className="px-4 py-2 text-sm md:text-base text-white bg-indigo-500 hover:bg-indigo-600 rounded-xl hover:scale-105 transition-transform hover:shadow-lg whitespace-nowrap"
                             onClick={()=>{
-                                setPrompt(`Make me a website for my ${item.label}`);
+                                // setPrompt(`Make me a website for my ${item.label}`);
+                                setPrompt(HardPrompts[index]);
                                 setCallCreateProject(true);
                                 
                             }}

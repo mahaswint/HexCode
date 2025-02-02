@@ -23,10 +23,11 @@ const ProjectList = (props) => {
     const [project, setProject] = useState({});
     const [allReadySelected, setAllReadySelected] = useState([]);
     
+    const [editItem, setEditItem] = useState({});
     
     const getProjectData = async (projectid) => {
         try {
-            console.log(projectid);
+            // console.log(projectid);
             const response = await fetch(`${BACKEND_URL}project/${projectid}`, {
                 method: "GET",
                 headers: {
@@ -139,16 +140,48 @@ const ProjectList = (props) => {
         }
     };
 
+    const handleEditProject = async(projectId) => {
+        try {
+            // console.log(projectid);
+            const response = await fetch(`${BACKEND_URL}project/${projectId}/edit`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    name: editItem.name,
+                    visibility: editItem.visibility,
+                    description: editItem.description,
+
+                }),
+                credentials: "include", // Include credentials for session management
+            });
+            
+            if (!response.ok) {
+                throw new Error("Failed to edit project");
+            }
+            
+            await response.json();
+            window.location.reload();
+
+            // console.log(data); 
+        } catch (err) {
+            console.log(err); // Capture and set the error
+        }
+    };
+
 
     const toggleEditProjectData = () => {
         setEditProjectData(!editProjectData);
     };
+
     return (
-        <div className="h-full w-full overflow-scroll">
-            <div className="sticky top-0 z-20 border border-gray-400 text-2xl md:text-4xl font-semibold mb-2 p-4 bg-gray-800 rounded-lg">
-                Projects
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-2 md:gap-6 p-2">
+        <>
+        <div className="sticky top-0 z-20 text-2xl md:text-4xl font-medium mb-4 mt-4 px-2 rounded-lg text-left">
+            My Projects
+        </div>
+        <div className="h-[90%] w-full overflow-scroll">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-2 md:gap-4 p-2">
                 {projects.map((project, index) => (
                     <div
                         key={index}
@@ -166,7 +199,10 @@ const ProjectList = (props) => {
                             <div className="flex gap-2">
                                 <div className="group relative">
                                     <button className="text-gray-200 rounded-md hover:text-blue-500">
-                                        <FontAwesomeIcon icon={faPenToSquare} className="h-6 w-6" onClick={toggleEditProjectData} />
+                                        <FontAwesomeIcon icon={faPenToSquare} className="h-6 w-6" onClick={() => {
+                                            toggleEditProjectData();
+                                            setEditItem(project);
+                                        }} />
                                     </button>
                                     <span className="absolute z-50 left-1/2 bottom-full mb-2 ml-3 w-max -translate-x-1/2 scale-0 rounded bg-gray-500 text-white text-xs px-2 py-1 opacity-0 transition-all group-hover:scale-100 group-hover:opacity-100">
                                         Edit Project
@@ -259,9 +295,15 @@ const ProjectList = (props) => {
                         </label>
                         <input
                         id="projectName" type="text"
-                        placeholder={project.name}
+                        // placeholder={project.name}
+                        value={editItem.name}
                         className="w-full px-3 py-2 bg-slate-600 text-gray-50 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
-                        onChange={null} // Add onChange logic here
+                        onChange={(e)=>{
+                            setEditItem({
+                                ...editItem,
+                                name:e.target.value
+                            })
+                        }} // Add onChange logic here
                         />
                     </div>
 
@@ -273,8 +315,14 @@ const ProjectList = (props) => {
                         Visibility:
                         </label>
                         <select id="visibility"
+                                value={editItem.visibility ? "public" : "private"}
                                 className="w-full px-3 py-2 bg-slate-600 text-gray-50 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
-                                onChange={null} // Add onChange logic here
+                                onChange={(e)=>{
+                                    setEditItem({
+                                        ...editItem,
+                                        visibility: e.target.value  === "public"
+                                    });
+                                }} // Add onChange logic here
                         >
                         <option value="private">Private</option>
                         <option value="public">Public</option>
@@ -288,9 +336,17 @@ const ProjectList = (props) => {
                         Project Description:
                         </label>
                         <div className="w-full h-32">
-                        <textarea id="projectDescription" placeholder={project.description}
+                        <textarea id="projectDescription" 
+                            // placeholder={project.description}
+                            value={editItem.description}
                             className="w-full h-full px-3 py-2 bg-slate-600 text-gray-50 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 resize-none"
-                            onChange={null}></textarea>
+                            onChange={(e)=>{
+                                setEditItem({
+                                    ...editItem,
+                                    description:e.target.value
+                                });
+                            }}
+                            ></textarea>
                         </div>
                     </div>
 
@@ -299,7 +355,10 @@ const ProjectList = (props) => {
                         <button onClick={toggleEditProjectData} className="px-4 py-2 bg-gray-500 text-white rounded-md">
                         Cancel
                         </button>
-                        <button onClick={null} className="px-4 py-2 bg-blue-500 text-white rounded-md">
+                        <button onClick={()=>{
+                            handleEditProject(editItem._id);
+                            toggleEditProjectData();
+                        }} className="px-4 py-2 bg-blue-500 text-white rounded-md">
                         Save Changes
                         </button>
                     </div>
@@ -309,6 +368,7 @@ const ProjectList = (props) => {
 
             )}
         </div>
+        </>
     );
 };
 
