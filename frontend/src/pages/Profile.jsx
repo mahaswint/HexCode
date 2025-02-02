@@ -3,11 +3,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHexagonNodes } from "@fortawesome/free-solid-svg-icons";
 import Swal from 'sweetalert2';
 import Projectlist from "../components/project"; // Adjusted path if needed
+import { useUser } from "../hooks/userContext";
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "http://localhost:5000/";
 
 const Profile = () => {
   
-  const [user, setUser] = useState(null); // State to hold authenticated user data
+  const {user, setUser} = useUser(); // State to hold authenticated user data
   const [projects, setProjects] = useState([]); // State to hold projects data
   const [users, setUsers] = useState([]); // State to hold all users
   const [loading, setLoading] = useState(true); // State for loading indicator
@@ -29,7 +30,7 @@ const Profile = () => {
       }
 
       const data = await response.json();
-      setUser(data); // Set the fetched user data
+      // setUser(data); // Set the fetched user data
     } catch (err) {
       setError(err.message); // Capture and set the error
     } finally {
@@ -78,14 +79,17 @@ const Profile = () => {
       setProjects(data);
     } catch (err) {
       setError(err.message);
+    } finally {
+      setLoading(false);
     }
+
   };
 
   // Fetch user data and projects when component mounts
-  useEffect(() => {
-    fetchUserData();
-    // getAllUsers();
-  }, []);
+  // useEffect(() => {
+  //   fetchUserData();
+  //   // getAllUsers();
+  // }, []);
 
   useEffect(() => {
     if (user) {
@@ -140,7 +144,7 @@ const Profile = () => {
       },
     }).then((result) => {
       if (result.isConfirmed) {
-        setUser(result.value);
+        // setUser(result.value);
         handleUpdateUser();
       }
     });

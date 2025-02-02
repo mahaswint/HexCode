@@ -84,8 +84,13 @@ export const UniversalPage = () => {
       }
 
       const data = await response.json();
-      setTemplates(data);
-      // console.log(data);
+      const sortedTemplates = data.sort((a, b) => {
+        if(a.voteCount == b.voteCount) return (b.votes.upvotes.length - a.votes.upvotes.length);
+        return (b.voteCount - a.voteCount);
+
+    });
+      setTemplates(sortedTemplates);
+      console.log(data);
     } catch (err) {
       setError(err.message);
       console.log(error);

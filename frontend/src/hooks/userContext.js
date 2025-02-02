@@ -14,6 +14,7 @@ export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
+    if(user)return;
     let cancel;
     const fetchUser = async () => {
       try {
@@ -30,7 +31,7 @@ export const UserProvider = ({ children }) => {
     };
     fetchUser();
     return () => cancel();
-  }, []);
+  }, [user]);
 
   return (
     <UserContext.Provider value={{ user, setUser }}>
