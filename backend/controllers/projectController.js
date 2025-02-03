@@ -136,7 +136,7 @@ exports.copyProject = async (req, res) => {
         const copiedProject = new Project({
             name: projectToCopy.name,
             description: projectToCopy.description,
-            visibility: projectToCopy.visibility,
+            visibility: false,
             projectType: projectToCopy.projectType,
             owner: user, 
             users: [], 
