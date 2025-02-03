@@ -68,7 +68,7 @@ const MainPagePlain = () => {
 
   const [userprompts, setUserprompts] = useState([]);
   const [aimessage, setAimessage] = useState([]);
-
+  const [userpromptsTiming,setUserpromptsTiming] = useState([]);
   const [generatedHTML, setGeneratedHTML] = useState(
     `<!DOCTYPE html><html>
       <head>
@@ -452,6 +452,7 @@ const MainPagePlain = () => {
       chats.forEach((element) => {
         setUserprompts((prevPrompts) => [...prevPrompts, element.userprompt]);
         setAimessage((prevMessages) => [...prevMessages, element.text]);
+        setUserpromptsTiming((prevMessages) => [...prevMessages, element.time]);
       })
 
     } catch (e) {
@@ -559,9 +560,12 @@ const MainPagePlain = () => {
           {userprompts.map((prompt, index) => (
             <div key={index} className="mb-3">
               {/* User Prompt - Adjusted for better mobile display */}
-              <div className="flex justify-end max-h-40 md:max-h-52 mt-3">
+              <div className="relative flex justify-end max-h-40 md:max-h-52 mt-3">
                 <div className="bg-indigo-500 text-white px-3 md:px-4 py-2 rounded-lg max-w-[90%] md:max-w-[80%] overflow-y-auto text-sm md:text-base">
                   {prompt}
+                </div>
+                <div className='absolute bottom-0 right-0 text-sm'>
+                  {userpromptsTiming[index]}
                 </div>
               </div>
 

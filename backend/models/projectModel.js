@@ -41,8 +41,9 @@ const projectSchema = new Schema(
             {
             text: { type: String },
             userprompt: { type: Schema.Types.Mixed  },
-            airesponse: { type: Schema.Types.Mixed }
-            },
+            airesponse: { type: Schema.Types.Mixed },
+            time: {type: Schema.Types.Mixed}
+            }
         ],
         votes: {
             upvotes: [{
