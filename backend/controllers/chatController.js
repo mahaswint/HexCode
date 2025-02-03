@@ -64,7 +64,7 @@ exports.chat = async (req,res)=> {
       "generatedFiles": []
     }
 
-    Generate a project that demonstrates professional-grade web development practices, tailored precisely to the user's prompt.
+    Write all the special characters like \n, \t, \r, or other special characters properly Generate a project that demonstrates professional-grade web development practices, tailored precisely to the user's prompt.
     Do not include any text excluding the code , that is the json object. If you want to give any text explanation of implementation or anything related to conversation, give it in the value of 'explanation' key in the json string.
     All elements must have a draggable class and vertical or horizontal class.DO NOT GIVE ME A SCRIPT FOR draggable class as i am implementing my own script for drag and drop which will use the draggable class. 
     `;
@@ -190,11 +190,27 @@ exports.chat = async (req,res)=> {
       // const airesponseJson = message.content[0].text;
       const airesponseObject = obj
       // Add the user prompt and AI response to the messages array
+      const now = new Date();
+
+// Get time in 24-hour format
+const hours = String(now.getHours()).padStart(2, '0');
+const minutes = String(now.getMinutes()).padStart(2, '0');
+const formattedTime = `${hours}:${minutes}`;
+
+// Get date in DD-MM-YYYY format
+const day = String(now.getDate()).padStart(2, '0');
+const month = String(now.getMonth() + 1).padStart(2, '0'); // Months are 0-based
+const year = now.getFullYear();
+const formattedDate = `${day}-${month}-${year}`;
+
+const finalOutput = `${formattedTime} ${formattedDate}`;
+
 
       project.chats.push({
         userprompt: userPrompt,
         airesponse: message.content[0].text,
-        text : airesponseObject.explanation
+        text : airesponseObject.explanation,
+        time : finalOutput
       });
 
 
