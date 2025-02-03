@@ -12,6 +12,7 @@ import Footer from "./components/Footer";
 import { UniversalPage } from "./pages/UniversalPage";
 import { ActionContext } from './pages/ActionContext';
 import { useState } from "react";
+import About from "./pages/About"
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "http://localhost:5000/";
 
@@ -31,6 +32,7 @@ function App() {
                         <Route path="/profile" element={<Profile />} />
                         <Route path="/main/react/:projectid" element={<MainPageReact/>} />
                         <Route path="/main/plain/:projectid" element={<MainPagePlain/>} />
+                        <Route path="/about" element={<About/>} />
                     </Routes>
                     <Footer/>
                 </Router>

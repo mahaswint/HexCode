@@ -733,6 +733,32 @@ const MainPagePlain = () => {
               />
             </ResizableBox>
           )}
+          <div style={{ opacity: 0 }}>
+            <SandpackProvider
+              template="react"
+              files={{
+                "public/index.html": {
+                  code: displayCodedeploy,
+                  active: true
+                },
+                "/index.js": {
+                  code: "",
+                  active: true
+                }
+
+              }}
+              options={{
+                showNavigator: true,
+                showLineNumbers: true,
+                closableTabs: true,
+                activeFile: "/index.html",
+              }}
+            >
+              <SandpackLayout className="h-full bg-gray-900">
+                <SandpackPreviewClient2 />
+              </SandpackLayout>
+            </SandpackProvider>
+          </div>
         </div>
       </div>
     </div>

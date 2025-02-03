@@ -55,7 +55,7 @@ const Introduction = () => {
     };
 
     return (
-        <div className="relative min-h-[98%] flex flex-col items-center justify-center text-gray-800 mt-12">
+        <div className="relative min-h-[98%] flex flex-col items-center justify-center text-gray-800 mt-8 md:mt-12">
             <motion.div
                 initial={{ opacity: 0, y: 50 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -78,7 +78,7 @@ const Introduction = () => {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.5 }}
-                    className="text-2xl md:text-4xl text-gray-400 mb-6 font-semibold"
+                    className="text-xl md:text-4xl text-gray-400 mb-6 font-semibold"
                 >
                     The Future of Intelligent Web Development
                 </motion.h2>
@@ -87,27 +87,27 @@ const Introduction = () => {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.7 }}
-                    className="max-w-2xl mx-auto text-base md:text-xl text-gray-600 mb-10"
+                    className="hidden md:block max-w-2xl mx-auto text-base md:text-xl text-gray-600 mb-10"
                 >
                     Revolutionize your development workflow with AI-powered website generation. 
                     Create stunning, responsive designs with unprecedented speed and precision.
                 </motion.p>
 
-                <div className="hidden md:grid md:grid-cols-3 gap-4 max-w-4xl mx-auto">
+                <div className="md:grid md:grid-cols-3 gap-4 max-w-4xl mx-auto">
                     {features.map((feature, idx) => (
                         <motion.div
                             key={feature.title}
                             initial={{ opacity: 0, y: 50 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.9 + idx * 0.2 }}
-                            className="bg-white/10 backdrop-blur-lg shadow-md border-[0.8px] border-gray-500 rounded-lg p-6 text-gray-200  transition-all duration-300 group hover:scale-105 hover:shadow-lg"
+                            className="mb-2 md:mb-0 bg-white/10 backdrop-blur-lg shadow-md border-[0.8px] border-gray-500 rounded-lg p-6 text-gray-200  transition-all duration-300 group hover:scale-105 hover:shadow-lg"
                         >
                             <FontAwesomeIcon
                                 icon={feature.icon}
                                 className="text-3xl mb-4 text-indigo-500 transition-colors"
                             />
-                            <h3 className="text-lg font-semibold mb-2">{feature.title}</h3>
-                            <p className="text-md text-gray-300 font-light">{feature.description}</p>
+                            <h3 className="text-md md:text-lg font-semibold mb-2">{feature.title}</h3>
+                            <p className="text-sm md:text-md text-gray-300 font-light">{feature.description}</p>
                         </motion.div>
                     ))}
                 </div>
@@ -120,7 +120,7 @@ const Introduction = () => {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 1.2 }}
-                        className="hidden md:block md:bottom-10  md:bg-transparent border-[0.8px] border-gray-500 md:text-white md:font-semibold md:text-lg md:px-10 md:py-3 md:rounded-full md:shadow-md md:hover:bg-gray-400/20 md:hover:scale-105 md:transition-all md:duration-300"
+                        className="mt-2 md:mt-0 md:bottom-10  bg-transparent border-[0.8px] border-gray-500 text-white font-semibold text-lg md:text-md  px-6 md:px-10 py-2 md:py-3 rounded-full shadow-md hover:bg-gray-400/20 hover:scale-105 transition-all duration-300"
                         >
                         Explore Projects
                     </motion.button>
@@ -129,7 +129,7 @@ const Introduction = () => {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 1.2 }}
-                        className="hidden md:block md:bottom-10  md:bg-indigo-500 md:text-white md:font-semibold md:text-lg md:px-10 md:py-3 md:rounded-full md:shadow-md md:hover:bg-indigo-600 md:hover:scale-105 md:transition-all md:duration-300"
+                        className="mt-2 md:mt-0 md:bottom-10  bg-indigo-500 text-white font-semibold text-lg md:text-md px-6 md:px-10 py-2 md:py-3 rounded-full shadow-md hover:bg-indigo-600 hover:scale-105 transition-all duration-300"
                         >
                         Get Started
                     </motion.button>

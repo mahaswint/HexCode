@@ -491,8 +491,8 @@ useEffect(() => {
               <SandpackPreviewClient className="flex h-full w-full"/>
             ) : (
               <div className="flex h-full overflow-scroll">
-                <SandpackFileExplorer className="overflow-scroll border-r border-gray-700 " style={{height:'600px', width:'200px'}} />
-                <SandpackCodeEditor className=" overflow-scroll" style={{height:'600px', width:'700px'}} />
+                <SandpackFileExplorer className="overflow-scroll border-r border-gray-700 " style={{height:'857px', width:'200px'}} />
+                <SandpackCodeEditor className=" overflow-scroll" style={{height:'857px', width:'700px'}} />``
               </div>
             )}
           </SandpackLayout>

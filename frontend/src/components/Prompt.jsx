@@ -194,7 +194,7 @@ const Prompt = () => {
             </div>
 
             <div className="relative z-10 flex justify-center mb-4 ">
-                <div className="flex flex-wrap md:flex-nowrap justify-center gap-3 px-2">
+                <div className="flex flex-wrap justify-center gap-3 px-2">
                     {[
                         { icon: faSuitcase, label: "Portfolio"},
                         { icon: faFilePen, label: "Blog"},
