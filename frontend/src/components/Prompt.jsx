@@ -75,8 +75,8 @@ const Prompt = () => {
                             id="projectType"
                             class="w-full px-3 py-2 bg-slate-600 text-gray-50 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
                         >
-                            <option value="react">React</option>
                             <option value="html-css-js">HTML CSS JS</option>
+                            <option value="react">React</option>
                         </select>
                     </div>
                     <div class="flex flex-col space-y-2">
