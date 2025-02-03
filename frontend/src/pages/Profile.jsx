@@ -154,7 +154,7 @@ const Profile = () => {
   return (
       <div className="flex flex-col md:flex-row m-4 items-center md:items-start justify-between w-full h-screen">
         {/* Profile Info */}
-          {user? (<div className="w-[90%] md:w-[25%]  md:m-4 rounded-full md:rounded-md p-2 md:p-4 bg-gray-900 h-[7%] md:h-[55%] flex items-center md:block">
+          {user? (<div className="w-[90%] md:w-[25%]  md:m-4 rounded-full md:rounded-md p-2 md:p-4 bg-gray-900 h-[7%] md:h-[55%] flex items-center md:block ">
               <div className="w-20 h-16 md:w-[80%] md:h-[80%] mx-auto mb-0 md:mb-3">
                 <img src={user.imageURL} alt="User Profile Image" className="h-full w-full rounded-full md:rounded-md" />
               </div>
@@ -170,7 +170,7 @@ const Profile = () => {
                 className="w-10 h-10 text-indigo-500 animate-spin"
                 style={{ animationDuration: '1s' }}
               />
-            </div>)
+  </div>)
           }
           
       {loading?(
