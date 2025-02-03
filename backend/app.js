@@ -47,7 +47,7 @@ app.use("/auth",authRoutes);
 
 
 app.use((req, res, next) => {
-  console.log("startttt",req.user,req.session);
+  // console.log("startttt",req.user,req.session);
   next();
 });
 

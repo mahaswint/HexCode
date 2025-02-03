@@ -96,7 +96,7 @@ exports.chat = async (req,res)=> {
       implementations for a simple website. Do not include additional text outside the JSON object. Do not enclose 
       the value of the keys in backticks; enclose them in double quotes and escape all double quotes and newline 
       characters inside the values of html, css, and js. Don't forget to add the newline characters in the code and 
-      escape them properly, as they are crucial for indentation.`
+      escape them properly, as they are crucial for indentation. Also fix the image height and width with respect to the design. Do not add more than 5 images`
     }
     
   
@@ -133,8 +133,53 @@ exports.chat = async (req,res)=> {
         });
   
       const message = await stream.finalMessage();
-      console.log("Model Response:-",message);
+      // console.log("Model Response:-",message);
 
+      const fetchNewImageSrc = async (altText) => {
+        // Simulating an API call that returns a new image URL based on alt text
+        console.log("Open AI API called.....................")
+        const response = await openai.images.generate({
+            model: "dall-e-3",
+            prompt: "I am creating a website in which i want relevant images instead of irrelevant placeholders so i am giving you the alt text of the image. Generate a minimal and vector images according to the given alt text - " + altText,
+            n: 1,
+            size: "1024x1024",
+        });
+          
+        console.log(response)
+        return response.data[0].url;
+    };
+    
+    const replaceImageSrc = async (html) => {
+      console.log("replace image called ....................")
+        const imgTagRegex = /<img[^>]+src=["']([^"']+)["'][^>]*>/g;
+        const matches = Array.from(html.matchAll(imgTagRegex));
+        console.log("Matches length................")
+        console.log(matches.length);
+        
+        for (const match of matches) {
+            const altMatch = match[0].match(/alt="([^"]*)"/);
+            const altText = altMatch ? altMatch[1] : "No alt attribute";
+            console.log("Alt text:", altText);
+            
+            const newSrc = await fetchNewImageSrc(altText);
+            // const newSrc1 = "cdhbsidchb"
+            html = html.replace(match[0], match[0].replace(/src="[^"]+"/, `src="${newSrc}"`));
+        }
+        return html;
+    };
+    console.log("sdifugsdifugsifhgsidyfgisdyficauysgdfoisy8eg.............................................")
+
+    obj = JSON.parse(message.content[0].text)
+    console.log(obj);
+    
+
+
+    await replaceImageSrc(obj.html).then(updatedHtml => {
+      console.log(updatedHtml);
+      obj.html = updatedHtml;
+      message.content[0].text = JSON.stringify(obj)
+    })
+    console.log("Aage Nikal gaye ..............")
     
 
 
@@ -143,18 +188,19 @@ exports.chat = async (req,res)=> {
         return res.status(404).json({ error: "Project not found" });
       }
 
-      const airesponseJson = message.content[0].text;
-      const airesponseObject = JSON.parse(airesponseJson)
+      // const airesponseJson = message.content[0].text;
+      const airesponseObject = obj
       // Add the user prompt and AI response to the messages array
       project.chats.push({
         // text: message.content, 
         userprompt: userPrompt,
-        airesponse: message.content[0].text,
+        airesponse: airesponseObject,
         text : airesponseObject.explanation
       });
       console.log("BETICHOD");
-      console.log(userPrompt)
+      // console.log(userPrompt)
       console.log(project.chats);
+
 
       // Save the project
       await project.save();
