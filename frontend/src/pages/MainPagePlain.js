@@ -15,7 +15,7 @@ import { ResizableBox } from 'react-resizable';
 import 'react-resizable/css/styles.css';
 import { ActionContext } from './ActionContext'; // Updated import path
 import { useUser } from "../hooks/userContext";
-
+import Swal from 'sweetalert2';
 import { Sandpack, SandpackProvider, useSandpack, SandpackLayout } from "@codesandbox/sandpack-react";
 import SandpackPreviewClient2 from './SandpackPreviewClient2';
 
@@ -562,6 +562,25 @@ const colorPaletteScript = ``
   
       // Redirect to /main/react/{project_id} if response contains a valid ID
       if (data.project && data.project._id) {
+        await Swal.fire({
+            icon: 'success',
+            title: 'Project Created!',
+            html: `
+                <div class="text-center">
+                    <p>Your project has been successfully copied.</p>
+                    <p>Redirecting to Copied Project Window</p>
+                </div>
+            `,
+            customClass: {
+                container: 'swal2-container-custom',
+                popup: 'rounded-lg max-w-xs md:max-w-md mx-auto text-gray-200 p-6 shadow-xl',
+                title: 'text-xl font-semibold text-green-400 mb-4',
+                confirmButton: 'bg-green-500 hover:bg-green-600 text-white font-medium px-5 py-2 rounded-md',
+                htmlContainer: 'text-sm font-normal text-gray-500',
+                iconColor: 'text-green-400'
+            },
+            backdrop: 'backdrop-filter: blur(12px);',
+        });
         window.location.href = `/main/plain/${data.project._id}`;
       } else {
         console.error("Project ID missing in response");
