@@ -130,30 +130,31 @@ export const UniversalPage = () => {
             <FontAwesomeIcon icon={faRocket} /> Public Projects
           </h2>
         </div>
-        <div ref={searchRef} className="w-full md:w-[25rem]">
-        <div className="relative w-full max-w-lg mt-3 mb-1">
-          <input
-            onChange={(e)=>{setSearchTerm(e.target.value)}}
-            className="w-full px-5 py-3 text-sm rounded-full bg-gray-800 border border-gray-600 text-white outline-none focus:ring-2 focus:ring-blue-500 transition"
-            placeholder="Search projects..."
-            value={searchTerm}
-            onClick={()=>setShowSearchResult(true)}
-          />
-          <button onClick={()=>{
-            setShowSearchResult(false);
-          }} className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-blue-500 transition">
-            <FontAwesomeIcon icon={faMagnifyingGlass} />
-          </button>
-        </div>
-        {showSearchResult && (
-            <div className="absolute bg-gray-800 border border-gray-600 rounded-lg shadow-lg z-10 w-[25rem]">
-            {visibleTemplates.length === 0 ? (
+        <div ref={searchRef} className="relative w-full md:w-[25rem]">
+          <div className="relative w-full mt-3 mb-1">
+            <input
+              onChange={(e) => {setSearchTerm(e.target.value)}}
+              className="w-full px-5 py-3 text-sm rounded-full bg-gray-800 border border-gray-600 text-white outline-none focus:ring-2 focus:ring-blue-500 transition"
+              placeholder="Search projects..."
+              value={searchTerm}
+              onClick={() => setShowSearchResult(true)}
+            />
+            <button 
+              onClick={() => {setShowSearchResult(false);}} 
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-blue-500 transition"
+            >
+              <FontAwesomeIcon icon={faMagnifyingGlass} />
+            </button>
+          </div>
+          {showSearchResult && (
+            <div className="absolute w-full bg-gray-800 border border-gray-600 rounded-lg shadow-lg z-10 p-4">
+              {visibleTemplates.length === 0 ? (
                 <div className="px-4 text-gray-400">
                   No results found..
                 </div>
               ) : (
                 visibleTemplates.map((template, index) => (
-                  <div 
+                  <div
                     key={index}
                     className="px-4 py-2 hover:bg-gray-700 cursor-pointer transition"
                     onClick={() => {handleRedirect(template)}}
@@ -162,9 +163,10 @@ export const UniversalPage = () => {
                   </div>
                 ))
               )}
-          </div>
-        )}
+            </div>
+          )}
         </div>
+        
       </div>
 
       <div className="text-gray-400 mb-8 text-lg ">

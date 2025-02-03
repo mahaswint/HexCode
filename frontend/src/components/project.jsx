@@ -217,7 +217,7 @@ const ProjectList = (props) => {
             My Projects
         </div>
         <div className="h-[90%] w-full overflow-scroll">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-2 md:gap-4 p-2">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 md:gap-4 p-2">
                 {projects.map((project, index) => (
                     <div
                         key={index}
