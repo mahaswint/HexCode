@@ -180,11 +180,14 @@ const MainPagePlain = () => {
     `;
 
     // Optionally clean the updated HTML (e.g., remove the script tag)
-    const cleanedCode = updatedHtml.replace(
+    let cleanedCode = updatedHtml.replace(
       /<script[^>]*id="draggable-script"[\s\S]*?<\/script>/s,
       ""
     );
-
+    cleanedCode = cleanedCode.replace(
+      /<button[^>]*id=["']theme-toggle["'][^>]*>[\s\S]*?<\/button>/g,
+      ""
+    );
 
     console.log("Cleaned code after removing the draggable script:", cleanedCode);
 
@@ -235,12 +238,25 @@ const MainPagePlain = () => {
     `;
 
     // Optionally clean the updated HTML (e.g., remove the script tag)
-    const cleanedCode = updatedHtml.replace(
+    let cleanedCode = updatedHtml.replace(
       /<script[^>]*id="draggable-script"[\s\S]*?<\/script>/s,
       ""
     );
+    cleanedCode = cleanedCode.replace(
+      /(<button[^>]*id=["']theme-toggle["'][^>]*)(>)/g,
+      '$1 style="display: none;"$2'
+    );
+    console.log()
+
     console.log("Deployable code after removing the draggable script:", cleanedCode);
     setDeployedCode(cleanedCode);
+
+    setTimeout(() => {
+      if (iframeRef.current) {
+          iframeRef.current.contentDocument.documentElement.innerHTML = cleanedCode;
+          console.log("Iframe updated with new content.");
+      }
+  }, 100);
   };
 
   const draggableScript = `document.addEventListener('DOMContentLoaded', () => {
@@ -340,6 +356,7 @@ const MainPagePlain = () => {
     document.querySelectorAll('.draggable').forEach(initializeDraggable);
     setupEmptyDivStyling();
 })`
+const colorPaletteScript = ``
   function injectContentIntoHTML(htmlCode, cssCode, jsCode, draggableScript) {
     // First, ensure we have a valid HTML structure
     if (!htmlCode.includes('</head>') || !htmlCode.includes('</body>')) {
