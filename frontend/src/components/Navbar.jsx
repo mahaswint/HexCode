@@ -101,7 +101,7 @@ const Navbar = () => {
             </nav>
 
             {isMobileMenuOpen && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden" onClick={closeMobileMenu}>
+                <div className="fixed inset-0 bg-black bg-opacity-50 z-50 md:hidden" onClick={closeMobileMenu}>
                     <div className="fixed left-0 top-0 h-full w-64 bg-black shadow-lg z-50 p-4" onClick={(e) => e.stopPropagation()}>
                         <button 
                             onClick={closeMobileMenu}
