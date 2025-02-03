@@ -490,7 +490,7 @@ const colorPaletteScript = ``
   const downloadableCode = injectContentIntoHTML(generatedHTML, generatedCSS, generatedJS, '');
   console.log("This is the code that will be given to the iframe:", displayCode);
 
-  const toggleView = () => {
+  const toggleViewPreview = () => {
     if (showCode) {
       setShowCode(false);
     }
@@ -498,6 +498,16 @@ const colorPaletteScript = ``
       setShowCode(true);
       setTimeout(highlightCode, 0);
     }
+  };
+  const toggleViewCode = () => {
+    if (showCode) {
+      setShowCode(false);
+    }
+    else {
+      setShowCode(true);
+      setTimeout(highlightCode, 0);
+    }
+    alert("Warning, the changes done is Drag and Drop will be removed.");
   };
 
   const parentRef = useRef(null);
@@ -652,7 +662,7 @@ const colorPaletteScript = ``
             <button
               type="button"
               className={`flex items-center rounded-full px-2 md:px-3 py-1 text-xs md:text-sm font-medium transition-all duration-300 ${!showCode ? "bg-white text-gray-900 shadow-lg" : "bg-gray-900 text-white"}`}
-              onClick={toggleView}
+              onClick={toggleViewPreview}
               aria-pressed={!showCode}
               disabled={!userIsOwner}
             >
@@ -667,7 +677,7 @@ const colorPaletteScript = ``
             <button
               type="button"
               className={`flex items-center rounded-full px-2 md:px-3 py-1 text-xs md:text-sm font-medium transition-all duration-300 ${showCode ? "bg-white text-gray-900 shadow-lg" : "bg-gray-900 text-white"}`}
-              onClick={toggleView}
+              onClick={toggleViewCode}
               aria-pressed={showCode}
               disabled={!userIsOwner}
             >
