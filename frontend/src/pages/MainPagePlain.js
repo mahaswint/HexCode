@@ -706,6 +706,9 @@ const colorPaletteScript = ``
                 onClick={() => onActionBtn("deploy")}
               >
                 <FontAwesomeIcon icon={faRocket} className="text-md md:text-xl" />
+                <span className="absolute z-50 left-1/2 bottom-full mb-2 w-max -translate-x-1/2 scale-0 rounded bg-gray-700 text-white text-xs px-2 py-1 opacity-0 transition-all group-hover:scale-100 group-hover:opacity-100">
+                  Deploy
+                </span>
               </button>
             </div>
             ):(
@@ -714,6 +717,9 @@ const colorPaletteScript = ``
                   onClick={copyProject}
                 >
                   <FontAwesomeIcon icon={faCopy} className="text-md md:text-xl" />
+                  <span className="absolute z-50 left-1/2 bottom-full mb-2 w-max -translate-x-1/2 scale-0 rounded bg-gray-700 text-white text-xs px-2 py-1 opacity-0 transition-all group-hover:scale-100 group-hover:opacity-100">
+                  Copy
+                </span>
                 </button>
               </div>
             )
