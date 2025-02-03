@@ -190,11 +190,27 @@ exports.chat = async (req,res)=> {
       // const airesponseJson = message.content[0].text;
       const airesponseObject = obj
       // Add the user prompt and AI response to the messages array
+      const now = new Date();
+
+// Get time in 24-hour format
+const hours = String(now.getHours()).padStart(2, '0');
+const minutes = String(now.getMinutes()).padStart(2, '0');
+const formattedTime = `${hours}:${minutes}`;
+
+// Get date in DD-MM-YYYY format
+const day = String(now.getDate()).padStart(2, '0');
+const month = String(now.getMonth() + 1).padStart(2, '0'); // Months are 0-based
+const year = now.getFullYear();
+const formattedDate = `${day}-${month}-${year}`;
+
+const finalOutput = `${formattedTime} ${formattedDate}`;
+
 
       project.chats.push({
         userprompt: userPrompt,
         airesponse: message.content[0].text,
-        text : airesponseObject.explanation
+        text : airesponseObject.explanation,
+        time : finalOutput
       });
 
 
