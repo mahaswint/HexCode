@@ -64,7 +64,7 @@ exports.chat = async (req,res)=> {
       "generatedFiles": []
     }
 
-    Generate a project that demonstrates professional-grade web development practices, tailored precisely to the user's prompt.
+    Write all the special characters like \n, \t, \r, or other special characters properly Generate a project that demonstrates professional-grade web development practices, tailored precisely to the user's prompt.
     Do not include any text excluding the code , that is the json object. If you want to give any text explanation of implementation or anything related to conversation, give it in the value of 'explanation' key in the json string.
     All elements must have a draggable class and vertical or horizontal class.DO NOT GIVE ME A SCRIPT FOR draggable class as i am implementing my own script for drag and drop which will use the draggable class. 
     `;
