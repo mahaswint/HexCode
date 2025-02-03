@@ -38,6 +38,7 @@ export default function MainPageReact({children}) {
   const [loading,setLoading] = useState(false);
   const { user, setUser } = useUser();
   const [userIsOwner, setUserIsOwner] = useState(false);
+  const [userpromptsTiming,setUserpromptsTiming] = useState([]);
   
   const getProjectData = async (projectid) => {
     try {
@@ -100,41 +101,7 @@ export default function MainPageReact({children}) {
         }
       ]);
     const [prompt, setPrompt] = useState('');
-    const [projectStructure, setProjectStructure] = useState(
-      {
-        "projectTitle": "Centered SVG Website",
-        "explanation": "This project creates a responsive website with a centered, blurred hexagon SVG. The SVG is positioned using CSS flexbox and maintains its aspect ratio while fitting the viewport. A subtle blur effect is applied using CSS filters.",
-        "files": {
-          "/App.js": {
-            "code": "import React from 'react';\nimport { BrowserRouter as Router, Route, Routes } from 'react-router-dom';\nimport Home from './components/Home';\nimport './css/App.css';\n\nfunction App() {\n  return (\n    <Router>\n      <Routes>\n        <Route path=\"/\" element={<Home />} />\n      </Routes>\n    </Router>\n  );\n}\n\nexport default App;"
-          },
-          "/components/Home.js": {
-            "code": "import React from 'react';\nimport '../css/Home.css';\n\nconst Home = () => {\n  return (\n    <div className=\"container draggable\">\n      <div className=\"svg-container draggable\">\n        <svg\n          aria-hidden=\"true\"\n          focusable=\"false\"\n          data-prefix=\"fas\"\n          data-icon=\"hexagon-nodes\"\n          className=\"svg-inline--fa fa-hexagon-nodes draggable\"\n          role=\"img\"\n          xmlns=\"http://www.w3.org/2000/svg\"\n          viewBox=\"0 0 700 700\"\n        >\n          <style>\n            {`\n              path {\n                fill: #6366f1;\n              }\n            `}\n          </style>\n          <path\n            fill=\"currentColor\"\n            d=\"M248 106.6c18.9-9 32-28.3 32-50.6c0-30.9-25.1-56-56-56s-56 25.1-56 56c0 22.3 13.1 41.6 32 50.6l0 98.8c-2.8 1.3-5.5 2.9-8 4.7l-80.1-45.8c1.6-20.8-8.6-41.6-27.9-52.8C57.2 96 23 105.2 7.5 132S1.2 193 28 208.5c1.3 .8 2.6 1.5 4 2.1l0 90.8c-1.3 .6-2.7 1.3-4 2.1C1.2 319-8 353.2 7.5 380S57.2 416 84 400.5c19.3-11.1 29.4-32 27.8-52.8l50.5-28.9c-11.5-11.2-19.9-25.6-23.8-41.7L88 306.1c-2.6-1.8-5.2-3.3-8-4.7l0-90.8c2.8-1.3 5.5-2.9 8-4.7l80.1 45.8c-.1 1.4-.2 2.8-.2 4.3c0 22.3 13.1 41.6 32 50.6l0 98.8c-18.9 9-32 28.3-32 50.6c0 30.9 25.1 56 56 56s56-25.1 56-56c0-22.3-13.1-41.6-32-50.6l0-98.8c2.8-1.3 5.5-2.9 8-4.7l80.1 45.8c-1.6 20.8 8.6 41.6 27.8 52.8c26.8 15.5 61 6.3 76.5-20.5s6.3-61-20.5-76.5c-1.3-.8-2.7-1.5-4-2.1l0-90.8c1.4-.6 2.7-1.3 4-2.1c26.8-15.5 36-49.7 20.5-76.5S390.8 96 364 111.5c-19.3 11.1-29.4 32-27.8 52.8l-50.6 28.9c11.5 11.2 19.9 25.6 23.8 41.7L360 205.9c2.6 1.8 5.2 3.3 8 4.7l0 90.8c-2.8 1.3-5.5 2.9-8 4.6l-80.1-45.8c.1-1.4 .2-2.8 .2-4.3c0-22.3-13.1-41.6-32-50.6l0-98.8z\"\n          />\n        </svg>\n      </div>\n    </div>\n  );\n};\n\nexport default Home;"
-          },
-          "/css/App.css": {
-            "code": "* {\n  margin: 0;\n  padding: 0;\n  box-sizing: border-box;\n}\n\nbody {\n  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,\n    Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;\n  background-color: #f8f9fa;\n}"
-          },
-          "/css/Home.css": {
-            "code": ".container {\n  width: 100vw;\n  height: 100vh;\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  background-color: #ffffff;\n}\n\n.svg-container {\n  width: 50%;\n  max-width: 500px;\n  filter: blur(2px);\n  transition: filter 0.3s ease;\n}\n\n.svg-container:hover {\n  filter: blur(0);\n}\n\n.svg-inline--fa {\n  width: 100%;\n  height: auto;\n  opacity: 0.9;\n}\n\n@media (max-width: 768px) {\n  .svg-container {\n    width: 70%;\n  }\n}\n\n@media (max-width: 480px) {\n  .svg-container {\n    width: 90%;\n  }\n}"
-          },
-          "/index.js": {
-            "code": "import React from 'react';\nimport ReactDOM from 'react-dom/client';\nimport App from './App';\n\nconst root = ReactDOM.createRoot(document.getElementById('root'));\nroot.render(\n  <React.StrictMode>\n    <App />\n  </React.StrictMode>\n);"
-          },
-          "/index.html": {
-            "code": "<!DOCTYPE html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n    <meta name=\"theme-color\" content=\"#000000\" />\n    <meta\n      name=\"description\"\n      content=\"Centered SVG Website\"\n    />\n    <title>Centered SVG Website</title>\n  </head>\n  <body>\n    <noscript>You need to enable JavaScript to run this app.</noscript>\n    <div id=\"root\"></div>\n  </body>\n</html>"
-          }
-        },
-        "entryFilePath": "/App.js",
-        "generatedFiles": [
-          "/App.js",
-          "/components/Home.js",
-          "/css/App.css",
-          "/css/Home.css",
-          "/index.js",
-          "/index.html"
-        ]
-      }
-    );
+    const [projectStructure, setProjectStructure] = useState();
   const getAIResponse = async ()=>{
     setLoading(true)
     console.log("Loading state:", loading);
@@ -163,6 +130,7 @@ export default function MainPageReact({children}) {
       chats.forEach((element)=>{
         setUserprompts((prevPrompts) => [...prevPrompts, element.userprompt]);
         setAimessage((prevMessages) => [...prevMessages, element.text]);
+        setUserpromptsTiming((prevMessages) => [...prevMessages, element.time]);
       })
 
     }catch(e){
@@ -310,12 +278,26 @@ useEffect(() => {
     }
   };
   
+  const now = new Date();
+
+  // Get time in 24-hour format
+  const hours = String(now.getHours()).padStart(2, '0');
+  const minutes = String(now.getMinutes()).padStart(2, '0');
+  const formattedTime = `${hours}:${minutes}`;
+  
+  // Get date in DD-MM-YYYY format
+  const day = String(now.getDate()).padStart(2, '0');
+  const month = String(now.getMonth() + 1).padStart(2, '0'); // Months are 0-based
+  const year = now.getFullYear();
+  const formattedDate = `${day}-${month}-${year}`;
+  
+  const finalOutput = `${formattedTime} ${formattedDate}`;
 
   return (
   <div className="flex flex-col-reverse md:flex-row h-full w-full text-white bg-gray-900">
     {/* Left Panel */}
     <div
-      className="w-full md:w-1/2 p-6 border-r border-gray-700 bg-gray-900 flex flex-col">
+      className="w-full md:w-1/2 p-2 md:p-6 border-r border-gray-700 bg-gray-900 flex flex-col">
       {/* Previous Prompts Section */}
       <div className="flex-grow md:h-[70%] md:max-h-[70%] max-h-80 overflow-y-scroll p-3 mb-4 rounded-lg bg-gradient-to-br from-[#1A1A2E] to-[#0F3460] border border-indigo-400/20 shadow-2xl shadow-black/40">
         <div className="flex gap-2 text-xl font-semibold">
@@ -329,10 +311,14 @@ useEffect(() => {
         {userprompts.map((prompt, index) => (
           <div key={index} className="mb-3">
             {/* User Prompt */}
-            <div className="flex justify-end max-h-52 mt-3">
+            <div className="relative flex justify-end max-h-52 mt-3">
               <div className="bg-indigo-500 text-white px-4 py-2 rounded-lg max-w-[80%] overflow-scroll">
                 {prompt}
               </div>
+              <div className='absolute bottom-0 right-0 text-sm'>
+                  {userpromptsTiming[index] || finalOutput}
+                  </div>
+
             </div>
             {/* AI Response */}
             {aimessage[index] && (
@@ -374,7 +360,7 @@ useEffect(() => {
     
     
     {/* Right Panel */}
-    <div className="w-[98%] m-1 md:m-0 md:w-1/2 flex flex-col bg-gray-900">
+    <div className="w-[98%] m-2 md:m-0 md:w-1/2 flex flex-col bg-gray-900">
       {/* Navigation Tabs */}
       <nav className="flex flex-row justify-between p-1 md:p-2 bg-gray-900 border-b border-gray-700 h-[9%] mb-4">
         <div 

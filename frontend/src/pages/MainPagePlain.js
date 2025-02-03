@@ -398,6 +398,7 @@ const colorPaletteScript = ``
     setLoading(true);
     e.preventDefault(); // Prevents the default form submission behavior
     setPrompt(" ");
+    
     console.log("Form submitted with prompt:", prompt);
     setUserprompts((prevPrompts) => [...prevPrompts, prompt]);
     // Simulate fetching generated code from backend (replace this with your API call)
@@ -560,6 +561,21 @@ const colorPaletteScript = ``
       console.error("Error copying project:", error);
     }
   };
+  const now = new Date();
+
+  // Get time in 24-hour format
+  const hours = String(now.getHours()).padStart(2, '0');
+  const minutes = String(now.getMinutes()).padStart(2, '0');
+  const formattedTime = `${hours}:${minutes}`;
+  
+  // Get date in DD-MM-YYYY format
+  const day = String(now.getDate()).padStart(2, '0');
+  const month = String(now.getMonth() + 1).padStart(2, '0'); // Months are 0-based
+  const year = now.getFullYear();
+  const formattedDate = `${day}-${month}-${year}`;
+  
+  const finalOutput = `${formattedTime} ${formattedDate}`;
+
   
 
   return (
@@ -582,8 +598,9 @@ const colorPaletteScript = ``
                   {prompt}
                 </div>
                 <div className='absolute bottom-0 right-0 text-sm'>
-                  {userpromptsTiming[index]}
-                </div>
+                  {userpromptsTiming[index] || finalOutput}
+                  </div>
+
               </div>
 
               {/* AI Response - Adjusted for better mobile display */}

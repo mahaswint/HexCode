@@ -154,23 +154,23 @@ const Profile = () => {
   return (
       <div className="flex flex-col md:flex-row m-4 items-center md:items-start justify-between w-full h-screen">
         {/* Profile Info */}
-          {user? (<div className="w-[90%] md:w-[25%]  md:m-4 rounded-full md:rounded-md p-2 md:p-4 bg-gray-900 h-[7%] md:h-[55%] flex items-center md:block ">
-              <div className="w-20 h-16 md:w-[80%] md:h-[80%] mx-auto mb-0 md:mb-3">
+          {user? (<div className="w-[90%] md:w-[25%]  md:m-4 rounded-full md:rounded-md p-2 md:p-4 bg-gray-900 h-[6%] md:h-[45%] lg:h-[55%] flex items-center md:block ">
+              <div className="w-12 h-8 md:w-[60%] md:h-[60%] lg:w-[80%] lg:h-[80%] mx-auto mb-0 md:mb-3">
                 <img src={user.imageURL} alt="User Profile Image" className="h-full w-full rounded-full md:rounded-md" />
               </div>
               <div className="w-full">
-                <h2 className="text-xl ml-4 md:ml-0 text-left md:text-center text-gray-200 font-semibold">{user.name}</h2>
-                <p className="hidden md:block text-md text-center text-gray-500">{user.email}</p>
+                <h2 className="text-sm md:text-xl ml-4 md:ml-0 text-left md:text-center text-gray-200 font-semibold">{user.name}</h2>
+                <p className="hidden md:block text-sm md:text-md text-center text-gray-500">{user.email}</p>
               </div>
             </div>)
             :
-            (<div className="w-[90%] md:w-[25%] m-4 pl-8 bg-gray-900 h-[55%] flex items-center justify-center">
+            (<div className="w-[90%] md:w-[25%] m-4 pl-2 lg:pl-4 bg-gray-900 h-[55%] flex items-center justify-center">
               <FontAwesomeIcon 
                 icon={faHexagonNodes} 
                 className="w-10 h-10 text-indigo-500 animate-spin"
                 style={{ animationDuration: '1s' }}
               />
-  </div>)
+            </div>)
           }
           
       {loading?(

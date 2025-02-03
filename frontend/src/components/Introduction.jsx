@@ -100,7 +100,7 @@ const Introduction = () => {
                             initial={{ opacity: 0, y: 50 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.9 + idx * 0.2 }}
-                            className="mb-2 md:mb-0 bg-white/10 backdrop-blur-lg shadow-md border-[0.8px] border-gray-500 rounded-lg p-6 text-gray-200  transition-all duration-300 group hover:scale-105 hover:shadow-lg"
+                            className="mb-2 md:mb-0 bg-white/10 backdrop-blur-lg shadow-md border-[0.8px] border-gray-500 rounded-lg p-3 md:p-6 text-gray-200  transition-all duration-300 group hover:scale-105 hover:shadow-lg"
                         >
                             <FontAwesomeIcon
                                 icon={feature.icon}
@@ -120,7 +120,7 @@ const Introduction = () => {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 1.2 }}
-                        className="mt-2 md:mt-0 md:bottom-10  bg-transparent border-[0.8px] border-gray-500 text-white font-semibold text-lg md:text-md  px-6 md:px-10 py-2 md:py-3 rounded-full shadow-md hover:bg-gray-400/20 hover:scale-105 transition-all duration-300"
+                        className="mt-2 md:mt-0 md:bottom-10  bg-transparent border-[0.8px] border-gray-500 text-white font-normal md:font-semibold md:text-lg text-md  px-4 md:px-10 py-2 md:py-3 rounded-full shadow-md hover:bg-gray-400/20 hover:scale-105 transition-all duration-300"
                         >
                         Explore Projects
                     </motion.button>
@@ -129,7 +129,7 @@ const Introduction = () => {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 1.2 }}
-                        className="mt-2 md:mt-0 md:bottom-10  bg-indigo-500 text-white font-semibold text-lg md:text-md px-6 md:px-10 py-2 md:py-3 rounded-full shadow-md hover:bg-indigo-600 hover:scale-105 transition-all duration-300"
+                        className="mt-2 md:mt-0 md:bottom-10  bg-indigo-500 text-white font-normal md:font-semibold md:text-lg text-md px-4 md:px-10 py-2 md:py-3 rounded-full shadow-md hover:bg-indigo-600 hover:scale-105 transition-all duration-300"
                         >
                         Get Started
                     </motion.button>
