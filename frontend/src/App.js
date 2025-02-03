@@ -1,13 +1,10 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
-import { UserProvider, useUser } from "./hooks/userContext";  // Import UserContext
+import { UserProvider, useUser } from "./hooks/userContext";
 
 import Navbar from "./components/Navbar"
-import Login from "./pages/Login"
 import Profile from "./pages/Profile"
-// import axios from "axios";
 
-import Mypage from "./pages/Mypage";
 import MainPageReact from "./pages/MainPageReact";
 import MainPagePlain from "./pages/MainPagePlain";
 import Landing from "./pages/Landing";
@@ -24,8 +21,6 @@ function App() {
     return (
         <UserProvider>
             <ActionContext.Provider value={{ action, setAction }}>
-
-            {/* Subtle Animated Glow */}
             
             <div className="flex flex-col items-center min-h-screen text-white bg-gradient-to-br from-black from-40% via-gray-900 via-60% to-indigo-900 to-90%">
                 <Router>
@@ -33,7 +28,6 @@ function App() {
                     <Routes>
                         <Route path="/" element={<Landing/>} />
                         <Route path="/universal" element={<UniversalPage />} />
-                        <Route path="/login" element={<Login />} />
                         <Route path="/profile" element={<Profile />} />
                         <Route path="/main/react/:projectid" element={<MainPageReact/>} />
                         <Route path="/main/plain/:projectid" element={<MainPagePlain/>} />

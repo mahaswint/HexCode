@@ -1,4 +1,4 @@
-// app.js
+
 const express = require('express');
 const mongoose = require('mongoose');
 const userRoutes = require("./routers/userRoutes");
@@ -14,7 +14,6 @@ const chatRoutes = require('./routers/chatRoutes')
 const User = require('./models/userModel');
 const app = express();
 
-// Middleware to parse JSON requests
 app.use(express.json());
 
 app.use(
@@ -23,8 +22,8 @@ app.use(
     resave: true,
     saveUninitialized: false,
     cookie: {
-      maxAge: 1000 * 60 * 60 * 24, // Session expiration time
-      secure: false, // set to true if using https
+      maxAge: 1000 * 60 * 60 * 24,
+      secure: false,
     },
   })
 );
@@ -47,18 +46,14 @@ app.use("/auth",authRoutes);
 
 
 app.use((req, res, next) => {
-  // console.log("startttt",req.user,req.session);
   next();
 });
 
-// API Routes
 app.use('/user', userRoutes);
 app.use('/project', projectRoutes);
 app.use('/chat',chatRoutes);
 
 app.get('/search',async (req,res)=>{
-  console.log("searching",req.user);
-  console.log("Fetching users for search...");
     try {
         const users = await User.find({}, "_id name email");
         console.log("Users found:", users);
@@ -69,11 +64,9 @@ app.get('/search',async (req,res)=>{
     }
 })
 
-// Connect to MongoDB
 mongoose.connect(process.env.MONGODB_URI)
   .then(() => console.log('Connected to MongoDB'))
   .catch((err) => console.error('MongoDB connection error:', err));
 
-// Server Port
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

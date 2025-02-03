@@ -54,11 +54,8 @@ const MainPagePlain = () => {
             throw new Error("Failed to fetch projects");
         }
         
-        const data = await response.json();
-        console.log(user);
-        console.log(data);
-        // const exists = data.users.find( => user_.id === user_.id) !== undefined;
-        setUserIsOwner(data.owner === user._id )
+        const data = await response.json(); 
+        setUserIsOwner(data.owner === user._id || data.users.includes(user._id))
         console.log(userIsOwner)
     } catch (err) {
         console.log(err); // Capture and set the error
@@ -658,12 +655,14 @@ const MainPagePlain = () => {
                 </span>
               </button>
 
+
               {/* <button className="relative group p-1 md:p-2 h-7 w-7 md:h-10 md:w-10 mt-1 rounded-full text-white ring-1 ring-slate-100/60">
                 <FontAwesomeIcon icon={faFloppyDisk} className="text-md md:text-xl" />
                 <span className="absolute z-50 left-1/2 bottom-full mb-2 w-max -translate-x-1/2 scale-0 rounded bg-gray-700 text-white text-xs px-2 py-1 opacity-0 transition-all group-hover:scale-100 group-hover:opacity-100">
                   Save Changes
                 </span>
               </button> */}
+
 
               <button className="relative group p-1 md:p-2 h-7 w-7 md:h-10 md:w-10 mt-1 rounded-full text-white ring-1 ring-slate-100/60"
                 onClick={() => onActionBtn("deploy")}

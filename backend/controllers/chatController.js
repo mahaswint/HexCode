@@ -1,7 +1,5 @@
 const Project = require('../models/projectModel');
 const Anthropic = require('@anthropic-ai/sdk');
-const OpenAI = require('openai');
-const openai = new OpenAI({apiKey : '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'});
 
 const CLAUDE_API_KEY = process.env.CLAUDE_API_KEY
 
@@ -10,7 +8,6 @@ const client = new Anthropic({
 });
 
 exports.chat = async (req,res)=> {
-  console.log(req.user);
   
   if(req.isAuthenticated()){
     const userPrompt = req.body.message;
@@ -99,10 +96,6 @@ exports.chat = async (req,res)=> {
       escape them properly, as they are crucial for indentation. Also fix the image height and width with respect to the design. Do not add more than 5 images`
     }
     
-  
-
-    // const prompt = `${defaultPrompt}\n\n${userPrompt}`;
-    console.log(userPrompt);
     try {
       const stream = client.messages
         .stream({
@@ -191,18 +184,16 @@ exports.chat = async (req,res)=> {
       // const airesponseJson = message.content[0].text;
       const airesponseObject = obj
       // Add the user prompt and AI response to the messages array
+
       project.chats.push({
-        // text: message.content, 
         userprompt: userPrompt,
         airesponse: airesponseObject,
         text : airesponseObject.explanation
       });
-      console.log("BETICHOD");
-      // console.log(userPrompt)
+
+      console.log(userPrompt)
       console.log(project.chats);
 
-
-      // Save the project
       await project.save();
       res.json(message)
     } catch (error) {
@@ -219,9 +210,6 @@ exports.chat = async (req,res)=> {
     const { pid } = req.params; 
 
     try {
-      console.log("mein toh chal gaya bhenchod");[]
-
-      
         const project = await Project.findById(pid);
 
         if (!project) {
@@ -230,9 +218,6 @@ exports.chat = async (req,res)=> {
 
 
         const chats = project.chats;
-        console.log(chats);
-
-        
         res.status(200).json({ chats });
     } catch (error) {
         console.error(error);

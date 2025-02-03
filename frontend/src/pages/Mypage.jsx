@@ -5,8 +5,6 @@ const Mypage = () => {
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  
-  // Function to fetch user data
   const fetchUserData = async () => {
     try {
       const response = await fetch(`${BACKEND_URL}api/user/my`, {
@@ -14,7 +12,7 @@ const Mypage = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        credentials: "include", // Include credentials for session management
+        credentials: "include",
       });
 
       if (!response.ok) {
@@ -22,18 +20,17 @@ const Mypage = () => {
       }
 
       const data = await response.json();
-      setUserData(data); // Store user data in state
-      setLoading(false); // Set loading state to false after fetching
+      setUserData(data);
+      setLoading(false);
     } catch (err) {
-      setError(err.message); // Handle errors
-      setLoading(false); // Set loading state to false even in case of error
+      setError(err.message);
+      setLoading(false);
     }
   };
 
-  // Fetch user data on component mount
   useEffect(() => {
     fetchUserData();
-  }, []); // Empty dependency array means it runs only once after the first render
+  }, []);
 
   if (loading) {
     return <div>Loading...</div>;

@@ -27,19 +27,18 @@ export const UniversalPage = () => {
   const [page, setPage] = useState(1);
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [searchTerm, setSearchTerm] = useState(""); // Search term for filtering users
+  const [searchTerm, setSearchTerm] = useState("");
   const [searchResult, setSearchResult]= useState([]);
-  const [mount, setMount] = useState(false);    // to prevent useEffect from being called on loading
-  const [showSearchResult, setShowSearchResult] = useState(false); // to control when to see the search results
+  const [mount, setMount] = useState(false);
+  const [showSearchResult, setShowSearchResult] = useState(false);
 
   const { user, setUser } = useUser();
 
   const searchRef = useRef(null);
-  // Click outside handler
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (searchRef.current && !searchRef.current.contains(event.target)) {
-        setShowSearchResult(false); // Clear search results if clicked outside
+        setShowSearchResult(false);
       }
     };
 
@@ -50,9 +49,7 @@ export const UniversalPage = () => {
   });
 
   const handleSearch = ()=>{
-    // console.log("searching....")
     setVisibleTemplates([]);
-    // if(searchTerm.length===0)return;
     templates.map((template,index)=>{
         const tosearch = template.name.trim().toLowerCase();
         const search = searchTerm.trim().toLowerCase();
@@ -61,7 +58,6 @@ export const UniversalPage = () => {
         }
     });
     setShowSearchResult(true);
-    // console.log(searchResult);
   };
 
   useEffect(()=>{
@@ -84,8 +80,13 @@ export const UniversalPage = () => {
       }
 
       const data = await response.json();
-      setTemplates(data);
-      // console.log(data);
+      const sortedTemplates = data.sort((a, b) => {
+        if(a.voteCount == b.voteCount) return (b.votes.upvotes.length - a.votes.upvotes.length);
+        return (b.voteCount - a.voteCount);
+
+    });
+      setTemplates(sortedTemplates);
+      console.log(data);
     } catch (err) {
       setError(err.message);
       console.log(error);
@@ -114,17 +115,21 @@ export const UniversalPage = () => {
       setHasMore(nextItems.length < templates.length);
     }
   };
-
+  const handleRedirect = (project) => {
+    if (project.projectType) {
+        window.location.href = '/main/react/' + project._id;
+    } else {
+        window.location.href = '/main/plain/' + project._id;
+    }
+  };
   return (
     <div className="min-h-screen w-full text-white px-8 py-12">
-      <div className="flex flex-col md:flex-row justify-between items-center mb-6">
+      <div className="flex flex-col md:flex-row justify-between items-center mb-2">
         <div>
-          <h2 className="text-4xl font-semibold tracking-wide">
+          <h2 className="text-3xl font-medium tracking-light">
             <FontAwesomeIcon icon={faRocket} /> Public Projects
           </h2>
         </div>
-        {/* <SearchBar /> */}
-        {/* Searchbar */}
         <div ref={searchRef} className="w-full md:w-[25rem]">
         <div className="relative w-full max-w-lg mt-3 mb-1">
           <input
@@ -135,35 +140,35 @@ export const UniversalPage = () => {
             onClick={()=>setShowSearchResult(true)}
           />
           <button onClick={()=>{
-            // if(searchResult.length===0){
-            //   setVisibleTemplates(templates);
-            //   return;
-            // }
             setShowSearchResult(false);
-            // setVisibleTemplates(searchResult);
-            // setSearchResult([]);
           }} className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-blue-500 transition">
             <FontAwesomeIcon icon={faMagnifyingGlass} />
           </button>
         </div>
-        {/* Search Results Dropdown */}
         {showSearchResult && (
             <div className="absolute bg-gray-800 border border-gray-600 rounded-lg shadow-lg z-10 w-[25rem]">
-              {visibleTemplates.map((template, index) => (
-                <div 
-                  key={index}
-                  className="px-4 py-2 hover:bg-gray-700 cursor-pointer transition"
-                >
-                  {template.name}
+            {visibleTemplates.length === 0 ? (
+                <div className="px-4 text-gray-400">
+                  No results found..
                 </div>
-              ))}
-            </div>
+              ) : (
+                visibleTemplates.map((template, index) => (
+                  <div 
+                    key={index}
+                    className="px-4 py-2 hover:bg-gray-700 cursor-pointer transition"
+                    onClick={() => {handleRedirect(template)}}
+                  >
+                    {template.name}
+                  </div>
+                ))
+              )}
+          </div>
         )}
         </div>
       </div>
 
-      <div className="text-gray-400 mb-8 text-lg max-w-2xl">
-        Train your chatbot with data, use our ready-to-use templates, or start from scratch.
+      <div className="text-gray-400 mb-8 text-lg ">
+      Discover our open-source projects, built for innovation, collaboration, and real-world impact. 
       </div>
 
       {isLoading && visibleTemplates.length === 0 ? (

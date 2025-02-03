@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faReact, faHtml5, faCss3Alt, faSquareJs  } from "@fortawesome/free-brands-svg-icons";
-import { faPenToSquare, faUserPlus } from "@fortawesome/free-solid-svg-icons";
+import { faPenToSquare, faUserPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
+import Swal from 'sweetalert2';
+import axios from "axios";
 
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "http://localhost:5000/";
@@ -174,6 +176,40 @@ const ProjectList = (props) => {
     const toggleEditProjectData = () => {
         setEditProjectData(!editProjectData);
     };
+    const handleDelete = async (projectId) => {
+        try {
+            Swal.fire({
+                title: "Delete Project?",
+                text: "You won't be able to revert this!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#d33",
+                cancelButtonColor: "#a3a3a3",
+                confirmButtonText: "Yes, Delete it!"
+              }).then(async (result) => {
+                if (result.isConfirmed) {
+
+                  await axios.delete(`${BACKEND_URL}project/${projectId}/delete`);
+                  Swal.fire({
+                    title: "Deleted!",
+                    text: "Your Project has been deleted.",
+                    icon: "success"
+                  }).then(()=>{
+                    window.location.reload();
+                  });
+                }
+              });
+    
+        } catch (error) {
+          console.error('Error deleting project:', error);
+          await Swal.fire({
+            title: "Error!",
+            text: "Failed to delete project. Please try again.",
+            icon: "error"
+          });
+        }
+      };
+
 
     return (
         <>
@@ -217,6 +253,20 @@ const ProjectList = (props) => {
                                     </button>
                                     <span className="absolute z-50 left-1/2 bottom-full mb-2 ml-4 w-max -translate-x-1/2 scale-0 rounded bg-gray-500 text-white text-xs px-2 py-1 opacity-0 transition-all group-hover:scale-100 group-hover:opacity-100">
                                         Add Users to Collaborate
+                                    </span>
+                                </div>
+                                <div className="group relative">
+                                    <button
+                                        onClick={() => {handleDelete(project._id)}}
+                                        className="text-gray-200 rounded-md hover:text-red-500 disabled:opacity-50 disabled:hover:text-gray-200"
+                                    >
+                                        <FontAwesomeIcon 
+                                        icon={faTrash}
+                                        className={`h-6 w-6`} 
+                                        />
+                                    </button>
+                                    <span className="absolute z-50 left-1/2 bottom-full mb-2 ml-4 w-max -translate-x-1/2 scale-0 rounded bg-gray-500 text-white text-xs px-2 py-1 opacity-0 transition-all group-hover:scale-100 group-hover:opacity-100">
+                                        Delete Project
                                     </span>
                                 </div>
                             </div>
