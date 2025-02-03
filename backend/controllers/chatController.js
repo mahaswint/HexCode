@@ -1,5 +1,8 @@
 const Project = require('../models/projectModel');
 const Anthropic = require('@anthropic-ai/sdk');
+const { set } = require('mongoose');
+const OpenAI = require('openai');
+const openai = new OpenAI({apiKey : process.env.OPENAI_API_KEY});
 
 const CLAUDE_API_KEY = process.env.CLAUDE_API_KEY
 
@@ -15,16 +18,11 @@ exports.chat = async (req,res)=> {
     const projectId = req.params.pid;
     
 
-    console.log('Received Prompt from user:',userPrompt);
-    console.log('frontend path:',frontendRoute)
-    console.log('project ID', projectId)
-    
-    console.log('matching route:',`/main/react/${projectId}`);
-
     let defaultPrompt;
     if(frontendRoute == `/main/react/${projectId}`){
       defaultPrompt = `
     You are an expert web developer tasked with generating a complete, production-ready React.js project from a user's description. Follow these precise guidelines:
+    Make sure to provide a complete ready to run code without any errors
 
     1. Project Generation Requirements:
     Create a fully functional React.js project using create-react-app or a custom Webpack configuration.
@@ -34,6 +32,8 @@ exports.chat = async (req,res)=> {
     Ensure meaningful, clean, and well-structured code with a component-based architecture.
     Include appropriate error boundaries for error handling.
     Add basic optimizations for performance and SEO (where applicable for SPAs).
+    Use <img> tags for images and write a clear description in the alt attribute.
+    Hardcode the required string in the src and alt attributes of the img tag.
 
     2. JSON Structure Specifications:
     Generate a comprehensive JSON object.
@@ -73,7 +73,8 @@ exports.chat = async (req,res)=> {
       defaultPrompt = `Your task is to create a one-page website based on the given specifications, delivered as 
       an HTML file, CSS file, and JavaScript file. The website should incorporate a variety of engaging and 
       interactive design features, such as drop-down menus, dynamic text and content, clickable buttons, and more. 
-      Ensure that the design is visually appealing, responsive, and user-friendly. The HTML, CSS, and JavaScript 
+      Ensure that the design is visually appealing, responsive, and user-friendly. The website should have a good amount of content and images.
+       The HTML, CSS, and JavaScript 
       code should be well-structured, efficiently organized, and properly commented for readability and maintainability. 
       Do not include any text excluding the code. If you want to give any text or explanation or anything related to 
       the conversation, give it in the JSON string as the value of the key 'text'. Ensure that every element in the 
@@ -81,7 +82,7 @@ exports.chat = async (req,res)=> {
       class and either horizontal or vertical class. Assign horizontal to headers, footers, and navigation elements, 
       while all other elements should have vertical. No element should be left without these classes. DO NOT GIVE ME A 
       SCRIPT FOR THE draggable CLASS as I am implementing my own script for drag and drop which will use the draggable 
-      class. Inside the body, there should be a div with id 'layout' as the root element, and whatever HTML you 
+      class. Add this class for each element no element should be without draggable class.Inside the body, there should be a div with id 'layout' as the root element, and whatever HTML you 
       generate for the page should be placed inside this layout div. Additionally, incorporate a color palette 
       selector that is hidden by default and can be toggled on click of a three-dot button. When the button is 
       clicked, the palette should open, displaying predefined themes: Light (#f4f4f4), Dark (#333), Blue (#87ceeb), 
@@ -93,7 +94,8 @@ exports.chat = async (req,res)=> {
       implementations for a simple website. Do not include additional text outside the JSON object. Do not enclose 
       the value of the keys in backticks; enclose them in double quotes and escape all double quotes and newline 
       characters inside the values of html, css, and js. Don't forget to add the newline characters in the code and 
-      escape them properly, as they are crucial for indentation. Also fix the image height and width with respect to the design. Do not add more than 5 images`
+      escape them properly, as they are crucial for indentation.Give a clear description of the image in the alt attribute of the image. Also fix the image height and width with respect to the design.
+      Provide the explanation in a well-organised format and add endline character in your response if you want to start in a newline.`
     }
     
     try {
@@ -129,6 +131,9 @@ exports.chat = async (req,res)=> {
       // console.log("Model Response:-",message);
 
       const fetchNewImageSrc = async (altText) => {
+        setTimeout(() => {
+          console.log("Waiting for 6 seconds");
+        }, 6000);
         // Simulating an API call that returns a new image URL based on alt text
         console.log("Open AI API called.....................")
         const response = await openai.images.generate({
@@ -138,42 +143,43 @@ exports.chat = async (req,res)=> {
             size: "1024x1024",
         });
           
-        console.log(response)
         return response.data[0].url;
     };
     
     const replaceImageSrc = async (html) => {
-      console.log("replace image called ....................")
         const imgTagRegex = /<img[^>]+src=["']([^"']+)["'][^>]*>/g;
         const matches = Array.from(html.matchAll(imgTagRegex));
-        console.log("Matches length................")
-        console.log(matches.length);
         
         for (const match of matches) {
             const altMatch = match[0].match(/alt="([^"]*)"/);
             const altText = altMatch ? altMatch[1] : "No alt attribute";
-            console.log("Alt text:", altText);
-            
             const newSrc = await fetchNewImageSrc(altText);
-            // const newSrc1 = "cdhbsidchb"
             html = html.replace(match[0], match[0].replace(/src="[^"]+"/, `src="${newSrc}"`));
         }
         return html;
     };
-    console.log("sdifugsdifugsifhgsidyfgisdyficauysgdfoisy8eg.............................................")
 
     obj = JSON.parse(message.content[0].text)
-    console.log(obj);
-    
 
-
-    await replaceImageSrc(obj.html).then(updatedHtml => {
-      console.log(updatedHtml);
-      obj.html = updatedHtml;
-      message.content[0].text = JSON.stringify(obj)
-    })
+    if(frontendRoute === `/main/react/${projectId}`){
+        for(let key in obj.files){
+          // console.log(typeof key)
+          value = obj.files[key]
+          // console.log(typeof value)
+          await replaceImageSrc(value.code).then(updatedHtml => {
+            console.log(updatedHtml);
+            value.code = updatedHtml;
+          })
+        }
+    }
+    if(frontendRoute === `/main/plain/${projectId}`){
+      await replaceImageSrc(obj.html).then(updatedHtml => {
+        console.log(updatedHtml);
+        obj.html = updatedHtml;
+      })
+    }
     console.log("Aage Nikal gaye ..............")
-    
+    message.content[0].text = JSON.stringify(obj)
 
 
       const project = await Project.findById(projectId);
@@ -187,12 +193,10 @@ exports.chat = async (req,res)=> {
 
       project.chats.push({
         userprompt: userPrompt,
-        airesponse: airesponseObject,
+        airesponse: message.content[0].text,
         text : airesponseObject.explanation
       });
 
-      console.log(userPrompt)
-      console.log(project.chats);
 
       await project.save();
       res.json(message)
