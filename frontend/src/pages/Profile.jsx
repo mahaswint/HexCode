@@ -76,7 +76,8 @@ const Profile = () => {
       }
 
       const data = await response.json();
-      setProjects(data);
+      setProjects(data.reverse());
+
     } catch (err) {
       setError(err.message);
     } finally {

@@ -205,7 +205,7 @@ export const UniversalPage = () => {
                 <TemplateCard 
                   id={template._id}
                   title={template.name} 
-                  description={template.messages}
+                  description={template.description}
                   initialVotes={template.votes}
                   projectType={template.projectType}
                   user={user}
