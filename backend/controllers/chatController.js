@@ -136,23 +136,23 @@ exports.chat = async (req,res)=> {
 
     obj = JSON.parse(message.content[0].text)
 
-    // if(frontendRoute === `/main/react/${projectId}`){
-    //     for(let key in obj.files){
-    //       // console.log(typeof key)
-    //       value = obj.files[key]
-    //       // console.log(typeof value)
-    //       await replaceImageSrc(value.code).then(updatedHtml => {
-    //         console.log(updatedHtml);
-    //         value.code = updatedHtml;
-    //       })
-    //     }
-    // }
-    // if(frontendRoute === `/main/plain/${projectId}`){
-    //   await replaceImageSrc(obj.html).then(updatedHtml => {
-    //     console.log(updatedHtml);
-    //     obj.html = updatedHtml;
-    //   })
-    // }
+    if(frontendRoute === `/main/react/${projectId}`){
+        for(let key in obj.files){
+          // console.log(typeof key)
+          value = obj.files[key]
+          // console.log(typeof value)
+          await replaceImageSrc(value.code).then(updatedHtml => {
+            console.log(updatedHtml);
+            value.code = updatedHtml;
+          })
+        }
+    }
+    if(frontendRoute === `/main/plain/${projectId}`){
+      await replaceImageSrc(obj.html).then(updatedHtml => {
+        console.log(updatedHtml);
+        obj.html = updatedHtml;
+      })
+    }
     console.log("Aage Nikal gaye ..............")
     message.content[0].text = JSON.stringify(obj)
 
