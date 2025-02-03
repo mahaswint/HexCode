@@ -278,6 +278,20 @@ useEffect(() => {
     }
   };
   
+  const now = new Date();
+
+  // Get time in 24-hour format
+  const hours = String(now.getHours()).padStart(2, '0');
+  const minutes = String(now.getMinutes()).padStart(2, '0');
+  const formattedTime = `${hours}:${minutes}`;
+  
+  // Get date in DD-MM-YYYY format
+  const day = String(now.getDate()).padStart(2, '0');
+  const month = String(now.getMonth() + 1).padStart(2, '0'); // Months are 0-based
+  const year = now.getFullYear();
+  const formattedDate = `${day}-${month}-${year}`;
+  
+  const finalOutput = `${formattedTime} ${formattedDate}`;
 
   return (
   <div className="flex flex-col-reverse md:flex-row h-full w-full text-white bg-gray-900">
@@ -302,8 +316,9 @@ useEffect(() => {
                 {prompt}
               </div>
               <div className='absolute bottom-0 right-0 text-sm'>
-                  {userpromptsTiming[index]}
-              </div>
+                  {userpromptsTiming[index] || finalOutput}
+                  </div>
+
             </div>
             {/* AI Response */}
             {aimessage[index] && (

@@ -180,11 +180,14 @@ const MainPagePlain = () => {
     `;
 
     // Optionally clean the updated HTML (e.g., remove the script tag)
-    const cleanedCode = updatedHtml.replace(
+    let cleanedCode = updatedHtml.replace(
       /<script[^>]*id="draggable-script"[\s\S]*?<\/script>/s,
       ""
     );
-
+    cleanedCode = cleanedCode.replace(
+      /<button[^>]*id=["']theme-toggle["'][^>]*>[\s\S]*?<\/button>/g,
+      ""
+    );
 
     console.log("Cleaned code after removing the draggable script:", cleanedCode);
 
@@ -235,12 +238,25 @@ const MainPagePlain = () => {
     `;
 
     // Optionally clean the updated HTML (e.g., remove the script tag)
-    const cleanedCode = updatedHtml.replace(
+    let cleanedCode = updatedHtml.replace(
       /<script[^>]*id="draggable-script"[\s\S]*?<\/script>/s,
       ""
     );
+    cleanedCode = cleanedCode.replace(
+      /(<button[^>]*id=["']theme-toggle["'][^>]*)(>)/g,
+      '$1 style="display: none;"$2'
+    );
+    console.log()
+
     console.log("Deployable code after removing the draggable script:", cleanedCode);
     setDeployedCode(cleanedCode);
+
+    setTimeout(() => {
+      if (iframeRef.current) {
+          iframeRef.current.contentDocument.documentElement.innerHTML = cleanedCode;
+          console.log("Iframe updated with new content.");
+      }
+  }, 100);
   };
 
   const draggableScript = `document.addEventListener('DOMContentLoaded', () => {
@@ -340,6 +356,7 @@ const MainPagePlain = () => {
     document.querySelectorAll('.draggable').forEach(initializeDraggable);
     setupEmptyDivStyling();
 })`
+const colorPaletteScript = ``
   function injectContentIntoHTML(htmlCode, cssCode, jsCode, draggableScript) {
     // First, ensure we have a valid HTML structure
     if (!htmlCode.includes('</head>') || !htmlCode.includes('</body>')) {
@@ -381,6 +398,7 @@ const MainPagePlain = () => {
     setLoading(true);
     e.preventDefault(); // Prevents the default form submission behavior
     setPrompt(" ");
+    
     console.log("Form submitted with prompt:", prompt);
     setUserprompts((prevPrompts) => [...prevPrompts, prompt]);
     // Simulate fetching generated code from backend (replace this with your API call)
@@ -534,7 +552,7 @@ const MainPagePlain = () => {
   
       // Redirect to /main/react/{project_id} if response contains a valid ID
       if (data.project && data.project._id) {
-        window.location.href = `/main/react/${data.project._id}`;
+        window.location.href = `/main/plain/${data.project._id}`;
       } else {
         console.error("Project ID missing in response");
       }
@@ -543,6 +561,21 @@ const MainPagePlain = () => {
       console.error("Error copying project:", error);
     }
   };
+  const now = new Date();
+
+  // Get time in 24-hour format
+  const hours = String(now.getHours()).padStart(2, '0');
+  const minutes = String(now.getMinutes()).padStart(2, '0');
+  const formattedTime = `${hours}:${minutes}`;
+  
+  // Get date in DD-MM-YYYY format
+  const day = String(now.getDate()).padStart(2, '0');
+  const month = String(now.getMonth() + 1).padStart(2, '0'); // Months are 0-based
+  const year = now.getFullYear();
+  const formattedDate = `${day}-${month}-${year}`;
+  
+  const finalOutput = `${formattedTime} ${formattedDate}`;
+
   
 
   return (
@@ -565,8 +598,9 @@ const MainPagePlain = () => {
                   {prompt}
                 </div>
                 <div className='absolute bottom-0 right-0 text-sm'>
-                  {userpromptsTiming[index]}
-                </div>
+                  {userpromptsTiming[index] || finalOutput}
+                  </div>
+
               </div>
 
               {/* AI Response - Adjusted for better mobile display */}
