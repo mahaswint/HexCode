@@ -140,7 +140,7 @@ exports.copyProject = async (req, res) => {
             projectType: projectToCopy.projectType,
             owner: user, 
             users: [], 
-            chats: [], 
+            chats: projectToCopy.chats, 
             votes: { upvotes: [], downvotes: [] }, 
             voteCount: 0, 
         });

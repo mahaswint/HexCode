@@ -552,7 +552,7 @@ const colorPaletteScript = ``
   
       // Redirect to /main/react/{project_id} if response contains a valid ID
       if (data.project && data.project._id) {
-        window.location.href = `/main/react/${data.project._id}`;
+        window.location.href = `/main/plain/${data.project._id}`;
       } else {
         console.error("Project ID missing in response");
       }
