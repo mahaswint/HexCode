@@ -315,7 +315,7 @@ useEffect(() => {
   <div className="flex flex-col-reverse md:flex-row h-full w-full text-white bg-gray-900">
     {/* Left Panel */}
     <div
-      className="w-full md:w-1/2 p-6 border-r border-gray-700 bg-gray-900 flex flex-col">
+      className="w-full md:w-1/2 p-2 md:p-6 border-r border-gray-700 bg-gray-900 flex flex-col">
       {/* Previous Prompts Section */}
       <div className="flex-grow md:h-[70%] md:max-h-[70%] max-h-80 overflow-y-scroll p-3 mb-4 rounded-lg bg-gradient-to-br from-[#1A1A2E] to-[#0F3460] border border-indigo-400/20 shadow-2xl shadow-black/40">
         <div className="flex gap-2 text-xl font-semibold">
@@ -374,7 +374,7 @@ useEffect(() => {
     
     
     {/* Right Panel */}
-    <div className="w-[98%] m-1 md:m-0 md:w-1/2 flex flex-col bg-gray-900">
+    <div className="w-[98%] m-2 md:m-0 md:w-1/2 flex flex-col bg-gray-900">
       {/* Navigation Tabs */}
       <nav className="flex flex-row justify-between p-1 md:p-2 bg-gray-900 border-b border-gray-700 h-[9%] mb-4">
         <div 

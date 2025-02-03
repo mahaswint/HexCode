@@ -187,8 +187,8 @@ const Prompt = () => {
     return ( 
         <div className="relative w-[90vw] mb-28 md:w-[50vw] mt-20 min-h-[50vh] bg-gradient-to-br from-[#1A1A2E] to-[#0F3460] backdrop-blur-lg rounded-2xl border border-indigo-400/60 shadow-2xl shadow-black/40 p-6 mx-auto flex flex-col my-10">
 
-            <div className="relative z-10 flex flex-col items-center mt-16">
-                <h3 className="text-[25px] font-light text-white mb-4 tracking-wide">
+            <div className="text-center relative z-10 flex flex-col items-center mt-16">
+                <h3 className="text-[18px] md:text-[25px] font-light text-white mb-4 tracking-wide">
                     <FontAwesomeIcon icon={faRobot} className="mr-2"/> AI Powered Development
                 </h3>
             </div>
